@@ -1,0 +1,1046 @@
+/* ==========================================================================
+   RAWCHUNKS MINTLIFY STYLING SYSTEM
+   ANARCHO-CHAOTIC ACID DNA · CYBERPUNK MONOSPACE ENGINE
+   100% BRAND-ALIGNED WITH landing/src/lib/theme.ts & app/src/styles
+   ========================================================================== */
+
+:root {
+  /* RAWCHUNKS BRAND PALETTE */
+  --primary: #00ff41;         /* Neon Acid Green */
+  --secondary: #ff00a0;       /* Hot Punk Magenta */
+  --accent: #00ccff;          /* Cyber Cyan */
+  --warning: #ffaa00;         /* Electric Amber */
+  --error: #ff0066;           /* Danger Neon */
+
+  /* Backgrounds & Surfaces */
+  --bg: #000000;
+  --surface: #0a0a0a;
+  --surface-alt: #121212;
+  --surface-raised: #181818;
+  --surface-elevated: #121212;
+
+  /* Text Colors */
+  --text: #ffffff;
+  --text-dim: #aaaaaa;
+  --text-muted: #666666;
+  --text-secondary: #888888;
+  --text-tertiary: #444444;
+
+  /* Borders & Glows */
+  --border: #1a1a1a;
+  --border-dim: rgba(0, 255, 65, 0.2);
+  --border-bright: #333333;
+  --border-active: #00ff41;
+  --border-magenta: rgba(255, 0, 160, 0.3);
+  --glow-primary: 0 0 12px rgba(0, 255, 65, 0.35);
+  --glow-secondary: 0 0 12px rgba(255, 0, 160, 0.35);
+  --glow-accent: 0 0 12px rgba(0, 204, 255, 0.35);
+
+  /* Typography */
+  --font-family: 'Courier New', Courier, monospace;
+  --font-mono: 'Courier New', Courier, monospace;
+  --letter-spacing-tight: clamp(0.5px, 0.08vw, 1px);
+  --letter-spacing-base: clamp(1px, 0.15vw, 2px);
+  --letter-spacing-wide: clamp(1.5px, 0.25vw, 3px);
+
+  /* Mintlify Layout Variables */
+  --sidebar-width: 19rem;
+  --content-width: 860px;
+}
+
+/* ==========================================================================
+   GLOBAL RESET & TYPOGRAPHY ENFORCEMENT
+   ========================================================================== */
+
+html, body {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Fixed Mintlify background element */
+span#background-color {
+  background-color: #000000 !important;
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(0, 255, 65, 0.06) 0%, transparent 65%),
+    linear-gradient(rgba(0, 255, 65, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 65, 0.025) 1px, transparent 1px) !important;
+  background-size: 100% 100%, 32px 32px, 32px 32px !important;
+  background-position: 0 0, -1px -1px, -1px -1px !important;
+}
+
+/* CYBERPUNK CRT SCANLINE OVERLAY */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99999;
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+  background-size: 100% 3px, 6px 100%;
+  opacity: 0.6;
+}
+
+/* The body overlay supplies the scanlines; don't stack an injected copy. */
+.scanlines {
+  display: none;
+}
+
+/* CYBERPUNK SELECTION */
+::selection {
+  background-color: #00ff41 !important;
+  color: #000000 !important;
+  text-shadow: none !important;
+}
+
+/* ==========================================================================
+   CUSTOM ACID SCROLLBARS
+   ========================================================================== */
+
+::-webkit-scrollbar {
+  width: 5px !important;
+  height: 5px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000 !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 65, 0.25) !important;
+  border-radius: 2px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00ff41 !important;
+  box-shadow: 0 0 8px #00ff41 !important;
+}
+
+* {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(0, 255, 65, 0.25) #000000 !important;
+}
+
+/* ==========================================================================
+   HEADINGS & CONTENT TYPOGRAPHY
+   ========================================================================== */
+
+h1, h2, h3, h4, h5, h6, #page-title {
+  font-family: 'Courier New', Courier, monospace !important;
+  font-weight: 900 !important;
+  letter-spacing: clamp(1px, 0.2vw, 2.5px) !important;
+  text-transform: uppercase !important;
+  color: #ffffff !important;
+}
+
+#page-title {
+  font-size: clamp(24px, 2.5vw, 36px) !important;
+  color: #ffffff !important;
+  text-shadow: 0 0 16px rgba(0, 255, 65, 0.35) !important;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 8px;
+}
+
+#page-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 48px;
+  height: 3px;
+  background: #00ff41;
+  box-shadow: 0 0 10px #00ff41;
+}
+
+#content h2 {
+  font-size: clamp(18px, 1.8vw, 22px) !important;
+  color: #00ff41 !important;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.35) !important;
+  border-bottom: 1px solid rgba(0, 255, 65, 0.25) !important;
+  padding-bottom: 6px !important;
+  margin-top: 2.2rem !important;
+  margin-bottom: 1rem !important;
+}
+
+#content h3 {
+  font-size: clamp(15px, 1.4vw, 18px) !important;
+  color: #00ccff !important;
+  text-shadow: 0 0 8px rgba(0, 204, 255, 0.35) !important;
+  margin-top: 1.8rem !important;
+  margin-bottom: 0.8rem !important;
+}
+
+/* Page content and paragraphs */
+#content {
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #aaaaaa !important;
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+  letter-spacing: 0.5px !important;
+}
+
+#content span[data-as="p"],
+#content p {
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #aaaaaa !important;
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+  letter-spacing: 0.5px !important;
+  margin-bottom: 1rem;
+}
+
+#content strong,
+#content b {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+#content a {
+  color: #00ff41 !important;
+  text-decoration: underline !important;
+  text-decoration-color: rgba(0, 255, 65, 0.4) !important;
+  text-underline-offset: 3px !important;
+  transition: all 0.15s ease !important;
+}
+
+#content a:hover {
+  color: #00ccff !important;
+  text-decoration-color: #00ccff !important;
+  text-shadow: 0 0 8px rgba(0, 204, 255, 0.6) !important;
+}
+
+#content ul, #content ol {
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #aaaaaa !important;
+  padding-left: 1.4rem;
+  margin-bottom: 1.2rem;
+}
+
+#content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+#content li::marker {
+  color: #00ff41 !important;
+}
+
+/* Inline code inside paragraphs and lists */
+:not(pre) > code {
+  background-color: #121212 !important;
+  color: #00ff41 !important;
+  border: 1px solid rgba(0, 255, 65, 0.25) !important;
+  border-radius: 2px !important;
+  padding: 2px 6px !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  font-size: 0.9em !important;
+  font-weight: 600 !important;
+  box-shadow: 0 0 6px rgba(0, 255, 65, 0.15) !important;
+}
+
+/* ==========================================================================
+   NAVBAR & HEADER (Strict Cyberpunk Panel)
+   ========================================================================== */
+
+#navbar, #header {
+  background-color: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid rgba(0, 255, 65, 0.25) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(0, 255, 65, 0.1) !important;
+}
+
+img.nav-logo {
+  width: clamp(164px, 19vw, 230px) !important;
+  max-width: calc(100vw - 112px) !important;
+  height: auto !important;
+  transition: filter 0.2s ease, transform 0.2s ease !important;
+}
+
+@media (max-width: 768px) {
+  img.nav-logo {
+    width: clamp(132px, 44vw, 220px) !important;
+  }
+}
+
+img.nav-logo:hover {
+  filter: drop-shadow(0 0 10px rgba(0, 255, 65, 0.7)) !important;
+  transform: scale(1.02);
+}
+
+/* Navbar links */
+#navbar a,
+.navbar-link {
+  font-family: 'Courier New', Courier, monospace !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+  font-size: 12px !important;
+  color: #aaaaaa !important;
+  transition: all 0.15s ease !important;
+}
+
+#navbar a:hover,
+.navbar-link:hover {
+  color: #00ff41 !important;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.6) !important;
+}
+
+/* TOPBAR PRIMARY CTA BUTTON (Identical to app .btn-base .btn-variant-primary) */
+#topbar-cta-button,
+#navbar a[type="button"],
+#navbar .btn-primary {
+  font-family: 'Courier New', Courier, monospace !important;
+  font-weight: 900 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  font-size: 11px !important;
+  color: #00ff41 !important;
+  background-color: rgba(5, 5, 5, 0.85) !important;
+  border: 1px solid #00ff41 !important;
+  border-radius: 2px !important;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.2) !important;
+  padding: 8px 16px !important;
+  backdrop-filter: blur(6px) !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+}
+
+#topbar-cta-button:hover,
+#navbar a[type="button"]:hover,
+#navbar .btn-primary:hover {
+  background-color: rgba(0, 255, 65, 0.15) !important;
+  box-shadow: 0 0 16px rgba(0, 255, 65, 0.45) !important;
+  color: #00ff41 !important;
+  transform: translateY(-1px);
+}
+
+#topbar-cta-button:active,
+#navbar a[type="button"]:active {
+  transform: scale(0.98) !important;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.65) !important;
+  text-shadow: 0 0 6px rgba(0, 255, 65, 0.8) !important;
+}
+
+/* ==========================================================================
+   SEARCH BAR ENTRY & MODAL
+   ========================================================================== */
+
+#search-bar-entry {
+  background-color: rgba(10, 10, 10, 0.85) !important;
+  border: 1px solid rgba(0, 255, 65, 0.25) !important;
+  border-radius: 2px !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #888888 !important;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8) !important;
+  transition: all 0.2s ease !important;
+}
+
+#search-bar-entry:hover {
+  border-color: #00ff41 !important;
+  box-shadow: 0 0 12px rgba(0, 255, 65, 0.25), inset 0 0 10px rgba(0, 0, 0, 0.8) !important;
+  color: #ffffff !important;
+}
+
+#search-bar-entry kbd {
+  background-color: #181818 !important;
+  border: 1px solid rgba(0, 255, 65, 0.3) !important;
+  color: #00ff41 !important;
+  border-radius: 2px !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 4px rgba(0, 255, 65, 0.2) !important;
+}
+
+/* Search Modal / Command Palette */
+[role="dialog"] {
+  border-radius: 2px !important;
+}
+
+[role="dialog"] input {
+  font-family: 'Courier New', Courier, monospace !important;
+  background-color: #0a0a0a !important;
+  border: 1px solid rgba(0, 255, 65, 0.3) !important;
+  border-radius: 2px !important;
+  color: #ffffff !important;
+  letter-spacing: 1px !important;
+}
+
+[role="dialog"] input:focus {
+  border-color: #00ff41 !important;
+  box-shadow: 0 0 12px rgba(0, 255, 65, 0.4) !important;
+}
+
+/* ==========================================================================
+   SIDEBAR NAVIGATION
+   ========================================================================== */
+
+#sidebar,
+#sidebar-content {
+  background-color: #000000 !important;
+  border-right: 1px solid rgba(0, 255, 65, 0.15) !important;
+  font-family: 'Courier New', Courier, monospace !important;
+}
+
+/* Sidebar section groups */
+.sidebar-title,
+.sidebar-group > div:first-child,
+.sidebar-group [data-component-part="group-title"] {
+  font-family: 'Courier New', Courier, monospace !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+  font-size: 11px !important;
+  color: #aaaaaa !important;
+  margin-top: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Sidebar navigation links */
+#sidebar-content a,
+.sidebar-link {
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #888888 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.5px !important;
+  border-radius: 2px !important;
+  transition: all 0.15s ease !important;
+  padding: 6px 10px !important;
+}
+
+#sidebar-content a:hover,
+.sidebar-link:hover {
+  color: #ffffff !important;
+  background-color: rgba(0, 255, 65, 0.05) !important;
+  padding-left: 14px !important;
+}
+
+/* ACTIVE SIDEBAR LINK */
+#sidebar-content li[data-active] > a,
+#sidebar-content a[data-active="true"],
+#sidebar-content li[data-active] {
+  color: #00ff41 !important;
+  font-weight: 900 !important;
+  background: rgba(0, 255, 65, 0.08) !important;
+  border-left: 2px solid #00ff41 !important;
+  box-shadow: inset 4px 0 10px rgba(0, 255, 65, 0.15) !important;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.6) !important;
+  border-radius: 0 2px 2px 0 !important;
+  padding-left: 14px !important;
+}
+
+.sidebar-group:has(> li[data-active]) {
+  border-left: 1px dashed rgba(0, 255, 65, 0.35) !important;
+}
+
+/* ==========================================================================
+   TABLE OF CONTENTS (On This Page)
+   ========================================================================== */
+
+#table-of-contents {
+  border-left: 1px solid rgba(0, 255, 65, 0.15) !important;
+  font-family: 'Courier New', Courier, monospace !important;
+}
+
+#table-of-contents h2,
+#table-of-contents [data-component-part="toc-title"] {
+  font-family: 'Courier New', Courier, monospace !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+  font-size: 11px !important;
+  color: #aaaaaa !important;
+}
+
+.toc-item {
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #777777 !important;
+  font-size: 12px !important;
+  letter-spacing: 0.5px !important;
+  transition: all 0.15s ease !important;
+}
+
+.toc-item:hover {
+  color: #ffffff !important;
+}
+
+/* ACTIVE TOC ITEM */
+.toc-item[data-active],
+.toc-item[data-active-deepest] {
+  color: #00ff41 !important;
+  font-weight: 900 !important;
+  border-left: 2px solid #00ff41 !important;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.6) !important;
+  padding-left: 8px !important;
+}
+
+/* ==========================================================================
+   CARDS (.card, [data-component-part="card-content-container"])
+   Identical to .panel in landing and app
+   ========================================================================== */
+
+.card,
+[data-component-part="card-content-container"] {
+  background-color: rgba(10, 10, 10, 0.85) !important;
+  border: 1px solid rgba(0, 255, 65, 0.25) !important;
+  border-radius: 2px !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
+  transition: all 0.2s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.card:hover,
+[data-component-part="card-content-container"]:hover {
+  border-color: #00ff41 !important;
+  box-shadow: 0 0 16px rgba(0, 255, 65, 0.35), inset 0 0 20px rgba(0, 255, 65, 0.04) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Card titles */
+.card h2,
+.card h3,
+.card-title,
+[data-component-part="card-title"] {
+  font-family: 'Courier New', Courier, monospace !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+  color: #ffffff !important;
+  font-size: 15px !important;
+  margin-top: 0 !important;
+  border-bottom: none !important;
+}
+
+/* Card icons */
+.card svg,
+[data-component-part="card-icon"] {
+  color: #00ff41 !important;
+  filter: drop-shadow(0 0 6px rgba(0, 255, 65, 0.6)) !important;
+  transition: filter 0.2s ease, transform 0.2s ease !important;
+}
+
+.card:hover [data-component-part="card-icon"],
+.card:hover svg {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 10px rgba(0, 255, 65, 0.9)) !important;
+}
+
+/* Card content */
+.card p,
+.card-content,
+[data-component-part="card-content"] {
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #aaaaaa !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+/* ==========================================================================
+   CALLOUTS & ADMONITIONS (.callout, <Tip>, <Info>, <Warning>, <Danger>)
+   ========================================================================== */
+
+.callout {
+  border-radius: 2px !important;
+  backdrop-filter: blur(8px) !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  padding: 14px 18px !important;
+  margin: 1.5rem 0 !important;
+}
+
+/* Tip / Note / Info / Check */
+.callout[data-callout-type="tip"],
+.callout[data-callout-type="note"],
+.callout[data-callout-type="info"],
+.callout[data-callout-type="check"] {
+  background-color: rgba(0, 255, 65, 0.04) !important;
+  border: 1px solid rgba(0, 255, 65, 0.4) !important;
+  box-shadow: 0 0 14px rgba(0, 255, 65, 0.12) !important;
+}
+
+.callout[data-callout-type="tip"] [data-component-part="callout-icon"],
+.callout[data-callout-type="note"] [data-component-part="callout-icon"],
+.callout[data-callout-type="info"] [data-component-part="callout-icon"],
+.callout[data-callout-type="check"] [data-component-part="callout-icon"] {
+  color: #00ff41 !important;
+  filter: drop-shadow(0 0 6px rgba(0, 255, 65, 0.7)) !important;
+}
+
+/* Warning */
+.callout[data-callout-type="warning"] {
+  background-color: rgba(255, 170, 0, 0.04) !important;
+  border: 1px solid rgba(255, 170, 0, 0.45) !important;
+  box-shadow: 0 0 14px rgba(255, 170, 0, 0.12) !important;
+}
+
+.callout[data-callout-type="warning"] [data-component-part="callout-icon"] {
+  color: #ffaa00 !important;
+  filter: drop-shadow(0 0 6px rgba(255, 170, 0, 0.7)) !important;
+}
+
+/* Danger */
+.callout[data-callout-type="danger"] {
+  background-color: rgba(255, 0, 102, 0.04) !important;
+  border: 1px solid rgba(255, 0, 102, 0.5) !important;
+  box-shadow: 0 0 14px rgba(255, 0, 102, 0.15) !important;
+}
+
+.callout[data-callout-type="danger"] [data-component-part="callout-icon"] {
+  color: #ff0066 !important;
+  filter: drop-shadow(0 0 6px rgba(255, 0, 102, 0.7)) !important;
+}
+
+[data-component-part="callout-content"] {
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #cccccc !important;
+  font-size: 13.5px !important;
+  line-height: 1.6 !important;
+}
+
+/* ==========================================================================
+   STEPS COMPONENT (.steps, .step)
+   ========================================================================== */
+
+.steps,
+[data-component-part="steps"] {
+  border-left-color: rgba(0, 255, 65, 0.3) !important;
+}
+
+.step [data-component-part="step-number"],
+.step [data-component-part="step-bullet"],
+.step > div:first-child span {
+  background-color: #000000 !important;
+  border: 1px solid #00ff41 !important;
+  color: #00ff41 !important;
+  border-radius: 2px !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  font-weight: 900 !important;
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.3) !important;
+}
+
+.step h3,
+.step [data-component-part="step-title"] {
+  font-family: 'Courier New', Courier, monospace !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+  color: #ffffff !important;
+  font-size: 15px !important;
+}
+
+/* ==========================================================================
+   CODEBLOCKS & SNIPPETS (.code-block, pre, code)
+   ========================================================================== */
+
+.code-block,
+[data-component-part="code-block-root"],
+div[data-component-part="code-block"] {
+  background-color: #050505 !important;
+  border: 1px solid rgba(0, 255, 65, 0.25) !important;
+  border-radius: 2px !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0, 255, 65, 0.02) !important;
+  margin: 1.5rem 0 !important;
+  overflow: hidden !important;
+}
+
+[data-component-part="code-block-header"] {
+  background-color: #0a0a0a !important;
+  border-bottom: 1px solid rgba(0, 255, 65, 0.2) !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #00ccff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  font-size: 11px !important;
+  padding: 8px 14px !important;
+}
+
+pre {
+  background-color: #050505 !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+  padding: 14px !important;
+}
+
+pre code {
+  font-family: 'Courier New', Courier, monospace !important;
+}
+
+/* Codeblock copy button */
+[data-component-part="code-block-root"] button,
+.code-block button {
+  background-color: rgba(10, 10, 10, 0.85) !important;
+  border: 1px solid rgba(0, 255, 65, 0.3) !important;
+  border-radius: 2px !important;
+  color: #aaaaaa !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  font-size: 11px !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  transition: all 0.15s ease !important;
+}
+
+[data-component-part="code-block-root"] button:hover,
+.code-block button:hover {
+  border-color: #00ff41 !important;
+  color: #00ff41 !important;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.4) !important;
+}
+
+/* ==========================================================================
+   TABS COMPONENT
+   ========================================================================== */
+
+[data-component-part="tabs-list"] {
+  border-bottom: 1px solid rgba(0, 255, 65, 0.2) !important;
+}
+
+[data-component-part="tab-button"] {
+  font-family: 'Courier New', Courier, monospace !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+  font-size: 12px !important;
+  color: #888888 !important;
+  border-radius: 2px 2px 0 0 !important;
+  transition: all 0.15s ease !important;
+}
+
+[data-component-part="tab-button"]:hover {
+  color: #ffffff !important;
+}
+
+[data-component-part="tab-button"][data-active="true"] {
+  color: #00ff41 !important;
+  border-bottom: 2px solid #00ff41 !important;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.6) !important;
+}
+
+/* ==========================================================================
+   ACCORDIONS
+   ========================================================================== */
+
+.accordion,
+[data-component-name="accordion"] {
+  background-color: rgba(10, 10, 10, 0.8) !important;
+  border: 1px solid rgba(0, 255, 65, 0.25) !important;
+  border-radius: 2px !important;
+  font-family: 'Courier New', Courier, monospace !important;
+}
+
+.accordion:hover {
+  border-color: rgba(0, 255, 65, 0.4) !important;
+}
+
+/* ==========================================================================
+   PAGINATION (Prev / Next Buttons)
+   ========================================================================== */
+
+#pagination a {
+  background-color: rgba(10, 10, 10, 0.85) !important;
+  border: 1px solid rgba(0, 255, 65, 0.25) !important;
+  border-radius: 2px !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  transition: all 0.2s ease !important;
+}
+
+#pagination a:hover {
+  border-color: #00ff41 !important;
+  box-shadow: 0 0 16px rgba(0, 255, 65, 0.35) !important;
+  transform: translateY(-2px);
+}
+
+#pagination span {
+  font-family: 'Courier New', Courier, monospace !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+#footer {
+  border-top: 1px solid rgba(0, 255, 65, 0.15) !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #666666 !important;
+}
+
+#footer a {
+  color: #888888 !important;
+  transition: all 0.15s ease !important;
+}
+
+#footer a:hover {
+  color: #00ff41 !important;
+  filter: drop-shadow(0 0 6px #00ff41) !important;
+}
+
+/* ==========================================================================
+   TABLES & DATA
+   ========================================================================== */
+
+#content table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  border: 1px solid rgba(0, 255, 65, 0.2) !important;
+  background-color: rgba(10, 10, 10, 0.6) !important;
+  border-radius: 2px !important;
+  margin: 1.5rem 0 !important;
+}
+
+#content th {
+  background-color: #101010 !important;
+  border-bottom: 1px solid #00ff41 !important;
+  text-transform: uppercase !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #00ff41 !important;
+  letter-spacing: 1.5px !important;
+  font-weight: 900 !important;
+  padding: 10px 14px !important;
+}
+
+#content td {
+  border-bottom: 1px solid rgba(0, 255, 65, 0.1) !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #cccccc !important;
+  padding: 10px 14px !important;
+}
+
+#content tr:hover td {
+  background-color: rgba(0, 255, 65, 0.04) !important;
+}
+
+/* ==========================================================================
+   EYEBROWS & BREADCRUMBS
+   ========================================================================== */
+
+nav[aria-label="Breadcrumb"],
+[data-component-part="eyebrow"] {
+  font-family: 'Courier New', Courier, monospace !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+  font-size: 11px !important;
+  color: #00ccff !important;
+}
+
+/* Consumer guides: screenshots, diagrams and keyboard navigation. */
+#content .frame,
+#content [data-component-name="mermaid-container"] {
+  background: var(--surface) !important;
+  border: 1px solid var(--border-dim) !important;
+  border-radius: 2px !important;
+}
+
+#content .frame img {
+  border-radius: 0 !important;
+}
+
+#content .frame > div {
+  border-radius: 2px !important;
+}
+
+#content .frame p {
+  color: var(--text-dim) !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
+#content .mermaid text,
+#content .mermaid .nodeLabel {
+  font-family: var(--font-mono) !important;
+}
+
+#content .mermaid .nodeLabel p {
+  color: var(--text) !important;
+}
+
+#content [data-component-part="code-block-root"] {
+  background: #050505 !important;
+  border-radius: 2px !important;
+}
+
+#content [data-component-name="mermaid-controls-wrapper"] button {
+  background: var(--surface-alt) !important;
+  color: var(--primary) !important;
+  border-radius: 2px !important;
+}
+
+#content .mermaid .flowchart-link {
+  stroke: var(--primary) !important;
+}
+
+#content .mermaid marker path {
+  fill: var(--primary) !important;
+  stroke: var(--primary) !important;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex="0"]:focus-visible {
+  outline: 2px solid var(--primary) !important;
+  outline-offset: 3px !important;
+}
+
+@media (max-width: 640px) {
+  #content th,
+  #content td {
+    padding: 8px 10px !important;
+    overflow-wrap: anywhere;
+  }
+
+  #content code {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  #pagination a:hover {
+    transform: none;
+  }
+}
+
+
+/* Desktop header: section navigation below the main controls. */
+@media (min-width: 1024px) {
+  :root {
+    --mintlify-slot-header-height: 109px;
+  }
+
+  #navbar > .max-w-8xl {
+    min-height: 108px;
+  }
+
+  #navbar .relative:has(.nav-tabs):not(.max-w-8xl) {
+    position: static;
+  }
+
+  #navbar .nav-tabs {
+    position: absolute;
+    top: 64px;
+    left: 48px;
+    right: 48px;
+    height: 44px;
+    gap: 8px;
+    border-top: 1px solid var(--border-dim);
+  }
+
+  #navbar .nav-tabs-item {
+    height: 44px;
+    padding: 0 18px;
+    color: var(--text-dim) !important;
+    font-size: 13px !important;
+    letter-spacing: 1.5px !important;
+    text-decoration: none;
+  }
+
+  #navbar .nav-tabs-item:hover {
+    background: rgba(0, 255, 65, 0.04);
+    color: var(--text) !important;
+  }
+
+  #navbar .nav-tabs-item[data-active="true"] {
+    color: var(--primary) !important;
+    background: rgba(0, 255, 65, 0.07);
+  }
+
+  #navbar .nav-tabs-item > div {
+    display: block;
+    height: 2px;
+  }
+
+  #navbar .navbar-link:has(a[href="https://rawchunks.space"]) {
+    display: none;
+  }
+
+  #navbar .navbar-link a[href^="https://github.com/"] > span {
+    display: none;
+  }
+
+  #navbar .navbar-link a[href^="https://github.com/"]::after {
+    content: "GITHUB";
+  }
+
+  #navbar #topbar-cta-button {
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    transform: none !important;
+  }
+
+  #navbar #topbar-cta-button > a {
+    height: 34px;
+    padding: 0 14px !important;
+    border: 1px solid var(--primary) !important;
+    border-radius: 2px !important;
+    color: var(--primary) !important;
+    background: var(--surface) !important;
+    box-shadow: none !important;
+  }
+
+  #navbar #topbar-cta-button > a:hover {
+    background: rgba(0, 255, 65, 0.1) !important;
+  }
+
+  #navbar #search-bar-entry-mobile {
+    width: auto;
+    min-width: 112px;
+    height: 34px;
+    padding: 0 12px;
+    gap: 9px;
+    border: 1px solid var(--border-dim);
+    border-radius: 2px;
+    background: var(--surface);
+    color: var(--text-dim);
+    font: 700 12px var(--font-mono);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  #navbar #search-bar-entry-mobile > span {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    clip-path: none;
+    white-space: nowrap;
+    order: 1;
+  }
+
+  #navbar #search-bar-entry-mobile > svg {
+    background-color: var(--primary) !important;
+  }
+
+  #navbar #search-bar-entry-mobile:hover {
+    border-color: var(--primary);
+    color: var(--text);
+  }
+
+  #content-side-layout {
+    top: 149px;
+    height: calc(100dvh - 149px);
+  }
+
+  #content [id], #header {
+    scroll-margin-top: 124px;
+  }
+}
