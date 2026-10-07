@@ -1,0 +1,13 @@
+Use the polling function from [job handling](/dev/guides/jobs#generation-polling).
+
+```javascript
+// Save job before polling so your product can resume after a reload.
+const path = `/api/editing/status/${encodeURIComponent(job.taskId)}?` +
+  new URLSearchParams({
+    songId: job.songId, userAddress, task: job.task,
+    ...(job.stemId ? { stemId: job.stemId } : {}),
+  });
+const result = await pollJob(() => api.get(path));
+```
+
+Keep the returned `taskId`, `songId`, `task`, and optional `stemId`. A polling timeout stops your client from waiting; it does not cancel the job.

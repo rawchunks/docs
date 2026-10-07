@@ -1,0 +1,44 @@
+---
+title: "Build with Rawchunks"
+description: "Generate and edit music, reuse voices, and manage licensed music in your product."
+sidebarTitle: "Overview and capabilities"
+---
+
+Rawchunks exposes the music operations used by its browser workstation. Your product can generate a track, replace a section, add an instrument, extend or restyle audio, separate stems, and manage the resulting takes.
+
+The same project can keep a voice reference, edit history, artwork, and selling terms. Minting and license purchases use chain contracts with the user's wallet.
+
+## Capabilities
+
+| Your product needs to… | Integration |
+| --- | --- |
+| Create vocal or instrumental music | [Generate music](/dev/guides/generate/music) |
+| Supply lyrics, tempo, duration and key | [Lyrics and controls](/dev/guides/generate/lyrics) |
+| Reuse a vocal recording or a prepared voice | [Saved voices](/dev/guides/generate/voices) |
+| Change audio without regenerating the whole project | [Editing operations](/dev/guides/edit/overview) |
+| Compare candidates and persist the chosen result | [Takes and activation](/dev/guides/edit/takes) |
+| Combine sections or add your own rendered instruments | [Render and merge](/dev/guides/edit/merge) |
+| Manage projects and albums | [Library integration](/dev/guides/library) |
+| Publish an original or a licensed variation | [Minting](/dev/guides/publish/mint) and [licenses](/dev/guides/publish/licenses) |
+
+## Project workflow
+
+```mermaid
+flowchart TB
+  A["Your product"] --> B["Generate or edit"]
+  B --> C["Job status"]
+  C --> D["Audio and candidate takes"]
+  D --> E["Select or merge"]
+  E --> F["Saved project"]
+  F --> G["Optional wallet mint"]
+  classDef api fill:#121212,stroke:#00ff41,color:#ffffff;
+  classDef client fill:#121212,stroke:#00ccff,color:#ffffff;
+  class A,E client;
+  class B,C,D,F,G api;
+```
+
+You can use the music APIs without embedding the Rawchunks UI. Your player and editor decide how to preview, arrange and render the returned audio.
+
+Rawchunks combines generation and editing with saved projects, reusable voices and onchain licensing. Use the operations your product needs.
+
+[Set up requests](/dev/guides/connect), then [generate your first track](/dev/guides/generate/music). The [endpoint reference](/dev/endpoints/overview) lists the public contracts.

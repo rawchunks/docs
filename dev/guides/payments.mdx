@@ -1,0 +1,56 @@
+---
+title: "Use a Rawchunks session"
+sidebarTitle: "Sessions and payments"
+description: "Create a session in Rawchunks and use its key for paid API requests."
+---
+
+Open [Rawchunks](https://app.rawchunks.space), connect your account and open **SESSION**. Choose a spending cap and duration, then select **START SESSION**. The [session walkthrough](/app/payments#start-a-session) shows the controls and approval steps.
+
+## Get the session token
+
+The current app's **Copy Key ID** button copies the identifier. To get the complete token after starting your session:
+
+1. Open your browser's developer tools and select **Network**.
+2. Open **MY-PAGE** in Rawchunks. Select the request to `api.rawchunks.space/api/songs?creator=…`.
+3. In **Request Headers**, copy the value after `Bearer ` in `Authorization`. Keep that full value as `SESSION_TOKEN`.
+
+Treat the token as a secret. Do not share it or commit it to your project.
+
+## Call a paid endpoint
+
+Use the token in your API requests:
+
+```bash
+export RAWCHUNKS_API='https://api.rawchunks.space'
+export SESSION_TOKEN='your full Rawchunks session token'
+export USER_ADDRESS='the address used for this session'
+export NETWORK='eip155:8453'
+
+curl --fail-with-body "$RAWCHUNKS_API/api/generation/generate" \
+  -H "Authorization: Bearer $SESSION_TOKEN" \
+  -H "x-session-user-address: $USER_ADDRESS" \
+  -H "x-network-id: $NETWORK" \
+  -H "Content-Type: application/json" \
+  --data '{"prompt":"Instrumental acid house with rolling bass","instrumental":true,"modelVariant":"turbo","audioDuration":60}'
+```
+
+This call submits paid generation. Replace `NETWORK` with the network selected for your session. Keep the token exactly as issued. The **SESSION KEY ID** is an identifier; it is not the bearer token.
+
+The session cap authorizes spending. It is not a subscription or an upfront purchase. The key belongs to the account and network used to create it.
+
+## Prices
+
+| Request | USDC per request |
+| --- | ---: |
+| Generate with `modelVariant: "turbo"` | 0.05 |
+| Generate with `modelVariant: "sft"` | 0.10 |
+| Rework, layer, accompany, extend, restyle, extract or separate | 0.02 |
+| Save a voice from a song or upload a voice | 0.05 |
+
+Validate inputs before submission. Failed requests can consume budget. Song selling prices, license purchases and wallet transaction fees are separate.
+
+## Track or end a session
+
+Paid responses include `x-session-budget-limit`, `x-session-budget-used` and `x-session-budget-remaining`. These values use USDC atomic units: `1000000` equals 1 USDC.
+
+Reopen **SESSION** in Rawchunks to refresh its status or select **END SESSION** to revoke the key. Start a new session when the current one expires or its available budget cannot cover the next request.

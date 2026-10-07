@@ -1,0 +1,117 @@
+---
+title: "Follow jobs and handle errors"
+description: "Poll returned job IDs, consume NDJSON and recover without duplicate submissions."
+---
+
+A submission response means the job was accepted. Read its status until the body says `ready` or `error`. HTTP 200 alone does not mean audio or stems are complete.
+
+## Generation polling
+
+Use `api` from [request setup](/dev/guides/connect). Define the polling function once, then pass a status request for each accepted job:
+
+```javascript
+async function pollJob(read, { intervalMs = 2000, timeoutMs = 600000,
+  onProgress = () => {} } = {}) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const state = await read();
+    onProgress(state);
+    if (state.status === 'error') throw new Error(state.error || 'Job failed');
+    if (state.status === 'ready') return state;
+    if (!['pending', 'processing'].includes(state.status)) {
+      throw new Error(`Unexpected job state: ${state.status}`);
+    }
+    await new Promise(resolve => setTimeout(resolve, intervalMs));
+  }
+  throw new Error('Polling timed out. Resume with the saved job IDs.');
+}
+
+const statusPath = `/api/generation/status/${encodeURIComponent(job.taskId)}?` +
+  new URLSearchParams({ songId: job.songId });
+const result = await pollJob(() => api.get(statusPath), {
+  intervalMs: 2000,
+  timeoutMs: 600000,
+  onProgress: state => updateProgress(state.progress ?? 0),
+});
+const audioUrl = result.primaryUrl;
+```
+
+`updateProgress` is your UI callback. The intervals above are client choices, not a completion-time guarantee. Save `taskId` and `songId` as soon as submission returns. Generation status needs the same song/task pair.
+
+## Edit polling
+
+```javascript
+const editPath = `/api/editing/status/${encodeURIComponent(job.taskId)}?` +
+  new URLSearchParams({
+    songId: job.songId, userAddress, task: job.task,
+    ...(job.stemId ? { stemId: job.stemId } : {}),
+  });
+const result = await pollJob(() => api.get(editPath));
+```
+
+The returned task kind matters: Separate uses `extract`, Layer uses `lego`, and Restyle uses `cover`. Candidate edits return `take` and `audioUrl`. Separation returns `stems`.
+
+## Generation and voice streams
+
+These two streams use newline-delimited JSON, not SSE. Native `EventSource` cannot parse them or attach the needed account headers.
+
+```javascript
+async function* readNDJSON(response) {
+  if (!response.ok) throw new Error(`Stream HTTP ${response.status}`);
+  if (!response.body) throw new Error('Stream body unavailable');
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      buffer += done ? decoder.decode() : decoder.decode(value, { stream: true });
+      let newline;
+      while ((newline = buffer.indexOf('\n')) >= 0) {
+        const line = buffer.slice(0, newline).trim();
+        buffer = buffer.slice(newline + 1);
+        if (line) yield JSON.parse(line);
+      }
+      if (done) {
+        if (buffer.trim()) yield JSON.parse(buffer);
+        return;
+      }
+    }
+  } finally {
+    await reader.cancel().catch(() => {});
+    reader.releaseLock();
+  }
+}
+
+const url = 'https://api.rawchunks.space/api/generation/events/' +
+  encodeURIComponent(job.taskId) + '?' +
+  new URLSearchParams({ songId: job.songId });
+const controller = new AbortController();
+const response = await fetch(url, { signal: controller.signal });
+for await (const state of readNDJSON(response)) {
+  console.log(state.status, state.progress);
+  if (state.status === 'error') throw new Error(state.error || 'Generation failed');
+  if (state.status === 'ready') { useAudio(state.primaryUrl); break; }
+}
+```
+
+`useAudio` is your player callback. For a voice, use `/api/voices/{id}/events` with `x-session-user-address`; each line contains `{ voice, status, error? }`.
+
+Reconnect a dropped read stream with the same IDs, or resume status polling. There are no public job cancellation or webhook registration routes. Aborting a fetch stops your client from waiting.
+
+## Error handling
+
+| Status | Your next step |
+| --- | --- |
+| `400` | Correct fields, timeline bounds or file format. |
+| `401` | Replace an invalid or expired session token. |
+| `402` | Start a new session with sufficient budget. Inspect the JSON body. |
+| `403` | Check the selected account and resource owner. |
+| `404` | Check the returned resource IDs. |
+| `409` | Reload project state, use the correct job binding, or open an editable version. |
+| `413` | Reduce the upload below 50 MiB. |
+| `502`, `503`, `504` | Show the failure and preserve any returned job identity. Back off on read retries. |
+
+A job can also report `status: "error"` inside a successful HTTP response. Handle both HTTP errors and job errors.
+
+The public submission routes do not expose an idempotency-key contract. Do not automatically resubmit after a timeout: you may create another charged job. Disable duplicate submit buttons, keep local operation state, and reconcile any known job IDs first. A failed generation admission can leave a song draft without audio; the owner can review or delete it through the library.
