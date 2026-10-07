@@ -1,0 +1,45 @@
+---
+title: "Publish and mint a track"
+sidebarTitle: "Publish and mint"
+description: "Set selling terms, make a track public, and understand what minting records."
+---
+
+import MintNotice from "/snippets/app/mint-notice.mdx";
+
+Publishing lists a track in **MARKET**. If that version isn't minted yet, the app mints it before making the listing public.
+
+## Choose selling terms
+
+Before generating an original, open Studio's **FINANCIALS**:
+
+| Field | What you set | Default value |
+| --- | --- | ---: |
+| **STREAM ($/MIN)** | The displayed listening rate | $0.01/min |
+| **LICENSE ($)** | The price of a remix license | $5 |
+| **LICENSES** | The number of licenses offered | 20 |
+
+<Frame caption="Studio's Financials panel, showing the starting selling terms.">
+  <img src="/images/app/studio-financials.jpg" alt="Financials with stream price 0.01, license price 5 and license allocation 20." />
+</Frame>
+
+These are song selling terms, separate from [service fees](/app/payments). The current player does not charge listeners by the minute, so the displayed stream rate is not a promise of streaming earnings.
+
+## Make a track public
+
+1. Choose the song version you intend to publish and review its terms.
+2. Connect the creator account and choose the appropriate network.
+3. Select **MAKE PUBLIC** on the Studio variation, or enable **Public song** in **MY-PAGE → MY SONGS**.
+4. Review and complete any mint or activation prompts. Wait for confirmation.
+5. The public listing appears in Market.
+
+<MintNotice />
+
+An original's mint records its creator, song metadata, license allocation, license price, and stream rate. A remix's mint links it to the original on the same network. Minting records this relationship; it does not check that every lyric, recording, or other input is cleared for your intended use.
+
+## Keep working after minting
+
+**EDIT** opens a new editable version based on a minted song. Publish or download that version when it's ready; it has its own mint.
+
+Use **MAKE PRIVATE** or clear **Public song** to remove a Market listing. The onchain record and public metadata remain.
+
+To understand license sales and remix permissions, see [licenses](/app/licenses).
