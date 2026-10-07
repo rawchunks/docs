@@ -1,0 +1,35 @@
+---
+title: "Add artwork"
+description: "Upload or generate cover art and attach it to a song."
+---
+
+import ClientSetup from '/snippets/dev/client-setup.mdx';
+
+<ClientSetup />
+
+## Generate artwork
+
+```javascript
+const { imageUrl } = await api.post('/api/generation/cover', {
+  prompt: 'A sparse green waveform on a black background',
+  title: 'Night circuit',
+  style: 'Minimal, no text',
+});
+await api.patch(`/api/songs/${encodeURIComponent(songId)}`, { image: imageUrl });
+```
+
+You can also pass the returned URL as `image` when generating a new song.
+
+## Upload an image
+
+```javascript
+const form = new FormData();
+form.append('file', imageFile); // File from your browser file picker
+const { imageUrl } = await api.request('/api/generation/cover', {
+  method: 'POST', form,
+});
+```
+
+Send one nonempty `image/*` file, at most 50 MiB. Do not set a multipart Content-Type manually. If you use albums, save the URL as the album's `cover` field through [album update](/dev/endpoints/albums/update).
+
+Artwork generation is separate from [audio Restyle](/dev/guides/edit/extend-restyle).

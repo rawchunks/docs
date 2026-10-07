@@ -1,0 +1,71 @@
+---
+title: "Save and reuse a voice"
+description: "Upload vocals, follow preparation and choose reference or trained generation."
+---
+
+import ClientSetup from '/snippets/dev/client-setup.mdx';
+
+<ClientSetup />
+
+Use recordings your user owns or has permission to use. Saving a voice and generating with it are separate paid requests.
+
+## Upload vocals
+
+In Node.js, read the recording into a `Blob`. In the browser, use the selected `File` directly.
+
+```javascript
+import { readFile } from 'node:fs/promises';
+
+const form = new FormData();
+form.append('creator', userAddress);
+form.append('name', 'Lead voice');
+form.append('file', new Blob([await readFile('voice.wav')], {
+  type: 'audio/wav',
+}), 'voice.wav');
+const saved = await api.request('/api/voices/upload', {
+  method: 'POST', form,
+});
+const voiceId = saved.voice.id;
+```
+
+Append text fields before the file. Upload one WAV, MP3, FLAC, OGG, AAC, M4A/MP4 or WebM file, at most 50 MiB. For trained preparation, use mono or stereo audio up to 240 seconds. A full-mix upload is not automatically isolated into vocals.
+
+## Save vocals from an owned song
+
+```javascript
+const saved = await api.post('/api/voices', {
+  songId, creator: userAddress, name: 'Lead voice',
+});
+```
+
+The song must contain audio. This flow first extracts its vocals. Preserve `saved.voice.id` and read `/api/voices/{id}` or its [NDJSON events](/dev/endpoints/voices/events).
+
+## Choose readiness for your mode
+
+```javascript
+const { voice } = await api.get(`/api/voices/${encodeURIComponent(voiceId)}`);
+const mode = 'turbo';
+const canUseReference = Boolean(voice.sample_url);
+const canUseTrained = voice.availability?.[mode]?.status === 'ready';
+```
+
+Reference generation uses the saved recording. Trained generation uses the prepared voice for the selected model. A recording can be usable as a reference before trained preparation finishes. Status can be `saved`, `extracting`, `queued`, `training`, `ready`, or `error`.
+
+## Generate with the saved voice
+
+```javascript
+if (!canUseTrained) throw new Error('This voice is not ready for Fast generation');
+const job = await api.post('/api/generation/generate', {
+  creatorAddress: userAddress,
+  prompt: 'Electronic pop with a clear lead vocal',
+  lyrics: '[Chorus]\nLeave the window open\nLet the morning in',
+  instrumental: false, vocalLanguage: 'en',
+  audioDuration: 60, modelVariant: mode,
+  voiceId, voiceMode: 'trained', voiceCoverStrength: 0.7,
+  licenses: 0, license_price: 0, stream_price: 0,
+});
+```
+
+For reference use, check `canUseReference` and set `voiceMode: "reference"`. To use an audio URL without saving a voice, send `voiceReferenceUrl` instead of `voiceId`. Saved ID and direct URL are mutually exclusive.
+
+`voiceCoverStrength` ranges from 0 to 1. It controls conditioning, not an exact voice-match guarantee. Preparation runs through the saved-voice flow; there is no public training-start, LoRA upload, rank/epoch control or retraining endpoint.

@@ -1,0 +1,59 @@
+---
+title: "Lyrics and music controls"
+description: "Prepare text, preserve section tags and pass the correct generation fields."
+---
+
+import ClientSetup from '/snippets/dev/client-setup.mdx';
+
+<ClientSetup />
+
+Lyrics are one string. Keep section labels and vocal directions in that text. Catalog `tags` are a separate string array.
+
+```javascript
+const job = await api.post('/api/generation/generate', {
+  creatorAddress: userAddress,
+  prompt: 'Slow electronic ballad with intimate vocals and soft piano',
+  instrumental: false,
+  vocalLanguage: 'en',
+  audioDuration: 90,
+  bpm: 80,
+  lyrics: '[Verse]\nStreetlights fade before the sun\nI keep walking, one by one\n\n[Chorus]\nLeave the window open\nLet the morning in',
+  modelVariant: 'sft',
+  licenses: 0, license_price: 0, stream_price: 0,
+});
+```
+
+Use a `keyScale` and `vocalLanguage` ID returned by `/api/options`. The [lyrics canvas reference](/app/lyrics) describes the app's section and direction tags. They guide generation; they are not a timed arrangement or a strict parser contract.
+
+## Format existing text
+
+```javascript
+const formatted = await api.post('/api/generation/format', {
+  prompt: 'slow electronic ballad, soft piano, intimate vocal',
+  lyrics: '[Verse]\nStreetlights fade before the sun',
+});
+// Review these strings before submitting them.
+const prompt = formatted.formatted_caption;
+const lyrics = formatted.formatted_lyrics;
+```
+
+## Generate suggested text and settings
+
+```javascript
+const suggestion = await api.post('/api/generation/sample', {
+  query: 'slow electronic ballad',
+  instrumental: false,
+  vocalLanguage: 'en',
+});
+const proposed = {
+  prompt: suggestion.caption,
+  lyrics: suggestion.lyrics,
+  ...(suggestion.bpm == null ? {} : { bpm: suggestion.bpm }),
+  ...(suggestion.key_scale ? { keyScale: suggestion.key_scale } : {}),
+  ...(suggestion.duration == null ? {} : { audioDuration: suggestion.duration }),
+};
+```
+
+The sample route returns text and settings, not audio. Let your user review them, validate against the generation bounds, then submit `proposed` with the account, mode and selling terms.
+
+Set `instrumental: true` to request music without vocals. Blank lyrics with vocal generation use automatic sampling; they do not guarantee English lyrics. Provide lyrics and the language when your product needs a particular sung text.

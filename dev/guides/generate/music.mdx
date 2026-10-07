@@ -1,0 +1,50 @@
+---
+title: "Generate and retrieve music"
+description: "Submit a track, wait for ready audio and save the song ID."
+---
+
+import ClientSetup from '/snippets/dev/client-setup.mdx';
+
+<ClientSetup />
+
+## Submit from your product
+
+This submits one paid 60-second instrumental in Fast mode. Set your funded session values in the [request setup](/dev/guides/connect). See [prices](/dev/guides/payments) for the fee.
+
+```javascript
+const job = await api.post('/api/generation/generate', {
+  creatorAddress: userAddress,
+  title: 'Night circuit',
+  prompt: 'Instrumental acid house with a dry kick and rolling bass',
+  instrumental: true,
+  modelVariant: 'turbo',
+  audioDuration: 60,
+  bpm: 124,
+  licenses: 20,
+  license_price: 5,
+  stream_price: 0.01,
+});
+```
+
+Persist `job.songId` and `job.taskId`, then use the [polling function](/dev/guides/jobs#generation-polling):
+
+```javascript
+const result = await pollJob(() => api.get(
+  `/api/generation/status/${encodeURIComponent(job.taskId)}?` +
+  new URLSearchParams({ songId: job.songId }),
+));
+const audioUrl = result.primaryUrl;
+const project = await api.get(`/api/songs/${encodeURIComponent(job.songId)}`);
+```
+
+Play `audioUrl` after `ready`. The project contains the initial active master take.
+
+## Choose controls
+
+Use [Music options](/dev/endpoints/system/options) to populate the modes, languages and keys your product offers. Fast uses `turbo`; Studio Master uses `sft`. Duration is 5 to 300 seconds and BPM is 30 to 300. A seed is an optional nonnegative safe integer.
+
+Generation options are requests to the model. Listen to the output before treating tempo, duration, lyrics or voice resemblance as accepted results.
+
+Send selling terms explicitly when your UI sets them. Backend omitted-field values are `licenses: 0`, `license_price: 25`, and `stream_price: 0.02`; the browser Studio has its own defaults. These fields do not pay for generation or mint a song.
+
+The complete field list is on [Generate music](/dev/endpoints/generation/generate). Continue with [lyrics](/dev/guides/generate/lyrics), [voices](/dev/guides/generate/voices), or [editing](/dev/guides/edit/overview).
