@@ -1,0 +1,30 @@
+---
+title: "Rework a section"
+description: "Replace a timeline interval and preview the candidate before keeping it."
+---
+
+import ClientSetup from '/snippets/dev/client-setup.mdx';
+
+<ClientSetup />
+
+Choose a positive interval in seconds that fits the source. This example changes seconds 15 through 30:
+
+```javascript
+const job = await api.post('/api/editing/apply', {
+  songId, userAddress, task: 'repaint',
+  repaintingStart: 15, repaintingEnd: 30,
+  prompt: 'Sparse drums and a warmer bass',
+  repaintMode: 'balanced', repaintStrength: 0.5,
+  modelQuality: 'sft',
+});
+```
+
+`conservative`, `balanced` and `aggressive` describe repaint intent. `repaintStrength` ranges from 0 to 1. You can request transition length through `repaintWavCrossfadeSec` and latent transition frames through `repaintLatentCrossfadeFrames`. Listen to the boundary; these are model controls, not guarantees of a precise audible crossfade.
+
+For vocal changes, include `lyrics`. `/apply` also accepts seed, BPM, key and language. The shortcut `/repaint` uses `start` and `end` instead of `repaintingStart` and `repaintingEnd`.
+
+import EditPoll from '/snippets/dev/edit-poll.mdx';
+
+<EditPoll />
+
+The ready result is an inactive candidate. Preview `result.audioUrl`, then [activate or merge its take](/dev/guides/edit/takes). The unchanged source remains available until you keep a result.

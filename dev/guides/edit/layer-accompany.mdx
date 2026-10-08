@@ -1,0 +1,43 @@
+---
+title: "Layer and accompany"
+description: "Generate an instrument or accompaniment against the source audio."
+---
+
+import ClientSetup from '/snippets/dev/client-setup.mdx';
+
+<ClientSetup />
+
+## Add an instrument
+
+```javascript
+const job = await api.post('/api/editing/apply', {
+  songId, userAddress, task: 'lego',
+  prompt: 'A syncopated electric bass line',
+  trackName: 'bass', trackClasses: ['bass'],
+  globalCaption: 'Instrumental acid house with dry drums',
+  modelQuality: 'base',
+});
+```
+
+Layer requires a nonempty `trackName` and Base mode. `prompt` describes the part; `globalCaption` describes the song. Use `trackClasses` for instrument groups.
+
+To layer against a mixed arrangement, render that context, [upload it](/dev/endpoints/editing/source) and set `srcAudioUrl`. A list of `legoContextTrackIds` does not replace audible source context. The `/layer` shortcut is available when you do not need seed, BPM, key or language controls.
+
+## Create accompaniment
+
+```javascript
+const job = await api.post('/api/editing/apply', {
+  songId, userAddress, task: 'complete',
+  prompt: 'Acoustic guitar and restrained drums behind the vocal',
+  trackClasses: ['guitar', 'drums'],
+  modelQuality: 'base',
+});
+```
+
+Use the vocal or instrument you want to accompany as `srcAudioUrl` or the target `stemId`. Accompany also requires Base mode.
+
+import EditPoll from '/snippets/dev/edit-poll.mdx';
+
+<EditPoll />
+
+A Layer candidate can become its own stem through [base activation](/dev/guides/edit/takes), leaving the master in place. To combine a Layer with Master permanently, render the original plus the candidate and use the [composition merge flow](/dev/guides/edit/merge).

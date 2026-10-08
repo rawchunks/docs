@@ -1,0 +1,46 @@
+---
+title: "Arrangement and history"
+description: "Persist mixer state and snapshots while rendering audio in your own client."
+---
+
+import ClientSetup from '/snippets/dev/client-setup.mdx';
+
+<ClientSetup />
+
+## Persist a track mixer
+
+```javascript
+await api.patch(`/api/editing/mixer/${encodeURIComponent(stemId)}`, {
+  volume: 0.8,
+  pan: -0.2,
+  is_muted: false,
+  is_solo: false,
+});
+```
+
+`volume` is linear gain: 1 is unity, 0 is silence. `pan` ranges from -1 to 1. Apply those settings in your player. This route does not bake a mix into the song URL.
+
+## Save a snapshot
+
+```javascript
+const saved = await api.post('/api/editing/commits', {
+  songId, userAddress,
+  message: 'Bass and drums balanced',
+  timelineSnapshot: {
+    tracks: yourTracks,
+    clips: yourClips,
+  },
+});
+```
+
+`yourTracks` and `yourClips` are your editor's serializable state. Omit `timelineSnapshot` to save the API's current stems and active-take information. Read `/api/editing/history/{songId}` for newest-first commits.
+
+A snapshot records state; it does not execute undo or restore your editor. To revisit a snapshot, your UI loads its supported fields and renders the arrangement. Use take activation to persist a saved audio selection.
+
+## Keys, drums, samples, live code and effects
+
+These controls belong to the browser workstation. There are no public endpoints for playing a key, submitting a Strudel pattern, sequencing drums or applying its effect rack.
+
+Your product can build those parts with its own audio tools. Render them to a valid WAV, [upload the source](/dev/endpoints/editing/source), then pass the returned `url` as `srcAudioUrl` to an edit. Store your editor state in your own system or a timeline snapshot.
+
+For a complete custom bounce, upload its WAV and PATCH the editable song's `url` and `duration`. That metadata update does not create a candidate take or synchronize every stem; keep your arrangement records consistent and save a snapshot. Use the [candidate merge flow](/dev/guides/edit/merge) when merging eligible API takes.

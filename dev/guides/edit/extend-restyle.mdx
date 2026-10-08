@@ -1,0 +1,42 @@
+---
+title: "Extend and restyle"
+description: "Continue a source or generate a different treatment of its audio."
+---
+
+import ClientSetup from '/snippets/dev/client-setup.mdx';
+
+<ClientSetup />
+
+## Extend past the ending
+
+```javascript
+const job = await api.post('/api/editing/extend', {
+  songId, userAddress,
+  audioDuration: 90,
+  prompt: 'Continue the arrangement with a quiet ending',
+  modelQuality: 'sft',
+});
+```
+
+For a 60-second source, `audioDuration: 90` requests a 90-second result. It is the total length, not 90 extra seconds. The target must exceed decoded source duration. You may supply new lyrics and a requested transition length.
+
+## Restyle source audio
+
+```javascript
+const job = await api.post('/api/editing/apply', {
+  songId, userAddress, task: 'cover',
+  prompt: 'Dusty hip-hop drums and muted piano',
+  coverStrength: 0.65, coverNoiseStrength: 0.2,
+  modelQuality: 'sft',
+});
+```
+
+`coverStrength` is required and ranges from 0 to 1. `coverNoiseStrength` is optional with the same range. They control the source treatment. For the shortcut, call `/api/editing/remix`; it does not forward seed, BPM, key or language.
+
+Restyle changes audio. [Creating a licensed remix draft](/dev/guides/publish/licenses) is a separate library and wallet workflow.
+
+import EditPoll from '/snippets/dev/edit-poll.mdx';
+
+<EditPoll />
+
+Preview the result, then [select or merge the take](/dev/guides/edit/takes).

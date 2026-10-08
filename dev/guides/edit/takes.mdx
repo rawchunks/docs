@@ -1,0 +1,44 @@
+---
+title: "Preview and keep takes"
+description: "Select a base, merge a recorded section or discard a candidate."
+---
+
+import ClientSetup from '/snippets/dev/client-setup.mdx';
+
+<ClientSetup />
+
+A ready edit normally has `result.take`. Keep the candidate ID and preview its audio before changing the saved project.
+
+## Select a take as the saved base
+
+```javascript
+const selected = await api.post('/api/editing/activate', {
+  songId, userAddress,
+  takeId: result.take.id,
+  action: 'base',
+});
+```
+
+For a master or existing stem, this selects its audio. For a Layer candidate, it creates a new unmuted stem. If you supply `stemId`, it must match the take's target.
+
+The browser app can mount an overlay locally without persisting it. A REST `base` activation changes the saved selection; use local UI state for temporary comparisons.
+
+## Merge the candidate's recorded region
+
+```javascript
+const merged = await api.post('/api/editing/activate', {
+  songId, userAddress,
+  takeId: result.take.id,
+  action: 'merge',
+});
+```
+
+Without `composition`, this uses the take's existing region and source offset. It needs a recorded region. Use [client-rendered merge](/dev/guides/edit/merge) for several candidates, shifted placements, or original-plus-layer mixing.
+
+## Discard an inactive candidate
+
+```javascript
+await api.delete(`/api/editing/takes/${encodeURIComponent(result.take.id)}`);
+```
+
+An active take cannot be discarded through this editor route. Reload `/api/songs/{songId}` or history after a selection or merge. Repeated status reads can report a candidate as `merged` or `discarded`; it may no longer be available for activation.

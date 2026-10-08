@@ -1,0 +1,59 @@
+---
+title: "Render and merge candidates"
+description: "Mix chosen sections in your client and persist the resulting master."
+---
+
+import ClientSetup from '/snippets/dev/client-setup.mdx';
+
+<ClientSetup />
+
+Use this flow for original-plus-layer mixing, shifted takes, a selected part of a candidate, or several mounted candidates. There is no REST `merge-all` renderer. Your client renders the audible choices; `/activate` keeps the uploaded region in Master.
+
+## Render a full timeline WAV
+
+Render the selected audio in your product's mixer, including source offsets, timeline shifts, gain and effects. Encode the result as a WAV `Blob` named `wav`; the source upload limit is 50 MiB. Rawchunks accepts that render through the upload step below.
+
+Load the latest master and candidates before rendering:
+
+```javascript
+const history = await api.get(`/api/editing/history/${encodeURIComponent(songId)}`);
+const project = await api.get(`/api/songs/${encodeURIComponent(songId)}`);
+const candidates = history.takes.filter(take => selectedTakeIds.includes(take.id));
+if (!candidates.length) throw new Error('Select pending candidates to merge');
+const region = { start: 15, end: 30 };
+const placements = candidates.map(take => ({ takeId: take.id, shift: 0 }));
+const original = true; // Include the current master beneath the candidates.
+```
+
+`selectedTakeIds` comes from your user's selection. Render against `project.song.url` and the selected pending master or Layer candidates. Existing stem-target candidates do not belong in a master composition merge. Set `original: false` for replacement and `true` for an added layer. Keep these values identical between the render and activation request.
+
+The uploaded buffer must cover the absolute timeline through `region.end`. A 15-second clip for a 15-to-30-second merge is not enough; its samples need their correct position in a full timeline render.
+
+## Upload and activate
+
+```javascript
+const form = new FormData();
+form.append('file', wav, 'composition.wav');
+const { url } = await api.request('/api/editing/source?' +
+  new URLSearchParams({ songId }), { method: 'POST', form });
+
+const merged = await api.post('/api/editing/activate', {
+  songId, userAddress,
+  takeId: candidates[0].id,
+  action: 'merge',
+  composition: {
+    takeIds: candidates.map(take => take.id),
+    placements, region, original,
+    commitId: history.commits[0]?.id ?? null,
+    srcAudioUrl: url,
+  },
+});
+```
+
+The candidate IDs must be distinct, still pending, and overlap the region after their shifts. Supply the latest `commitId` you rendered against. A 409 means the saved master or candidate state changed; reload and render again.
+
+Used candidate regions are consumed. Unused regions can remain pending. Reload the resulting project after success.
+
+## Merge all selected candidates
+
+Use the same flow with the union of your mounted candidates' timeline intervals. Render all audible choices into that region, include their shifts in `placements`, and list each candidate once. Ordinary instrument lanes are included only if your own renderer includes their audio; candidate merging itself operates on the selected pending takes.

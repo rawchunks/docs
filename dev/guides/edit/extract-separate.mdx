@@ -1,0 +1,45 @@
+---
+title: "Extract sections and separate stems"
+description: "Choose between slicing a recording and separating its instruments."
+---
+
+import ClientSetup from '/snippets/dev/client-setup.mdx';
+
+<ClientSetup />
+
+## Extract a time range
+
+```javascript
+const extracted = await api.post('/api/editing/extract', {
+  songId, start: 15, end: 30,
+});
+const take = extracted.take;
+```
+
+The response is ready immediately with an inactive take. `start` and `end` are seconds on the selected source. Pass `stemId` to slice a particular stem. This does not bounce your live arrangement or effects.
+
+The extracted file begins at its own time zero; its provenance records where it belongs on the song timeline. Use [candidate merge](/dev/guides/edit/merge) to place it correctly.
+
+## Separate instruments
+
+```javascript
+const job = await api.post('/api/editing/separate', {
+  songId, userAddress, stemType: 'all',
+});
+```
+
+Choose a stem ID from `/api/options`, such as `vocals`, `drums`, `bass`, `other` or `instrumental`. Even though submission returns HTTP 200, the body can say `pending` or `processing`.
+
+import EditPoll from '/snippets/dev/edit-poll.mdx';
+
+<EditPoll />
+
+On ready, use `result.stems`. Separation creates active takes for the returned tracks, with those stems initially muted. Reload the project. Your player can mute Master and unmute selected stems to audition them without doubling the same recording.
+
+```javascript
+await api.patch(`/api/editing/mixer/${encodeURIComponent(stem.id)}`, {
+  is_muted: false,
+});
+```
+
+`stem` is one returned stem selected by your user. Mixer persistence does not render a new audio file.
