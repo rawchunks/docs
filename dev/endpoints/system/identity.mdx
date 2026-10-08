@@ -1,0 +1,37 @@
+---
+title: "API status"
+description: "Read the API identity and timestamp."
+api: "GET https://api.rawchunks.space/"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+
+
+
+## Response (200)
+
+Success.
+
+<ResponseField name="status" type="string" />
+
+<ResponseField name="timestamp" type="string" />
+
+<ResponseField name="service" type="string" />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/"
+```
+
+</RequestExample>

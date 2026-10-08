@@ -1,0 +1,101 @@
+---
+title: "Endpoint reference"
+description: "Find the music and project REST operations and its exact request contract."
+---
+
+The reference documents canonical music and project REST paths under `https://api.rawchunks.space`. Each page defines request fields, response fields and a copyable cURL call. Use [request setup](/dev/guides/connect) for account headers and the [payment guide](/dev/guides/payments) for paid calls.
+
+For complete sequences, use the [Developer guides](/dev/overview). [Onchain calls](/dev/guides/publish/contract-reference) are separate from REST.
+
+Use your own account, session token and returned resource IDs in the examples.
+
+## System
+
+| Method | Path | Reference |
+| --- | --- | --- |
+| `GET` | `/` | [API status](/dev/endpoints/system/identity) |
+| `GET` | `/health` | [Health](/dev/endpoints/system/health) |
+| `GET` | `/api/options` | [Music options](/dev/endpoints/system/options) |
+
+## Generation
+
+| Method | Path | Reference |
+| --- | --- | --- |
+| `POST` | `/api/generation/generate` | [Generate music](/dev/endpoints/generation/generate) |
+| `GET` | `/api/generation/status/{taskId}` | [Generation status](/dev/endpoints/generation/status) |
+| `GET` | `/api/generation/events/{taskId}` | [Generation events](/dev/endpoints/generation/events) |
+| `POST` | `/api/generation/format` | [Format lyrics and description](/dev/endpoints/generation/format) |
+| `POST` | `/api/generation/sample` | [Suggest music settings](/dev/endpoints/generation/sample) |
+| `POST` | `/api/generation/cover` | [Create or upload artwork](/dev/endpoints/generation/cover) |
+
+## Editing
+
+| Method | Path | Reference |
+| --- | --- | --- |
+| `POST` | `/api/editing/source` | [Upload source audio](/dev/endpoints/editing/source) |
+| `POST` | `/api/editing/extract` | [Extract a section](/dev/endpoints/editing/extract) |
+| `POST` | `/api/editing/repaint` | [Rework a section](/dev/endpoints/editing/repaint) |
+| `POST` | `/api/editing/layer` | [Layer an instrument](/dev/endpoints/editing/layer) |
+| `POST` | `/api/editing/extend` | [Extend music](/dev/endpoints/editing/extend) |
+| `POST` | `/api/editing/remix` | [Restyle audio](/dev/endpoints/editing/remix) |
+| `POST` | `/api/editing/separate` | [Separate stems](/dev/endpoints/editing/separate) |
+| `POST` | `/api/editing/apply` | [Apply an edit operation](/dev/endpoints/editing/apply) |
+| `GET` | `/api/editing/status/{taskId}` | [Edit status](/dev/endpoints/editing/status) |
+| `POST` | `/api/editing/activate` | [Activate or merge a take](/dev/endpoints/editing/activate) |
+| `DELETE` | `/api/editing/takes/{id}` | [Discard an inactive take](/dev/endpoints/editing/delete-take) |
+| `PATCH` | `/api/editing/mixer/{stemId}` | [Update a stem mixer](/dev/endpoints/editing/mixer) |
+| `GET` | `/api/editing/history/{songId}` | [Read editor history](/dev/endpoints/editing/history) |
+| `POST` | `/api/editing/commits` | [Save a timeline snapshot](/dev/endpoints/editing/commits) |
+
+## Voices
+
+| Method | Path | Reference |
+| --- | --- | --- |
+| `POST` | `/api/voices` | [Save a voice from a song](/dev/endpoints/voices/save) |
+| `POST` | `/api/voices/upload` | [Upload a voice recording](/dev/endpoints/voices/upload) |
+| `GET` | `/api/voices` | [List saved voices](/dev/endpoints/voices/list) |
+| `GET` | `/api/voices/{id}` | [Read a saved voice](/dev/endpoints/voices/get) |
+| `GET` | `/api/voices/{id}/events` | [Voice preparation events](/dev/endpoints/voices/events) |
+
+## Songs and takes
+
+| Method | Path | Reference |
+| --- | --- | --- |
+| `GET` | `/api/songs` | [List songs](/dev/endpoints/library/songs) |
+| `GET` | `/api/songs/{id}` | [Read a song project](/dev/endpoints/library/song) |
+| `GET` | `/api/songs/{id}/stems` | [List song stems](/dev/endpoints/library/stems) |
+| `GET` | `/api/songs/{id}/takes` | [List song takes](/dev/endpoints/library/takes) |
+| `PATCH` | `/api/songs/{id}` | [Update a song](/dev/endpoints/library/update) |
+| `POST` | `/api/songs/{id}/version` | [Open an editable version](/dev/endpoints/library/version) |
+| `POST` | `/api/songs/{id}/remix` | [Create a remix draft](/dev/endpoints/library/remix) |
+| `DELETE` | `/api/songs/{id}` | [Delete a library song](/dev/endpoints/library/delete) |
+| `DELETE` | `/api/songs/{id}/takes/{takeId}` | [Delete a song take](/dev/endpoints/library/delete-song-take) |
+| `DELETE` | `/api/takes/{id}` | [Delete a take by ID](/dev/endpoints/library/delete-take) |
+
+## Albums
+
+| Method | Path | Reference |
+| --- | --- | --- |
+| `GET` | `/api/albums` | [List albums](/dev/endpoints/albums/list) |
+| `POST` | `/api/albums` | [Create an album](/dev/endpoints/albums/create) |
+| `GET` | `/api/albums/{id}` | [Read an album](/dev/endpoints/albums/get) |
+| `PATCH` | `/api/albums/{id}` | [Update an album](/dev/endpoints/albums/update) |
+| `DELETE` | `/api/albums/{id}` | [Delete an album](/dev/endpoints/albums/delete) |
+| `POST` | `/api/albums/{id}/songs` | [Add a song to an album](/dev/endpoints/albums/add-song) |
+| `DELETE` | `/api/albums/{id}/songs/{songId}` | [Remove a song from its album](/dev/endpoints/albums/remove-song) |
+
+## Aliases
+
+Use the canonical routes above in new integrations. The API also registers these equivalent shortcuts:
+
+| Alias | Canonical route |
+| --- | --- |
+| `/generate`, `/status/{taskId}`, `/sample`, `/format` | Corresponding `/api/generation/*` route |
+| `/repaint`, `/layer`, `/extend`, `/remix`, `/separate` | Corresponding `/api/editing/*` route |
+| `/songs` | `GET /api/songs` |
+| `/voices` and its subpaths | `/api/voices` and matching subpaths |
+| `POST /voice` | `POST /api/voices` |
+| `POST /api/editing/commit` | `POST /api/editing/commits` |
+| `POST /api/editing/takes/activate` | `POST /api/editing/activate` |
+
+The API's `/docs` route serves Swagger UI. The namespaced endpoints above are the integration reference. There are no public cancellation, manual-training, webhook registration or server DAW-control routes.

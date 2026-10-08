@@ -1,0 +1,38 @@
+---
+title: "Health"
+description: "Check API startup readiness."
+api: "GET https://api.rawchunks.space/health"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+
+A healthy response does not establish current music generation capacity or voice readiness.
+
+## Response (200)
+
+Success.
+
+<ResponseField name="status" type="string" />
+
+<ResponseField name="timestamp" type="string" />
+
+<ResponseField name="services" type="object" />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+| `503` | API startup is unavailable. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/health"
+```
+
+</RequestExample>

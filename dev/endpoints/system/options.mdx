@@ -1,0 +1,150 @@
+---
+title: "Music options"
+description: "Read available generation and editing controls."
+api: "GET https://api.rawchunks.space/api/options"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+
+Use this inventory to populate model, language, key, task and stem selectors. It can return 503 when options are unavailable. API validation limits are documented on the request schemas; UI slider ranges may be narrower.
+
+## Response (200)
+
+<ResponseField name="generation" type="object" required>
+<Expandable title="Properties">
+<ResponseField name="modes" type="object[]" required>
+<Expandable title="Properties">
+<ResponseField name="id" type="string" required>
+Pass this ID in the matching request field.
+</ResponseField>
+
+<ResponseField name="label" type="string" required>
+Display label.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="languages" type="object[]" required>
+<Expandable title="Properties">
+<ResponseField name="id" type="string" required>
+Pass this ID in the matching request field.
+</ResponseField>
+
+<ResponseField name="label" type="string" required>
+Display label.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="duration" type="object" required>
+<Expandable title="Properties">
+<ResponseField name="min" type="number" required>
+Seconds.
+</ResponseField>
+
+<ResponseField name="max" type="number" required>
+Seconds.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="parameters" type="object" required>
+Controls keyed by request field name, such as bpm, keyScale or coverStrength.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="editing" type="object" required>
+<Expandable title="Properties">
+<ResponseField name="modes" type="object[]" required>
+<Expandable title="Properties">
+<ResponseField name="id" type="string" required>
+Pass this ID in the matching request field.
+</ResponseField>
+
+<ResponseField name="label" type="string" required>
+Display label.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="tasks" type="object[]" required>
+<Expandable title="Properties">
+<ResponseField name="id" type="string" required>
+Pass this ID in the matching request field.
+</ResponseField>
+
+<ResponseField name="label" type="string" required>
+Display label.
+</ResponseField>
+
+<ResponseField name="description" type="string" required>
+
+</ResponseField>
+
+<ResponseField name="modes" type="string[]" required>
+
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="repaintModes" type="object[]" required>
+<Expandable title="Properties">
+<ResponseField name="id" type="string" required>
+Pass this ID in the matching request field.
+</ResponseField>
+
+<ResponseField name="label" type="string" required>
+Display label.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="stems" type="object[]" required>
+<Expandable title="Properties">
+<ResponseField name="id" type="string" required>
+Pass this ID in the matching request field.
+</ResponseField>
+
+<ResponseField name="label" type="string" required>
+Display label.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="duration" type="object" required>
+<Expandable title="Properties">
+<ResponseField name="min" type="number" required>
+Seconds.
+</ResponseField>
+
+<ResponseField name="max" type="number" required>
+Seconds.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="parameters" type="object" required>
+Controls keyed by request field name, such as bpm, keyScale or coverStrength.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+| `503` | Music options are unavailable. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/api/options"
+```
+
+</RequestExample>
