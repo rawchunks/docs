@@ -1,0 +1,57 @@
+---
+title: "Suggest music settings"
+description: "Create a caption, lyrics and suggested music settings."
+api: "POST https://api.rawchunks.space/api/generation/sample"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+
+This returns suggestions, not an audio sample. Optional suggested fields may be absent. Translate `caption`, `key_scale`, and `duration` to `prompt`, `keyScale`, and `audioDuration` when you submit generation.
+
+## JSON body
+
+<ParamField body="query" type="string">
+Defaults to electronic.
+</ParamField>
+
+<ParamField body="instrumental" type="boolean" default={false} />
+
+<ParamField body="vocalLanguage" type="string" />
+
+## Response (200)
+
+Success.
+
+<ResponseField name="caption" type="string" required />
+
+<ResponseField name="lyrics" type="string" required />
+
+<ResponseField name="bpm" type="number" />
+
+<ResponseField name="key_scale" type="string" />
+
+<ResponseField name="duration" type="number" />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/generation/sample" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc '{
+  "query": "slow electronic ballad",
+  "instrumental": false,
+  "vocalLanguage": "en"
+}')"
+```
+
+</RequestExample>

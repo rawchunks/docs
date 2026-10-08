@@ -1,0 +1,45 @@
+---
+title: "Generation events"
+description: "Follow generation progress as newline-delimited JSON."
+api: "GET https://api.rawchunks.space/api/generation/events/{taskId}"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+
+The content type is `application/x-ndjson`. Each nonempty line is a JSON object. This is not an EventSource stream. Terminal states are `ready` and `error`. Reconnect with the same IDs or use [status polling](/dev/guides/jobs).
+
+## Headers and parameters
+
+<ParamField path="taskId" type="string" required>
+Resource ID.
+</ParamField>
+
+<ParamField query="songId" type="string" required>
+Song ID returned by the same submission.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<ResponseField name="result" type="string">
+One GenerationStatus object per line.
+</ResponseField>
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/api/generation/events/$(jq -nr --arg v "$TASK_ID" '$v|@uri')?songId=$(jq -nr --arg v "$SONG_ID" '$v|@uri')"
+```
+
+</RequestExample>

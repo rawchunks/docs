@@ -1,0 +1,31 @@
+
+
+<ResponseField name="status" type="string" required>
+Values: `pending`, `processing`, `ready`, `error`.
+</ResponseField>
+
+<ResponseField name="progress" type="number">
+Progress percentage when available.
+</ResponseField>
+
+<ResponseField name="error" type="string" />
+
+<ResponseField name="primaryUrl" type="string">
+Present on ready. Primary persisted audio URL.
+</ResponseField>
+
+<ResponseField name="audioUrls" type="string[]" />
+
+<ResponseField name="songAId" type="string">
+Primary song ID on ready.
+</ResponseField>
+
+<ResponseField name="songBId" type="string">
+Optional additional result ID.
+</ResponseField>
+
+<ResponseField name="duration" type="number">
+Decoded output duration in seconds.
+</ResponseField>
+
+<ResponseField name="durations" type="number[]" />

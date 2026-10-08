@@ -1,0 +1,48 @@
+---
+title: "Format lyrics and description"
+description: "Format a music description and optional lyrics."
+api: "POST https://api.rawchunks.space/api/generation/format"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+
+This returns text, not audio. [Prepare lyrics and settings](/dev/guides/generate/lyrics).
+
+## JSON body
+
+<ParamField body="prompt" type="string" required>
+Minimum length: `1`.
+</ParamField>
+
+<ParamField body="lyrics" type="string" />
+
+## Response (200)
+
+Success.
+
+<ResponseField name="formatted_caption" type="string" required />
+
+<ResponseField name="formatted_lyrics" type="string" required />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/generation/format" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc '{
+  "prompt": "acid house with a dry kick",
+  "lyrics": "[Verse]\nThe city hums below"
+}')"
+```
+
+</RequestExample>

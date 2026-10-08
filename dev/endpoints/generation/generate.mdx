@@ -1,0 +1,86 @@
+---
+title: "Generate music"
+description: "Submit a new music generation."
+api: "POST https://api.rawchunks.space/api/generation/generate"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import GenerateBody from '/snippets/dev/requests/generate.mdx';
+import GenerationJobFields from '/snippets/dev/models/generationjob.mdx';
+import SessionHeader from '/snippets/dev/session-header.mdx';
+
+Fast (`turbo`) costs \$0.05. Studio Master (`sft`) costs \$0.10. `creatorAddress` can be omitted when the selected account comes from the session, but explicit addresses must match your intended creator. New songs start private.
+
+[Generate and retrieve audio](/dev/guides/generate/music).
+
+## Headers and parameters
+
+<SessionHeader />
+
+<ParamField header="x-session-user-address" type="string">
+Session owner address. Supplies `creatorAddress` when omitted from the JSON body.
+</ParamField>
+
+<ParamField header="x-network-id" type="string">
+Session network in CAIP-2 form, for example eip155:8453.
+</ParamField>
+
+## JSON body
+
+<GenerateBody />
+
+## Response (202)
+
+Accepted; follow the returned task.
+
+<GenerationJobFields />
+
+Budget headers use six-decimal USDC atomic units. See [session payments](/dev/guides/payments#track-or-end-a-session).
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `401` | Invalid or expired session token. |
+| `402` | Payment required or insufficient session budget. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/generation/generate" \
+  -H "Authorization: Bearer $SESSION_TOKEN" \
+  -H "x-session-user-address: $USER_ADDRESS" \
+  -H "x-network-id: $NETWORK" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc --arg user "$USER_ADDRESS" '{
+  "creatorAddress": $user,
+  "prompt": "Instrumental acid house with a dry kick, rolling bass and a restrained synth lead",
+  "instrumental": true,
+  "audioDuration": 60,
+  "bpm": 124,
+  "modelVariant": "turbo",
+  "title": "Night circuit",
+  "licenses": 20,
+  "license_price": 5,
+  "stream_price": 0.01
+}')"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 202
+{
+  "songId": "sng-example",
+  "taskId": "task-example",
+  "status": "pending"
+}
+```
+
+</ResponseExample>

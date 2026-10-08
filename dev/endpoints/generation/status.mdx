@@ -1,0 +1,46 @@
+---
+title: "Generation status"
+description: "Poll a generation and retrieve persisted audio."
+api: "GET https://api.rawchunks.space/api/generation/status/{taskId}"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import GenerationStatusFields from '/snippets/dev/models/generationstatus.mdx';
+
+Use `primaryUrl` only when the body says `status: "ready"`. Keep the original task/song pair. A mismatched pair returns 409.
+
+[Polling and streams](/dev/guides/jobs).
+
+## Headers and parameters
+
+<ParamField path="taskId" type="string" required>
+Resource ID.
+</ParamField>
+
+<ParamField query="songId" type="string" required>
+Song ID returned by the same submission.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<GenerationStatusFields />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/api/generation/status/$(jq -nr --arg v "$TASK_ID" '$v|@uri')?songId=$(jq -nr --arg v "$SONG_ID" '$v|@uri')"
+```
+
+</RequestExample>

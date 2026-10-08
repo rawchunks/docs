@@ -1,0 +1,52 @@
+---
+title: "Create or upload artwork"
+description: "Generate artwork from JSON or upload one image."
+api: "POST https://api.rawchunks.space/api/generation/cover"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+
+For an upload, send one `image/*` file as `multipart/form-data` instead of JSON. Maximum 50 MiB. Returned `imageUrl` can be used as generation `image` or song PATCH `image`. Audio Restyle uses a different endpoint.
+
+## JSON body
+
+<ParamField body="prompt" type="string" required>
+Minimum length: `1`.
+</ParamField>
+
+<ParamField body="title" type="string" />
+
+<ParamField body="style" type="string" />
+
+## Multipart body
+
+<ParamField body="file" type="file" required />
+
+## Response (200)
+
+Success.
+
+<ResponseField name="imageUrl" type="string" required />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/generation/cover" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc '{
+  "prompt": "Green waveform on black",
+  "title": "Night circuit"
+}')"
+```
+
+</RequestExample>

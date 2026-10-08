@@ -1,0 +1,83 @@
+
+
+<ParamField body="creatorAddress" type="string">
+Wallet address for the selected account. Use the same address as the session owner. Minimum length: `10`.
+</ParamField>
+
+<ParamField body="prompt" type="string" required>
+Musical description. At least three characters after trimming. Minimum length: `3`.
+</ParamField>
+
+<ParamField body="modelVariant" type="string" default={"turbo"}>
+Fast or Studio Master. Values: `turbo`, `sft`.
+</ParamField>
+
+<ParamField body="title" type="string">
+Omit or leave blank for an Untitled title.
+</ParamField>
+
+<ParamField body="image" type="string">
+Artwork URL.
+</ParamField>
+
+<ParamField body="albumId" type="string">
+Existing album ID.
+</ParamField>
+
+<ParamField body="lyrics" type="string">
+Plain text with optional section tags. Omit for automatic lyrics/settings; specify instrumental for no vocals.
+</ParamField>
+
+<ParamField body="instrumental" type="boolean">
+When true, the request uses [Instrumental] lyrics.
+</ParamField>
+
+<ParamField body="vocalLanguage" type="string">
+Language ID from GET /api/options.
+</ParamField>
+
+<ParamField body="bpm" type="number">
+Tempo in beats per minute. Range: `30` to `300`.
+</ParamField>
+
+<ParamField body="keyScale" type="string">
+Key ID from GET /api/options.
+</ParamField>
+
+<ParamField body="audioDuration" type="number">
+Requested duration in seconds. Range: `5` to `300`.
+</ParamField>
+
+<ParamField body="seed" type="integer">
+Optional seed. Omit for a random seed; this is not a guarantee of byte-identical audio. Range: `0` to `9007199254740991`.
+</ParamField>
+
+<ParamField body="voiceId" type="string">
+Opaque ID returned by the API. Minimum length: `1`.
+</ParamField>
+
+<ParamField body="voiceMode" type="string">
+Required with voiceId. Trained mode needs a ready saved voice for the selected model. Values: `reference`, `trained`.
+</ParamField>
+
+<ParamField body="voiceReferenceUrl" type="string">
+Direct reference audio URL. Mutually exclusive with voiceId.
+</ParamField>
+
+<ParamField body="voiceCoverStrength" type="number">
+Voice conditioning strength. Default 0.7 for saved voices, 0.65 for direct references. Range: `0` to `1`.
+</ParamField>
+
+<ParamField body="tags" type="string[]" />
+
+<ParamField body="licenses" type="integer" default={0}>
+Listed allocation. Omitted value is 0. Minimum: `0`.
+</ParamField>
+
+<ParamField body="stream_price" type="number" default={0.02}>
+Listed USDC per minute. Separate from the service fee. Minimum: `0`.
+</ParamField>
+
+<ParamField body="license_price" type="number" default={25}>
+Listed USDC per license. Separate from the service fee. Minimum: `0`.
+</ParamField>
