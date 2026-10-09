@@ -1,0 +1,103 @@
+---
+title: "Extract a section"
+description: "Slice a source interval into an inactive take."
+api: "POST https://api.rawchunks.space/api/editing/extract"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import SessionHeader from '/snippets/dev/session-header.mdx';
+import TakeFields from '/snippets/dev/models/take.mdx';
+
+This slices the selected source track. It does not separate instruments or render your current mixed arrangement.
+
+[Extract and separate](/dev/guides/edit/extract-separate).
+
+## Headers and parameters
+
+<SessionHeader />
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+<ParamField header="x-network-id" type="string">
+Session network in CAIP-2 form, for example eip155:8453.
+</ParamField>
+
+## JSON body
+
+<ParamField body="songId" type="string" required>
+Opaque ID returned by the API. Minimum length: `1`.
+</ParamField>
+
+<ParamField body="stemId" type="string" />
+
+<ParamField body="start" type="number" required>
+Minimum: `0`.
+</ParamField>
+
+<ParamField body="end" type="number" required>
+Must exceed start and fit the source. Minimum: `0`.
+</ParamField>
+
+## Response (201)
+
+Success.
+
+<ResponseField name="success" type="boolean" required />
+
+<ResponseField name="take" type="object" required>
+<Expandable title="Properties">
+<TakeFields />
+</Expandable>
+</ResponseField>
+
+Budget headers use six-decimal USDC atomic units. See [session payments](/dev/guides/payments#track-or-end-a-session).
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `401` | Invalid or expired session token. |
+| `402` | Payment required or insufficient session budget. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/editing/extract" \
+  -H "Authorization: Bearer $SESSION_TOKEN" \
+  -H "x-network-id: $NETWORK" \
+  -H "x-session-user-address: $USER_ADDRESS" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc --arg song "$SONG_ID" '{
+  "songId": $song,
+  "start": 15,
+  "end": 30
+}')"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 201
+{
+  "success": true,
+  "take": {
+    "id": "take-example",
+    "song_id": "sng-example",
+    "url": "https://example.com/extracted.wav",
+    "is_active": false
+  }
+}
+```
+
+</ResponseExample>

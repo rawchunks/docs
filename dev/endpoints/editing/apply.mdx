@@ -1,0 +1,89 @@
+---
+title: "Apply an edit operation"
+description: "Submit Rework, Layer, Accompany, Extend, Restyle or Separate."
+api: "POST https://api.rawchunks.space/api/editing/apply"
+playground: "simple"
+---
+
+import ApplyBody from '/snippets/dev/requests/apply.mdx';
+import EditJobFields from '/snippets/dev/models/editjob.mdx';
+import Errors from '/snippets/dev/errors.mdx';
+import SessionHeader from '/snippets/dev/session-header.mdx';
+
+Task IDs: `repaint` = Rework, `lego` = Layer, `complete` = Accompany, `extend` = Extend, `cover` = Restyle, `extract` = Separate.
+
+Rework needs positive `repaintingStart`/`repaintingEnd`. Layer needs `trackName`. Layer and Accompany require `base`. Extend needs a longer `audioDuration`. Restyle needs `coverStrength`. See [editing operations](/dev/guides/edit/overview).
+
+## Headers and parameters
+
+<SessionHeader />
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+<ParamField header="x-network-id" type="string">
+Session network in CAIP-2 form, for example eip155:8453.
+</ParamField>
+
+## JSON body
+
+<ApplyBody />
+
+## Response (202)
+
+Accepted; follow the returned task.
+
+<EditJobFields />
+
+Budget headers use six-decimal USDC atomic units. See [session payments](/dev/guides/payments#track-or-end-a-session).
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `401` | Invalid or expired session token. |
+| `402` | Payment required or insufficient session budget. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/editing/apply" \
+  -H "Authorization: Bearer $SESSION_TOKEN" \
+  -H "x-network-id: $NETWORK" \
+  -H "x-session-user-address: $USER_ADDRESS" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc --arg user "$USER_ADDRESS" --arg song "$SONG_ID" '{
+  "songId": $song,
+  "userAddress": $user,
+  "task": "complete",
+  "prompt": "Acoustic guitar and restrained drums",
+  "modelQuality": "base",
+  "trackClasses": [
+    "guitar",
+    "drums"
+  ]
+}')"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 202
+{
+  "songId": "sng-example",
+  "taskId": "task-example",
+  "status": "pending",
+  "task": "repaint"
+}
+```
+
+</ResponseExample>

@@ -1,0 +1,66 @@
+---
+title: "Read editor history"
+description: "Read stems, takes and newest-first commits."
+api: "GET https://api.rawchunks.space/api/editing/history/{songId}"
+playground: "simple"
+---
+
+import CommitFields from '/snippets/dev/models/commit.mdx';
+import Errors from '/snippets/dev/errors.mdx';
+import StemFields from '/snippets/dev/models/stem.mdx';
+import TakeFields from '/snippets/dev/models/take.mdx';
+
+Use `commits[0]?.id ?? null` as the current composition revision when merging. A commit snapshot is not a server-side undo command.
+
+## Headers and parameters
+
+<ParamField path="songId" type="string" required>
+Resource ID.
+</ParamField>
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<ResponseField name="stems" type="object[]" required>
+<Expandable title="Properties">
+<StemFields />
+</Expandable>
+</ResponseField>
+
+<ResponseField name="takes" type="object[]" required>
+<Expandable title="Properties">
+<TakeFields />
+</Expandable>
+</ResponseField>
+
+<ResponseField name="commits" type="object[]" required>
+<Expandable title="Properties">
+<CommitFields />
+</Expandable>
+</ResponseField>
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/api/editing/history/$(jq -nr --arg v "$SONG_ID" '$v|@uri')" \
+  -H "x-session-user-address: $USER_ADDRESS"
+```
+
+</RequestExample>

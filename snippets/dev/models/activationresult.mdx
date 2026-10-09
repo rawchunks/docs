@@ -1,0 +1,22 @@
+import CommitFields from '/snippets/dev/models/commit.mdx';
+import TakeFields from '/snippets/dev/models/take.mdx';
+
+<ResponseField name="success" type="boolean" required />
+
+<ResponseField name="activeTakeId" type="string" required />
+
+<ResponseField name="take" type="object">
+<Expandable title="Properties">
+<TakeFields />
+</Expandable>
+</ResponseField>
+
+<ResponseField name="commit" type="object">
+<Expandable title="Properties">
+<CommitFields />
+</Expandable>
+</ResponseField>
+
+<ResponseField name="versionState" type="string">
+Values: `active`, `merged`.
+</ResponseField>

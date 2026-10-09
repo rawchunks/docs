@@ -1,0 +1,69 @@
+---
+title: "Update a stem mixer"
+description: "Persist gain, pan, mute and solo for one stem."
+api: "PATCH https://api.rawchunks.space/api/editing/mixer/{stemId}"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import StemFields from '/snippets/dev/models/stem.mdx';
+
+These fields describe arrangement state. Your player or renderer applies the audio processing. This request does not bounce a new master.
+
+## Headers and parameters
+
+<ParamField path="stemId" type="string" required>
+Resource ID.
+</ParamField>
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+## JSON body
+
+<ParamField body="volume" type="number">
+Linear gain. 1 is unity. Minimum: `0`.
+</ParamField>
+
+<ParamField body="pan" type="number">
+Range: `-1` to `1`.
+</ParamField>
+
+<ParamField body="is_muted" type="boolean" />
+
+<ParamField body="is_solo" type="boolean" />
+
+## Response (200)
+
+Success.
+
+<StemFields />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X PATCH "$RAWCHUNKS_API/api/editing/mixer/$(jq -nr --arg v "$STEM_ID" '$v|@uri')" \
+  -H "x-session-user-address: $USER_ADDRESS" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc '{
+  "volume": 0.8,
+  "pan": -0.2,
+  "is_muted": false,
+  "is_solo": false
+}')"
+```
+
+</RequestExample>

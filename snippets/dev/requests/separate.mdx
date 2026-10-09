@@ -1,0 +1,17 @@
+
+
+<ParamField body="songId" type="string" required>
+Opaque ID returned by the API. Minimum length: `1`.
+</ParamField>
+
+<ParamField body="userAddress" type="string" required>
+Wallet address for the selected account. Use the same address as the session owner. Minimum length: `10`.
+</ParamField>
+
+<ParamField body="srcAudioUrl" type="string">
+Optional source override, for example the url from Upload source. Use an HTTP(S) URL.
+</ParamField>
+
+<ParamField body="stemType" type="string" default={"all"}>
+Use a stem ID from GET /api/options. Omitted value is all.
+</ParamField>

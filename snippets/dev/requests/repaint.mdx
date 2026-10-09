@@ -1,0 +1,61 @@
+
+
+<ParamField body="songId" type="string" required>
+Opaque ID returned by the API. Minimum length: `1`.
+</ParamField>
+
+<ParamField body="stemId" type="string">
+Optional target stem in this song. Omit to use the master.
+</ParamField>
+
+<ParamField body="userAddress" type="string" required>
+Wallet address for the selected account. Use the same address as the session owner. Minimum length: `10`.
+</ParamField>
+
+<ParamField body="srcAudioUrl" type="string">
+Optional source override, for example the url from Upload source. Use an HTTP(S) URL.
+</ParamField>
+
+<ParamField body="modelQuality" type="string">
+Select a mode listed for this task by GET /api/options. Defaults to base. Layer and Accompany require base. Values: `turbo`, `sft`, `base`.
+</ParamField>
+
+<ParamField body="modelVariant" type="string">
+Alternative to modelQuality. If both are sent they must match. Values: `turbo`, `sft`, `base`.
+</ParamField>
+
+<ParamField body="prompt" type="string" />
+
+<ParamField body="lyrics" type="string" />
+
+<ParamField body="repaintMode" type="string">
+Values: `conservative`, `balanced`, `aggressive`.
+</ParamField>
+
+<ParamField body="repaintStrength" type="number">
+Range: `0` to `1`.
+</ParamField>
+
+<ParamField body="repaintLatentCrossfadeFrames" type="integer">
+Transition control in latent frames. Minimum: `0`.
+</ParamField>
+
+<ParamField body="repaintWavCrossfadeSec" type="number">
+Requested transition length in seconds. Minimum: `0`.
+</ParamField>
+
+<ParamField body="start" type="number" required>
+Minimum: `0`.
+</ParamField>
+
+<ParamField body="end" type="number" required>
+Must exceed start and fit source audio. Minimum: `0`.
+</ParamField>
+
+<ParamField body="repaint_mode" type="string">
+Alias of repaintMode. Prefer repaintMode. Values: `conservative`, `balanced`, `aggressive`.
+</ParamField>
+
+<ParamField body="repaint_strength" type="number">
+Alias of repaintStrength. Prefer repaintStrength. Range: `0` to `1`.
+</ParamField>

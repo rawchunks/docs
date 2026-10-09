@@ -1,0 +1,87 @@
+---
+title: "Rework a section"
+description: "Submit rework a section."
+api: "POST https://api.rawchunks.space/api/editing/repaint"
+playground: "simple"
+---
+
+import EditJobFields from '/snippets/dev/models/editjob.mdx';
+import Errors from '/snippets/dev/errors.mdx';
+import RepaintBody from '/snippets/dev/requests/repaint.mdx';
+import SessionHeader from '/snippets/dev/session-header.mdx';
+
+For seed, tempo, key or language controls, use `/apply` with `task: "repaint"`; those controls are not forwarded by this shortcut.
+
+Poll with the returned task kind `repaint`. Completed edits remain pending until [activation or merge](/dev/guides/edit/takes).
+
+## Headers and parameters
+
+<SessionHeader />
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+<ParamField header="x-network-id" type="string">
+Session network in CAIP-2 form, for example eip155:8453.
+</ParamField>
+
+## JSON body
+
+<RepaintBody />
+
+## Response (202)
+
+Accepted; follow the returned task.
+
+<EditJobFields />
+
+Budget headers use six-decimal USDC atomic units. See [session payments](/dev/guides/payments#track-or-end-a-session).
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `401` | Invalid or expired session token. |
+| `402` | Payment required or insufficient session budget. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/editing/repaint" \
+  -H "Authorization: Bearer $SESSION_TOKEN" \
+  -H "x-network-id: $NETWORK" \
+  -H "x-session-user-address: $USER_ADDRESS" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc --arg user "$USER_ADDRESS" --arg song "$SONG_ID" '{
+  "songId": $song,
+  "userAddress": $user,
+  "start": 15,
+  "end": 30,
+  "prompt": "Sparse drums and a warmer bass",
+  "repaintMode": "balanced",
+  "repaintStrength": 0.5
+}')"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 202
+{
+  "songId": "sng-example",
+  "taskId": "task-example",
+  "status": "pending",
+  "task": "repaint"
+}
+```
+
+</ResponseExample>

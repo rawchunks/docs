@@ -1,0 +1,73 @@
+
+
+<ResponseField name="id" type="string" required />
+
+<ResponseField name="song_id" type="string" required />
+
+<ResponseField name="stem_id" type="string | null" />
+
+<ResponseField name="take_number" type="integer" />
+
+<ResponseField name="model" type="string" />
+
+<ResponseField name="task" type="string" />
+
+<ResponseField name="url" type="string" required />
+
+<ResponseField name="is_active" type="boolean" required />
+
+<ResponseField name="prompt" type="string | null" />
+
+<ResponseField name="lyrics" type="string | null" />
+
+<ResponseField name="repainting_start" type="number | null" />
+
+<ResponseField name="repainting_end" type="number | null" />
+
+<ResponseField name="seed" type="integer | null" />
+
+<ResponseField name="provenance" type="object | null">
+<Expandable title="Properties">
+<ResponseField name="target" type="string">
+Values: `master`, `stem`, `layer`.
+</ResponseField>
+
+<ResponseField name="targetStemId" type="string | null" />
+
+<ResponseField name="region" type="object | null">
+<Expandable title="Properties">
+<ResponseField name="start" type="number" required>
+Start on the song timeline, in seconds. Minimum: `0`.
+</ResponseField>
+
+<ResponseField name="end" type="number" required>
+End on the song timeline, in seconds. Must exceed start. Minimum: `0`.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="regions" type="object[]">
+<Expandable title="Properties">
+<ResponseField name="start" type="number" required>
+Start on the song timeline, in seconds. Minimum: `0`.
+</ResponseField>
+
+<ResponseField name="end" type="number" required>
+End on the song timeline, in seconds. Must exceed start. Minimum: `0`.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="audioOffset" type="number">
+Source-buffer offset for the eligible section, in seconds.
+</ResponseField>
+
+<ResponseField name="outputDuration" type="number | null" />
+
+<ResponseField name="mergedInto" type="string" />
+
+<ResponseField name="layerName" type="string" />
+</Expandable>
+</ResponseField>
+
+<ResponseField name="created_at" type="string" />

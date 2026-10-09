@@ -1,0 +1,174 @@
+---
+title: "Separate stems"
+description: "Separate source audio into instrument stems."
+api: "POST https://api.rawchunks.space/api/editing/separate"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import SeparateBody from '/snippets/dev/requests/separate.mdx';
+import SessionHeader from '/snippets/dev/session-header.mdx';
+import StemFields from '/snippets/dev/models/stem.mdx';
+
+HTTP 200 can contain a pending job. Check `status` and poll with `task: "extract"`. Ready stems start muted.
+
+[Extract and separate](/dev/guides/edit/extract-separate).
+
+## Headers and parameters
+
+<SessionHeader />
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+<ParamField header="x-network-id" type="string">
+Session network in CAIP-2 form, for example eip155:8453.
+</ParamField>
+
+## JSON body
+
+<SeparateBody />
+
+## Response (200)
+
+Success.
+
+<ResponseField name="status" type="string" required>
+Values: `pending`, `processing`, `ready`, `error`.
+</ResponseField>
+
+<ResponseField name="progress" type="number" />
+
+<ResponseField name="error" type="string" />
+
+<ResponseField name="take" type="object | null">
+<Expandable title="Properties">
+<ResponseField name="id" type="string" required />
+
+<ResponseField name="song_id" type="string" required />
+
+<ResponseField name="stem_id" type="string | null" />
+
+<ResponseField name="take_number" type="integer" />
+
+<ResponseField name="model" type="string" />
+
+<ResponseField name="task" type="string" />
+
+<ResponseField name="url" type="string" required />
+
+<ResponseField name="is_active" type="boolean" required />
+
+<ResponseField name="prompt" type="string | null" />
+
+<ResponseField name="lyrics" type="string | null" />
+
+<ResponseField name="repainting_start" type="number | null" />
+
+<ResponseField name="repainting_end" type="number | null" />
+
+<ResponseField name="seed" type="integer | null" />
+
+<ResponseField name="provenance" type="object | null">
+<Expandable title="Properties">
+<ResponseField name="target" type="string">
+Values: `master`, `stem`, `layer`.
+</ResponseField>
+
+<ResponseField name="targetStemId" type="string | null" />
+
+<ResponseField name="region" type="object | null">
+<Expandable title="Properties">
+<ResponseField name="start" type="number" required>
+Start on the song timeline, in seconds. Minimum: `0`.
+</ResponseField>
+
+<ResponseField name="end" type="number" required>
+End on the song timeline, in seconds. Must exceed start. Minimum: `0`.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="regions" type="object[]">
+<Expandable title="Properties">
+<ResponseField name="start" type="number" required>
+Start on the song timeline, in seconds. Minimum: `0`.
+</ResponseField>
+
+<ResponseField name="end" type="number" required>
+End on the song timeline, in seconds. Must exceed start. Minimum: `0`.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="audioOffset" type="number">
+Source-buffer offset for the eligible section, in seconds.
+</ResponseField>
+
+<ResponseField name="outputDuration" type="number | null" />
+
+<ResponseField name="mergedInto" type="string" />
+
+<ResponseField name="layerName" type="string" />
+</Expandable>
+</ResponseField>
+
+<ResponseField name="created_at" type="string" />
+</Expandable>
+</ResponseField>
+
+<ResponseField name="audioUrl" type="string" />
+
+<ResponseField name="audioUrls" type="string[]" />
+
+<ResponseField name="stems" type="object[]">
+<Expandable title="Properties">
+<StemFields />
+</Expandable>
+</ResponseField>
+
+<ResponseField name="versionState" type="string">
+Candidate state. Initially pending; later reads can report merged or discarded. Values: `pending`, `merged`, `discarded`.
+</ResponseField>
+
+<ResponseField name="taskId" type="string" required />
+
+<ResponseField name="songId" type="string" required />
+
+<ResponseField name="task" type="string" required>
+Values: `extract`.
+</ResponseField>
+
+Budget headers use six-decimal USDC atomic units. See [session payments](/dev/guides/payments#track-or-end-a-session).
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `401` | Invalid or expired session token. |
+| `402` | Payment required or insufficient session budget. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/editing/separate" \
+  -H "Authorization: Bearer $SESSION_TOKEN" \
+  -H "x-network-id: $NETWORK" \
+  -H "x-session-user-address: $USER_ADDRESS" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc --arg user "$USER_ADDRESS" --arg song "$SONG_ID" '{
+  "songId": $song,
+  "userAddress": $user,
+  "stemType": "all"
+}')"
+```
+
+</RequestExample>

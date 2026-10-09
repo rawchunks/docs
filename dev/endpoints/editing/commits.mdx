@@ -1,0 +1,90 @@
+---
+title: "Save a timeline snapshot"
+description: "Record a named timeline snapshot."
+api: "POST https://api.rawchunks.space/api/editing/commits"
+playground: "simple"
+---
+
+import CommitFields from '/snippets/dev/models/commit.mdx';
+import Errors from '/snippets/dev/errors.mdx';
+
+When `timelineSnapshot` is omitted, the current stems and active-take information are recorded. `snapshot` is an alias for the same input. Saving a commit does not render audio.
+
+[Arrangement and history](/dev/guides/edit/arrangement).
+
+## Headers and parameters
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+## JSON body
+
+<ParamField body="songId" type="string" required>
+Opaque ID returned by the API. Minimum length: `1`.
+</ParamField>
+
+<ParamField body="userAddress" type="string" required>
+Wallet address for the selected account. Use the same address as the session owner. Minimum length: `10`.
+</ParamField>
+
+<ParamField body="message" type="string" required>
+Minimum length: `1`.
+</ParamField>
+
+<ParamField body="timelineSnapshot" type="object" />
+
+## Response (201)
+
+Success.
+
+<ResponseField name="success" type="boolean" required />
+
+<ResponseField name="commit" type="object" required>
+<Expandable title="Properties">
+<CommitFields />
+</Expandable>
+</ResponseField>
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/editing/commits" \
+  -H "x-session-user-address: $USER_ADDRESS" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc --arg user "$USER_ADDRESS" --arg song "$SONG_ID" '{
+  "songId": $song,
+  "userAddress": $user,
+  "message": "Bass and drums balanced"
+}')"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 201
+{
+  "success": true,
+  "commit": {
+    "id": "commit-example",
+    "song_id": "sng-example",
+    "message": "Bass and drums balanced",
+    "timeline_snapshot": {}
+  }
+}
+```
+
+</ResponseExample>

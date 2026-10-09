@@ -1,0 +1,21 @@
+import StemFields from '/snippets/dev/models/stem.mdx';
+
+<ResponseField name="taskId" type="string" required />
+
+<ResponseField name="songId" type="string" required />
+
+<ResponseField name="stemId" type="string" />
+
+<ResponseField name="task" type="string" required>
+Values: `repaint`, `lego`, `complete`, `extend`, `cover`, `extract`.
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+Values: `pending`, `processing`, `ready`, `error`.
+</ResponseField>
+
+<ResponseField name="stems" type="object[]">
+<Expandable title="Properties">
+<StemFields />
+</Expandable>
+</ResponseField>

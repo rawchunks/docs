@@ -1,0 +1,25 @@
+
+
+<ResponseField name="id" type="string" required />
+
+<ResponseField name="song_id" type="string" required />
+
+<ResponseField name="name" type="string" required />
+
+<ResponseField name="url" type="string" required />
+
+<ResponseField name="volume" type="number">
+Linear gain, 1 is unity. Minimum: `0`.
+</ResponseField>
+
+<ResponseField name="pan" type="number">
+Range: `-1` to `1`.
+</ResponseField>
+
+<ResponseField name="is_muted" type="boolean" />
+
+<ResponseField name="is_solo" type="boolean" />
+
+<ResponseField name="waveform_peaks_url" type="string | null" />
+
+<ResponseField name="created_at" type="string" />

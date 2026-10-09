@@ -1,0 +1,63 @@
+
+
+<ParamField body="songId" type="string" required>
+Opaque ID returned by the API. Minimum length: `1`.
+</ParamField>
+
+<ParamField body="stemId" type="string">
+Optional. Must match the take if supplied.
+</ParamField>
+
+<ParamField body="takeId" type="string" required>
+Opaque ID returned by the API. Minimum length: `1`.
+</ParamField>
+
+<ParamField body="userAddress" type="string">
+Wallet address for the selected account. Use the same address as the session owner. Minimum length: `10`.
+</ParamField>
+
+<ParamField body="action" type="string" default={"base"}>
+Values: `base`, `merge`.
+</ParamField>
+
+<ParamField body="composition" type="object">
+<Expandable title="Properties">
+<ResponseField name="takeIds" type="string[]" required />
+
+<ResponseField name="placements" type="object[]">
+<Expandable title="Properties">
+<ResponseField name="takeId" type="string" required>
+Opaque ID returned by the API. Minimum length: `1`.
+</ResponseField>
+
+<ResponseField name="shift" type="number" required>
+Timeline shift in seconds.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="region" type="object" required>
+<Expandable title="Properties">
+<ResponseField name="start" type="number" required>
+Start on the song timeline, in seconds. Minimum: `0`.
+</ResponseField>
+
+<ResponseField name="end" type="number" required>
+End on the song timeline, in seconds. Must exceed start. Minimum: `0`.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="original" type="boolean" required>
+Whether the client render includes original audio.
+</ResponseField>
+
+<ResponseField name="commitId" type="string | null" required>
+Latest commit from history, or null when no commit exists.
+</ResponseField>
+
+<ResponseField name="srcAudioUrl" type="string" required>
+Uploaded client-rendered WAV for this composition.
+</ResponseField>
+</Expandable>
+</ParamField>

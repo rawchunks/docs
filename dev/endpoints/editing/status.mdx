@@ -1,0 +1,78 @@
+---
+title: "Edit status"
+description: "Poll an edit and retrieve its candidate or stems."
+api: "GET https://api.rawchunks.space/api/editing/status/{taskId}"
+playground: "simple"
+---
+
+import EditStatusFields from '/snippets/dev/models/editstatus.mdx';
+import Errors from '/snippets/dev/errors.mdx';
+
+Poll by the task/song/user binding. A ready candidate has `take` and `audioUrl`; ready separation has `stems`. There is no edit event stream.
+
+[Follow jobs](/dev/guides/jobs).
+
+## Headers and parameters
+
+<ParamField path="taskId" type="string" required>
+Resource ID.
+</ParamField>
+
+<ParamField query="songId" type="string" required>
+Same song as submission.
+</ParamField>
+
+<ParamField query="userAddress" type="string" required>
+Same selected account as submission.
+</ParamField>
+
+<ParamField query="task" type="string" required>
+Task kind returned by submission. Values: `repaint`, `lego`, `complete`, `extend`, `cover`, `extract`.
+</ParamField>
+
+<ParamField query="stemId" type="string">
+Same target stem if supplied.
+</ParamField>
+
+<ParamField query="prompt" type="string">
+Optional original prompt.
+</ParamField>
+
+<ParamField query="repaintingStart" type="string">
+Optional original start, decimal seconds.
+</ParamField>
+
+<ParamField query="repaintingEnd" type="string">
+Optional original end, decimal seconds.
+</ParamField>
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<EditStatusFields />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/api/editing/status/$(jq -nr --arg v "$TASK_ID" '$v|@uri')?songId=$(jq -nr --arg v "$SONG_ID" '$v|@uri')&userAddress=$(jq -nr --arg v "$USER_ADDRESS" '$v|@uri')&task=$(jq -nr --arg v "$TASK" '$v|@uri')" \
+  -H "x-session-user-address: $USER_ADDRESS"
+```
+
+</RequestExample>

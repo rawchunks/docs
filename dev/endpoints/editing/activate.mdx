@@ -1,0 +1,58 @@
+---
+title: "Activate or merge a take"
+description: "Select a take as the base or merge a candidate composition."
+api: "POST https://api.rawchunks.space/api/editing/activate"
+playground: "simple"
+---
+
+import ActivateBody from '/snippets/dev/requests/activate.mdx';
+import ActivationResultFields from '/snippets/dev/models/activationresult.mdx';
+import Errors from '/snippets/dev/errors.mdx';
+
+`base` selects the take. A Layer candidate becomes a new unmuted stem. `merge` without `composition` merges the take’s recorded region. With `composition`, upload your rendered WAV and supply the latest history `commitId`.
+
+[Takes](/dev/guides/edit/takes) · [Client-rendered merge](/dev/guides/edit/merge).
+
+## Headers and parameters
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+## JSON body
+
+<ActivateBody />
+
+## Response (200)
+
+Success.
+
+<ActivationResultFields />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/editing/activate" \
+  -H "x-session-user-address: $USER_ADDRESS" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc --arg user "$USER_ADDRESS" --arg song "$SONG_ID" --arg take "$TAKE_ID" '{
+  "songId": $song,
+  "userAddress": $user,
+  "takeId": $take,
+  "action": "base"
+}')"
+```
+
+</RequestExample>

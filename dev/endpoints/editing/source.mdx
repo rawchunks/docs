@@ -1,0 +1,66 @@
+---
+title: "Upload source audio"
+description: "Upload a rendered WAV for an existing editable song."
+api: "POST https://api.rawchunks.space/api/editing/source"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+
+Uploading returns a reference URL. It does not replace the active master or create a take. Supply the URL as `srcAudioUrl` to an edit or merge.
+
+[Render and merge candidates](/dev/guides/edit/merge).
+
+## Headers and parameters
+
+<ParamField query="songId" type="string" required>
+Song receiving the source.
+</ParamField>
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+## Multipart body
+
+<ParamField body="file" type="file" required>
+RIFF WAV, PCM or IEEE float. Maximum 50 MiB.
+</ParamField>
+
+## Response (201)
+
+Success.
+
+<ResponseField name="url" type="string" required />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/editing/source?songId=$(jq -nr --arg v "$SONG_ID" '$v|@uri')" \
+  -H "x-session-user-address: $USER_ADDRESS" \
+  -F "file=@source.wav;type=audio/wav"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 201
+{
+  "url": "https://example.com/composition.wav"
+}
+```
+
+</ResponseExample>
