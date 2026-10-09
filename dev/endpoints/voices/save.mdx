@@ -1,0 +1,97 @@
+---
+title: "Save a voice from a song"
+description: "Save and prepare vocals from an owned song."
+api: "POST https://api.rawchunks.space/api/voices"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import SessionHeader from '/snippets/dev/session-header.mdx';
+import VoiceFields from '/snippets/dev/models/voice.mdx';
+
+The song must have audio and belong to your account. Poll or follow events for preparation status. [Saved voices](/dev/guides/generate/voices).
+
+## Headers and parameters
+
+<SessionHeader />
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+<ParamField header="x-network-id" type="string">
+Session network in CAIP-2 form, for example eip155:8453.
+</ParamField>
+
+## JSON body
+
+<ParamField body="songId" type="string" required>
+Opaque ID returned by the API. Minimum length: `1`.
+</ParamField>
+
+<ParamField body="creator" type="string" required>
+Wallet address for the selected account. Use the same address as the session owner. Minimum length: `10`.
+</ParamField>
+
+<ParamField body="name" type="string" />
+
+## Response (202)
+
+Accepted; follow the returned task.
+
+<ResponseField name="success" type="boolean" required />
+
+<ResponseField name="voice" type="object" required>
+<Expandable title="Properties">
+<VoiceFields />
+</Expandable>
+</ResponseField>
+
+Budget headers use six-decimal USDC atomic units. See [session payments](/dev/guides/payments#track-or-end-a-session).
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `401` | Invalid or expired session token. |
+| `402` | Payment required or insufficient session budget. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/voices" \
+  -H "Authorization: Bearer $SESSION_TOKEN" \
+  -H "x-network-id: $NETWORK" \
+  -H "x-session-user-address: $USER_ADDRESS" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc --arg user "$USER_ADDRESS" --arg song "$SONG_ID" '{
+  "songId": $song,
+  "creator": $user,
+  "name": "Lead voice"
+}')"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 202
+{
+  "success": true,
+  "voice": {
+    "id": "voice-example",
+    "name": "Lead voice",
+    "creator": "0x1111111111111111111111111111111111111111",
+    "status": "saved"
+  }
+}
+```
+
+</ResponseExample>

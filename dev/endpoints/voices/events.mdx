@@ -1,0 +1,49 @@
+---
+title: "Voice preparation events"
+description: "Follow a saved voice’s preparation as NDJSON."
+api: "GET https://api.rawchunks.space/api/voices/{id}/events"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+
+One JSON object per line, content type `application/x-ndjson`. Terminal states are `ready` and `error`. There is no public start-training, adapter-upload, retrain, cancel or voice-delete endpoint.
+
+## Headers and parameters
+
+<ParamField path="id" type="string" required>
+Resource ID.
+</ParamField>
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<ResponseField name="result" type="string">
+One voice state object per line.
+</ResponseField>
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/api/voices/$(jq -nr --arg v "$ID" '$v|@uri')/events" \
+  -H "x-session-user-address: $USER_ADDRESS"
+```
+
+</RequestExample>

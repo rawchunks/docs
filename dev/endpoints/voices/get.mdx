@@ -1,0 +1,52 @@
+---
+title: "Read a saved voice"
+description: "Read a voice and model-specific availability."
+api: "GET https://api.rawchunks.space/api/voices/{id}"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import VoiceFields from '/snippets/dev/models/voice.mdx';
+
+Reference use requires `sample_url`. Trained use requires `availability.turbo.status` or `availability.sft.status` to be `ready` for your selected generation mode.
+
+## Headers and parameters
+
+<ParamField path="id" type="string" required>
+Resource ID.
+</ParamField>
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<ResponseField name="voice" type="object" required>
+<Expandable title="Properties">
+<VoiceFields />
+</Expandable>
+</ResponseField>
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/api/voices/$(jq -nr --arg v "$ID" '$v|@uri')" \
+  -H "x-session-user-address: $USER_ADDRESS"
+```
+
+</RequestExample>

@@ -1,0 +1,41 @@
+
+
+<ResponseField name="id" type="string" required />
+
+<ResponseField name="name" type="string" required />
+
+<ResponseField name="creator" type="string" required />
+
+<ResponseField name="sample_url" type="string | null" />
+
+<ResponseField name="source_song_id" type="string | null" />
+
+<ResponseField name="status" type="string" required>
+Values: `saved`, `extracting`, `queued`, `training`, `ready`, `error`.
+</ResponseField>
+
+<ResponseField name="error" type="string | null" />
+
+<ResponseField name="availability" type="object">
+<Expandable title="Properties">
+<ResponseField name="turbo" type="object">
+<Expandable title="Properties">
+<ResponseField name="model" type="string" />
+
+<ResponseField name="status" type="string">
+Check ready for the generation mode you will use.
+</ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="sft" type="object">
+<Expandable title="Properties">
+<ResponseField name="model" type="string" />
+
+<ResponseField name="status" type="string">
+Check ready for the generation mode you will use.
+</ResponseField>
+</Expandable>
+</ResponseField>
+</Expandable>
+</ResponseField>

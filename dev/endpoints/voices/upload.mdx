@@ -1,0 +1,96 @@
+---
+title: "Upload a voice recording"
+description: "Save and prepare one vocal recording."
+api: "POST https://api.rawchunks.space/api/voices/upload"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import SessionHeader from '/snippets/dev/session-header.mdx';
+import VoiceFields from '/snippets/dev/models/voice.mdx';
+
+Send text fields before the file. An uploaded full mix is not automatically converted to isolated vocals. Saving and trained readiness are separate states.
+
+[Voice upload and readiness](/dev/guides/generate/voices).
+
+## Headers and parameters
+
+<SessionHeader />
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+<ParamField header="x-network-id" type="string">
+Session network in CAIP-2 form, for example eip155:8453.
+</ParamField>
+
+## Multipart body
+
+<ParamField body="creator" type="string" required>
+Wallet address for the selected account. Use the same address as the session owner. Minimum length: `10`.
+</ParamField>
+
+<ParamField body="name" type="string" />
+
+<ParamField body="file" type="file" required>
+One WAV, MP3, FLAC, OGG, AAC, M4A/MP4 or WebM recording. Maximum 50 MiB. For preparation, use mono/stereo audio up to 240 seconds.
+</ParamField>
+
+## Response (202)
+
+Accepted; follow the returned task.
+
+<ResponseField name="success" type="boolean" required />
+
+<ResponseField name="voice" type="object" required>
+<Expandable title="Properties">
+<VoiceFields />
+</Expandable>
+</ResponseField>
+
+Budget headers use six-decimal USDC atomic units. See [session payments](/dev/guides/payments#track-or-end-a-session).
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `401` | Invalid or expired session token. |
+| `402` | Payment required or insufficient session budget. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/voices/upload" \
+  -H "Authorization: Bearer $SESSION_TOKEN" \
+  -H "x-network-id: $NETWORK" \
+  -H "x-session-user-address: $USER_ADDRESS" \
+  -F "creator=$USER_ADDRESS" \
+  -F "name=Lead voice" \
+  -F "file=@voice.wav;type=audio/wav"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 202
+{
+  "success": true,
+  "voice": {
+    "id": "voice-example",
+    "name": "Lead voice",
+    "creator": "0x1111111111111111111111111111111111111111",
+    "status": "saved"
+  }
+}
+```
+
+</ResponseExample>
