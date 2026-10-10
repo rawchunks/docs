@@ -1,0 +1,63 @@
+---
+title: "Update a song"
+description: "Update an owned song’s metadata or catalog fields."
+api: "PATCH https://api.rawchunks.space/api/songs/{id}"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import SongFields from '/snippets/dev/models/song.mdx';
+import SongPatchBody from '/snippets/dev/requests/songpatch.mdx';
+
+Send at least one recognized field. Audio or arrangement changes on a minted song require an editable version. Chain fields record a confirmed mint; changing them does not execute or prove a mint.
+
+[Publish an original](/dev/guides/publish/mint).
+
+## Headers and parameters
+
+<ParamField path="id" type="string" required>
+Resource ID.
+</ParamField>
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+## JSON body
+
+<SongPatchBody />
+
+## Response (200)
+
+Success.
+
+<SongFields />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X PATCH "$RAWCHUNKS_API/api/songs/$(jq -nr --arg v "$ID" '$v|@uri')" \
+  -H "x-session-user-address: $USER_ADDRESS" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc '{
+  "title": "Night circuit",
+  "tags": [
+    "acid house"
+  ],
+  "public": false
+}')"
+```
+
+</RequestExample>

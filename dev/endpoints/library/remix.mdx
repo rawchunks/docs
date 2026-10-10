@@ -1,0 +1,63 @@
+---
+title: "Create a remix draft"
+description: "Create a private draft linked to a minted original."
+api: "POST https://api.rawchunks.space/api/songs/{id}/remix"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import SongFields from '/snippets/dev/models/song.mdx';
+
+The source needs audio, `network`, and `chain_song_id` and must be an original. Your integration must check the caller’s onchain license first. This request neither buys a license nor mints a remix.
+
+[License and remix](/dev/guides/publish/licenses).
+
+## Headers and parameters
+
+<ParamField path="id" type="string" required>
+Resource ID.
+</ParamField>
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+## Response (201)
+
+Success.
+
+<SongFields />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/songs/$(jq -nr --arg v "$ID" '$v|@uri')/remix" \
+  -H "x-session-user-address: $USER_ADDRESS"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 201
+{
+  "id": "sng-example",
+  "title": "Night circuit",
+  "creator": "0x1111111111111111111111111111111111111111",
+  "url": "https://example.com/final.wav"
+}
+```
+
+</ResponseExample>

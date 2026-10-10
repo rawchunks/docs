@@ -1,0 +1,49 @@
+---
+title: "Delete a take by ID"
+description: "Delete a take from an owned editable song."
+api: "DELETE https://api.rawchunks.space/api/takes/{id}"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+
+This route can delete active takes. Use [editor discard](/dev/endpoints/editing/delete-take) to reject active-take deletion.
+
+## Headers and parameters
+
+<ParamField path="id" type="string" required>
+Resource ID.
+</ParamField>
+
+<ParamField header="x-session-user-address" type="string" required>
+Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<ResponseField name="success" type="boolean" required />
+
+<ResponseField name="id" type="string" required />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `403` | Account does not match resource. |
+| `404` | Resource not found. |
+| `409` | Resource conflict; reload state or open an editable version. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X DELETE "$RAWCHUNKS_API/api/takes/$(jq -nr --arg v "$ID" '$v|@uri')" \
+  -H "x-session-user-address: $USER_ADDRESS"
+```
+
+</RequestExample>

@@ -1,0 +1,21 @@
+import SongFields from '/snippets/dev/models/song.mdx';
+import StemFields from '/snippets/dev/models/stem.mdx';
+import TakeFields from '/snippets/dev/models/take.mdx';
+
+<ResponseField name="song" type="object" required>
+<Expandable title="Properties">
+<SongFields />
+</Expandable>
+</ResponseField>
+
+<ResponseField name="stems" type="object[]" required>
+<Expandable title="Properties">
+<StemFields />
+</Expandable>
+</ResponseField>
+
+<ResponseField name="takes" type="object[]" required>
+<Expandable title="Properties">
+<TakeFields />
+</Expandable>
+</ResponseField>

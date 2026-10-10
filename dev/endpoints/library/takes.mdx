@@ -1,0 +1,44 @@
+---
+title: "List song takes"
+description: "List takes for a readable song."
+api: "GET https://api.rawchunks.space/api/songs/{id}/takes"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import TakeFields from '/snippets/dev/models/take.mdx';
+
+Public song access or the private song owner’s header is required.
+
+## Headers and parameters
+
+<ParamField path="id" type="string" required>
+Resource ID.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<ResponseField name="items" type="object[]">
+<Expandable title="Properties">
+<TakeFields />
+</Expandable>
+</ResponseField>
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/api/songs/$(jq -nr --arg v "$ID" '$v|@uri')/takes"
+```
+
+</RequestExample>

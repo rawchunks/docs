@@ -1,0 +1,40 @@
+---
+title: "Read a song project"
+description: "Read a song with its stems and takes."
+api: "GET https://api.rawchunks.space/api/songs/{id}"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import ProjectFields from '/snippets/dev/models/project.mdx';
+
+Public songs can be read without an account header. Private songs require the owner’s `x-session-user-address`. `public` controls catalog visibility, not media encryption.
+
+## Headers and parameters
+
+<ParamField path="id" type="string" required>
+Resource ID.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<ProjectFields />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/api/songs/$(jq -nr --arg v "$ID" '$v|@uri')"
+```
+
+</RequestExample>

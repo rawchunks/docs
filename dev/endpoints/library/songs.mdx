@@ -1,0 +1,54 @@
+---
+title: "List songs"
+description: "List the public catalog or one creator’s library."
+api: "GET https://api.rawchunks.space/api/songs"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import SongFields from '/snippets/dev/models/song.mdx';
+
+Without `creator`, only public songs are returned, newest first. A creator query includes that owner’s private songs and requires their account header. No default page cap is applied; send `limit` and `offset`. There is no total-count or cursor field.
+
+[Paginate and manage a library](/dev/guides/library).
+
+## Headers and parameters
+
+<ParamField query="creator" type="string">
+Owner library. Requires x-session-user-address with the same address.
+</ParamField>
+
+<ParamField query="limit" type="integer">
+Positive integer page size. Minimum: `1`.
+</ParamField>
+
+<ParamField query="offset" type="integer">
+Nonnegative integer offset. Minimum: `0`.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<ResponseField name="items" type="object[]">
+<Expandable title="Properties">
+<SongFields />
+</Expandable>
+</ResponseField>
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/api/songs"
+```
+
+</RequestExample>
