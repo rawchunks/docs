@@ -1,0 +1,41 @@
+---
+title: "Delete an album"
+description: "Remove an album record."
+api: "DELETE https://api.rawchunks.space/api/albums/{id}"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+
+Restrict this operation to the album creator in your product.
+
+## Headers and parameters
+
+<ParamField path="id" type="string" required>
+Resource ID.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<ResponseField name="success" type="boolean" required />
+
+<ResponseField name="id" type="string" required />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X DELETE "$RAWCHUNKS_API/api/albums/$(jq -nr --arg v "$ID" '$v|@uri')"
+```
+
+</RequestExample>

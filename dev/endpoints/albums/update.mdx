@@ -1,0 +1,49 @@
+---
+title: "Update an album"
+description: "Update an album’s title, description, cover or visibility."
+api: "PATCH https://api.rawchunks.space/api/albums/{id}"
+playground: "simple"
+---
+
+import AlbumFields from '/snippets/dev/models/album.mdx';
+import AlbumPatchBody from '/snippets/dev/requests/albumpatch.mdx';
+import Errors from '/snippets/dev/errors.mdx';
+
+Send at least one recognized field. Restrict this operation to the album creator in your product.
+
+## Headers and parameters
+
+<ParamField path="id" type="string" required>
+Resource ID.
+</ParamField>
+
+## JSON body
+
+<AlbumPatchBody />
+
+## Response (200)
+
+Success.
+
+<AlbumFields />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X PATCH "$RAWCHUNKS_API/api/albums/$(jq -nr --arg v "$ID" '$v|@uri')" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc '{
+  "title": "Night circuits, volume 1"
+}')"
+```
+
+</RequestExample>

@@ -1,0 +1,48 @@
+---
+title: "List albums"
+description: "List a creator’s albums or public albums."
+api: "GET https://api.rawchunks.space/api/albums"
+playground: "simple"
+---
+
+import AlbumFields from '/snippets/dev/models/album.mdx';
+import Errors from '/snippets/dev/errors.mdx';
+
+With neither `creator` nor `public=true`, the response is an empty array. There are no pagination parameters. Album visibility is a catalog setting, not a private storage boundary.
+
+## Headers and parameters
+
+<ParamField query="creator" type="string">
+Creator address; takes precedence over public.
+</ParamField>
+
+<ParamField query="public" type="string">
+Set the literal string true for public albums.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<ResponseField name="items" type="object[]">
+<Expandable title="Properties">
+<AlbumFields />
+</Expandable>
+</ResponseField>
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/api/albums"
+```
+
+</RequestExample>

@@ -1,0 +1,53 @@
+---
+title: "Add a song to an album"
+description: "Associate a song with an album."
+api: "POST https://api.rawchunks.space/api/albums/{id}/songs"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+
+A song has one album association. Check the creator of both records in your integration.
+
+## Headers and parameters
+
+<ParamField path="id" type="string" required>
+Resource ID.
+</ParamField>
+
+## JSON body
+
+<ParamField body="songId" type="string" required>
+Minimum length: `1`.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<ResponseField name="success" type="boolean" required />
+
+<ResponseField name="albumId" type="string" required />
+
+<ResponseField name="songId" type="string" required />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/albums/$(jq -nr --arg v "$ID" '$v|@uri')/songs" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc --arg song "$SONG_ID" '{
+  "songId": $song
+}')"
+```
+
+</RequestExample>

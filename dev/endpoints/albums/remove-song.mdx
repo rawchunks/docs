@@ -1,0 +1,45 @@
+---
+title: "Remove a song from its album"
+description: "Clear a song’s album association."
+api: "DELETE https://api.rawchunks.space/api/albums/{id}/songs/{songId}"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+
+Use the actual album and song IDs, and check the current association before sending. This clears the song’s album association.
+
+## Headers and parameters
+
+<ParamField path="id" type="string" required>
+Resource ID.
+</ParamField>
+
+<ParamField path="songId" type="string" required>
+Resource ID.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<ResponseField name="success" type="boolean" required />
+
+<ResponseField name="songId" type="string" required />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X DELETE "$RAWCHUNKS_API/api/albums/$(jq -nr --arg v "$ID" '$v|@uri')/songs/$(jq -nr --arg v "$SONG_ID" '$v|@uri')"
+```
+
+</RequestExample>

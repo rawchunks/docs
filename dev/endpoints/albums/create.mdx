@@ -1,0 +1,57 @@
+---
+title: "Create an album"
+description: "Create an album record."
+api: "POST https://api.rawchunks.space/api/albums"
+playground: "simple"
+---
+
+import AlbumCreateBody from '/snippets/dev/requests/albumcreate.mdx';
+import AlbumFields from '/snippets/dev/models/album.mdx';
+import Errors from '/snippets/dev/errors.mdx';
+
+Your integration should authenticate its user and restrict album management to that creator. [Library integration](/dev/guides/library).
+
+## JSON body
+
+<AlbumCreateBody />
+
+## Response (201)
+
+Success.
+
+<AlbumFields />
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/albums" \
+  -H "Content-Type: application/json" \
+  --data "$(jq -nc --arg user "$USER_ADDRESS" '{
+  "title": "Night circuits",
+  "creator": $user,
+  "public": false
+}')"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 201
+{
+  "id": "album-example",
+  "title": "Night circuit",
+  "creator": "0x1111111111111111111111111111111111111111"
+}
+```
+
+</ResponseExample>

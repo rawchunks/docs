@@ -1,0 +1,51 @@
+---
+title: "Manage projects and albums"
+description: "Paginate songs, open editable versions and organize albums."
+---
+
+import ClientSetup from '/snippets/dev/client-setup.mdx';
+
+<ClientSetup />
+
+## Paginate the catalog
+
+```javascript
+const pageSize = 20;
+let offset = 0;
+const seen = new Set();
+while (true) {
+  const songs = await api.get('/api/songs?' +
+    new URLSearchParams({ limit: String(pageSize), offset: String(offset) }));
+  for (const song of songs) {
+    if (!seen.has(song.id)) { seen.add(song.id); addSongToYourList(song); }
+  }
+  if (songs.length < pageSize) break;
+  offset += songs.length;
+}
+```
+
+`addSongToYourList` is your UI callback. Results are newest first and use offset pagination, with no total count or cursor. New catalog entries can shift later pages; deduplicate IDs while browsing.
+
+For the owner's library, add `creator: userAddress` to the query and send the account header. The public list excludes private songs. Request a single song to get `{ song, stems, takes }`.
+
+## Open a minted song for editing
+
+```javascript
+const draft = await api.post(`/api/songs/${encodeURIComponent(songId)}/version`);
+const editableSongId = draft.id;
+```
+
+Use the returned ID for every subsequent edit. Unminted songs return themselves. Minted songs get a private editable draft, which can be reused for the same basis.
+
+## Organize an album
+
+```javascript
+const album = await api.post('/api/albums', {
+  creator: userAddress, title: 'Night circuits', public: false,
+});
+await api.post(`/api/albums/${encodeURIComponent(album.id)}/songs`, { songId });
+const loaded = await api.get(`/api/albums/${encodeURIComponent(album.id)}`);
+console.log(loaded.songs);
+```
+
+A song has one album association. Check that your user owns the album and song in your product before managing membership. Album visibility is a catalog setting; do not use it to protect confidential media.

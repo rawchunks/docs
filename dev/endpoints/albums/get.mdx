@@ -1,0 +1,50 @@
+---
+title: "Read an album"
+description: "Read an album and its associated songs."
+api: "GET https://api.rawchunks.space/api/albums/{id}"
+playground: "simple"
+---
+
+import Errors from '/snippets/dev/errors.mdx';
+import SongFields from '/snippets/dev/models/song.mdx';
+
+The response is an album object with a `songs` array. Do not use this route as a private-media access check.
+
+## Headers and parameters
+
+<ParamField path="id" type="string" required>
+Resource ID.
+</ParamField>
+
+## Response (200)
+
+Success.
+
+<ResponseField name="id" type="string" />
+
+<ResponseField name="title" type="string" />
+
+<ResponseField name="creator" type="string" />
+
+<ResponseField name="songs" type="object[]">
+<Expandable title="Properties">
+<SongFields />
+</Expandable>
+</ResponseField>
+
+## Errors
+
+<Errors />
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid request. |
+| `500` | Request failed. |
+
+<RequestExample>
+
+```bash cURL
+curl --fail-with-body -X GET "$RAWCHUNKS_API/api/albums/$(jq -nr --arg v "$ID" '$v|@uri')"
+```
+
+</RequestExample>
