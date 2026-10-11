@@ -1,0 +1,8 @@
+License payments send 80% to the recorded creator and 20% to the configured treasury. In atomic units:
+
+```javascript
+const treasuryFee = price * 2_000n / 10_000n;
+const creatorShare = price - treasuryFee;
+```
+
+Integer division rounds the treasury fee down; the creator receives the remainder. A price of `1_000_001` splits into `800_001` for the creator and `200_000` for the treasury.

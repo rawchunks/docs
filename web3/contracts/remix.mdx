@@ -1,0 +1,121 @@
+---
+title: "Remix contract"
+description: "Purchase ongoing rights, mint licensed variations and read their original-song links."
+---
+
+Call Remix to purchase a license or register a variation. A license purchase consumes one available license. A later variation mint uses those rights without another license payment.
+
+## Connect and purchase
+
+Use `publicClient`, `walletClient`, `account` and `evmContracts` from [Contracts stack](/web3/contracts/stack). Check the original's creator and metadata URI against the song you selected, using [Factory's song read](/web3/contracts/factory#connect-and-read).
+
+Read existing rights before requesting payment. The example below uses an existing `originalSongId` and the verified original's `state` returned by `getSong`:
+
+```javascript
+import { parseAbi } from 'viem';
+
+const rightsAbi = parseAbi(['function hasLicense(uint256 songId, address user) view returns (bool)']);
+const tokenAbi = parseAbi(['function usdc() view returns (address)']);
+const erc20Abi = parseAbi([
+  'function allowance(address owner, address spender) view returns (uint256)',
+  'function approve(address spender, uint256 amount) returns (bool)',
+]);
+const purchaseAbi = parseAbi(['function buyLicense(uint256 originalSongId)']);
+let licensed = await publicClient.readContract({
+  address: evmContracts.factory, abi: rightsAbi,
+  functionName: 'hasLicense', args: [originalSongId, account],
+});
+```
+
+An existing buyer keeps their rights without another charge. For a new buyer, check availability, read the actual settlement token and approve **Remix** for the listed price:
+
+```javascript
+if (!licensed && (!state.remixable || state.isRemix || state.licenseAmount === 0n)) {
+  throw new Error('No license available for this original');
+}
+if (!licensed && state.licensePrice > 0n) {
+  const token = await publicClient.readContract({
+    address: evmContracts.royalties, abi: tokenAbi, functionName: 'usdc',
+  });
+  const allowance = await publicClient.readContract({
+    address: token, abi: erc20Abi, functionName: 'allowance',
+    args: [account, evmContracts.remix],
+  });
+  if (allowance < state.licensePrice) {
+    const { request } = await publicClient.simulateContract({
+      address: token, abi: erc20Abi, account, functionName: 'approve',
+      args: [evmContracts.remix, state.licensePrice],
+    });
+    const approvalHash = await walletClient.writeContract(request);
+    const approval = await publicClient.waitForTransactionReceipt({ hash: approvalHash });
+    if (approval.status !== 'success') throw new Error('Approval failed');
+  }
+}
+```
+
+After any required approval succeeds, purchase the license and confirm the rights:
+
+```javascript
+if (!licensed) {
+  const { request } = await publicClient.simulateContract({
+    address: evmContracts.remix, abi: purchaseAbi, account,
+    functionName: 'buyLicense', args: [originalSongId],
+  });
+  const purchaseHash = await walletClient.writeContract(request);
+  // Store purchaseHash before waiting.
+  const purchase = await publicClient.waitForTransactionReceipt({ hash: purchaseHash });
+  if (purchase.status !== 'success') throw new Error('License purchase failed');
+}
+licensed = await publicClient.readContract({
+  address: evmContracts.factory, abi: rightsAbi,
+  functionName: 'hasLicense', args: [originalSongId, account],
+});
+if (!licensed) throw new Error('License not confirmed');
+```
+
+A zero-price license skips approval. Display the token and price to the buyer before signing; read them again if the operation is delayed. Store each submitted hash so your product can recover confirmation after a reload.
+
+## Mint a variation
+
+```solidity
+remixSong(uint256 originalSongId, RemixParams params,
+    string metadataUri) returns (uint256 remixedSongId)
+```
+
+`RemixParams` contains `licenseAmount`, `licensePrice` and `streamPrice`, all `uint256`. Variations are always marked `remixable = false`, even if allocation fields are nonzero. The example uses zero allocation and license price, the verified original ID and your variation's final `metadataUri`:
+
+```javascript
+const remixAbi = parseAbi([
+  'function remixSong(uint256 originalSongId, (uint256 licenseAmount, uint256 licensePrice, uint256 streamPrice) params, string metadataUri) returns (uint256 remixedSongId)',
+]);
+const { request: remixRequest } = await publicClient.simulateContract({
+  address: evmContracts.remix, abi: remixAbi, account,
+  functionName: 'remixSong',
+  args: [originalSongId,
+    { licenseAmount: 0n, licensePrice: 0n, streamPrice: 10_000n }, metadataUri],
+});
+const hash = await walletClient.writeContract(remixRequest);
+// Store hash before waiting.
+const receipt = await publicClient.waitForTransactionReceipt({ hash });
+if (receipt.status !== 'success') throw new Error('Variation mint failed');
+```
+
+The signer must hold a license for a remixable original. Remaining allocation may be zero if that signer already owns rights. Use the [Factory receipt example](/web3/contracts/factory#confirm-the-minted-song) to obtain `mintedId`. Confirm `SongRemixed`, then read the new song: its creator must be the signer, its URI must match, `isRemix` must be true and `parentSongId` must equal `originalSongId`.
+
+## Public interface
+
+| Call | Behavior |
+| --- | --- |
+| `buyLicense(originalSongId)` | Records the buyer's rights and settles the listed price. Repeat purchases by that buyer return without another charge or allocation change. |
+| `remixSong(originalSongId, params, metadataUri)` | Mints a variation to the licensed caller. |
+| `getRemixesOf(originalSongId)` | All variation IDs for the original. |
+| `getRemixCount(originalSongId)` | Number of variations for the original. |
+| `totalRemixes()` | Total variations registered through Remix. |
+| `canRemix(songId)` | Factory's availability check. Use `hasLicense` to check an existing buyer's rights. |
+| `factory()`, `royalties()` | Contract references. Verify them against your chosen deployment. |
+
+`LicensePurchased(originalSongId, licensee, price)` identifies a new purchase. `SongRemixed(originalSongId, remixedSongId, remixer, metadataUri)` identifies a variation. Both IDs and the remixer are indexed in `SongRemixed`.
+
+A missing license reverts with `LicenseRequired`. An absent song, unavailable allocation or non-remixable original rejects the corresponding call. A failed purchase rolls back both its payment and license state.
+
+[License workflow](/dev/guides/publish/licenses) · [Remix interface](https://github.com/rawchunks/blockchain/blob/main/contracts/src/interfaces/Iremix.sol)

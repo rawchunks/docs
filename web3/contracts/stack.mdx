@@ -1,0 +1,64 @@
+---
+title: "Contracts stack"
+description: "Connect with viem or use Foundry to build and test the Solidity interfaces."
+---
+
+| Layer | Used here |
+| --- | --- |
+| Language | Solidity 0.8.28 |
+| Token and payment interfaces | OpenZeppelin Contracts 5.7.0: ERC-721, ERC-20 and SafeERC20 |
+| Build and tests | Foundry: Forge, forge-std 1.16.2, Solidity tests and fuzz tests |
+| Client examples | viem: ABI encoding, contract reads, simulation and receipt decoding |
+
+## Read contracts
+
+Install `viem`. These examples use Base Sepolia; choose addresses and network availability from [deployed contracts](/web3/contracts/deployed-contracts).
+
+```javascript
+import { createPublicClient, http } from 'viem';
+import { baseSepolia } from 'viem/chains';
+
+const publicClient = createPublicClient({ chain: baseSepolia, transport: http() });
+const evmContracts = {
+  factory: '0x4Ac838b970D44AB9056b4201e9ED3c1Ce271545e',
+  remix: '0xC5c7d2645A7119b538C8d752Ce61c9706cDF7A36',
+  royalties: '0xff402e0C8c9a19f855200524260A858DDF99EdcD',
+};
+```
+
+Reads need an RPC connection. Each contract page gives the ABI signatures for its example.
+
+## Send a contract call
+
+Connect your selected wallet through its EIP-1193 `walletProvider`. Supply the connected address as `account` when simulating a write:
+
+```javascript
+import { createWalletClient, custom } from 'viem';
+
+const walletClient = createWalletClient({
+  chain: baseSepolia,
+  transport: custom(walletProvider),
+});
+const [account] = await walletClient.getAddresses();
+if (!account || await walletClient.getChainId() !== baseSepolia.id) {
+  throw new Error('Connect a wallet on Base Sepolia');
+}
+```
+
+The contract examples simulate the requested call, ask the wallet to sign it and wait for its receipt. Keep the selected account and chain fixed during the operation. Save the returned hash before waiting; if confirmation is interrupted, look it up before submitting again.
+
+## Build and test locally
+
+Clone the [blockchain repository](https://github.com/rawchunks/blockchain), install [Foundry](https://getfoundry.sh/introduction/installation), then run from `contracts/`:
+
+```bash
+forge install foundry-rs/forge-std@v1.16.2
+forge install OpenZeppelin/openzeppelin-contracts@v5.7.0
+forge build --contracts src
+forge test --contracts src
+forge inspect Factory abi --contracts src --json
+```
+
+Use `--contracts src` with this repository: its Solidity files are in `src/`. The build uses the configured optimizer and IR pipeline. The tests cover minting, license purchases, repeat purchases, variation rights, payment rollback, creator updates and split calculations.
+
+[Forge reference](https://getfoundry.sh/forge/overview) · [Contract source](https://github.com/rawchunks/blockchain/tree/main/contracts/src)

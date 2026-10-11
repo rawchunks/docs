@@ -1,0 +1,58 @@
+---
+title: "Royalties contract"
+description: "Read the license-payment split and settlement token."
+---
+
+import LicenseSplit from "/snippets/web3/license-split.mdx";
+
+Use Royalties to read the token and split used by license purchases. Call [Remix](/web3/contracts/remix) to buy a license and record rights.
+
+## Payment split
+
+<LicenseSplit />
+
+## Read the configuration
+
+Use `publicClient` and `evmContracts` from [Contracts stack](/web3/contracts/stack).
+
+```javascript
+import { parseAbi } from 'viem';
+
+const royaltiesAbi = parseAbi([
+  'function usdc() view returns (address)',
+  'function calculateSplit(uint256 licensePrice) pure returns (uint256 creatorShare, uint256 treasuryFee)',
+]);
+const [token, split] = await Promise.all([
+  publicClient.readContract({
+    address: evmContracts.royalties, abi: royaltiesAbi,
+    functionName: 'usdc',
+  }),
+  publicClient.readContract({
+    address: evmContracts.royalties, abi: royaltiesAbi,
+    functionName: 'calculateSplit', args: [1_000_001n],
+  }),
+]);
+const [creatorShare, treasuryFee] = split;
+```
+
+| Call | Result |
+| --- | --- |
+| `usdc()` | Settlement token address. Read it on the selected network. |
+| `treasury()` | Treasury recipient. |
+| `calculateSplit(licensePrice)` | `(creatorShare, treasuryFee)`. |
+| `BASIS_POINTS()`, `CREATOR_SHARE_BPS()`, `TREASURY_FEE_BPS()` | `10000`, `8000`, `2000`. |
+| `getAdmin()` | Configuration authority. |
+
+The token has six decimals on the verified deployments. Tempo Moderato currently uses OUSD despite the getter's `usdc` name. See [deployed contracts](/web3/contracts/deployed-contracts) for the actual token per network.
+
+## Distribution interface
+
+`distributeLicensePayment(songId, payer, creator, licensePrice)` returns the creator share and treasury fee and emits `LicensePaymentDistributed`. This call distributes a funded contract balance; it does not record license rights. Integrate purchases through `Remix.buyLicense`.
+
+`LicensePaymentDistributed` includes indexed `songId`, `payer` and `creator`, followed by `licensePrice`, `creatorShare` and `treasuryFee`. A zero-price purchase through Remix skips distribution.
+
+`setUsdc(newUsdc)`, `setTreasury(newTreasury)` and `transferAdmin(newAdmin)` require the administrator. Configuration changes emit `UsdcUpdated`, `TreasuryUpdated` or `AdminTransferred`.
+
+The contract handles license payments. A song's stored `streamPrice` does not start metered playback or automatic playback payouts.
+
+[Royalties interface](https://github.com/rawchunks/blockchain/blob/main/contracts/src/interfaces/Iroyalties.sol)

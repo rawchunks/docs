@@ -1,0 +1,123 @@
+---
+title: "Factory contract"
+description: "Mint originals, read song terms and license rights, and update your song."
+---
+
+Factory is the song registry and ERC-721 contract. The wallet calling `mintSong` becomes both the recorded creator and the first token owner.
+
+## Mint an original
+
+```solidity
+mintSong(uint256 licenseAmount, uint256 licensePrice,
+    uint256 streamPrice, bool remixable, string metadataUri)
+    returns (uint256 songId)
+```
+
+| Input | Meaning |
+| --- | --- |
+| `licenseAmount` | Number of licenses available. Zero means none are available for purchase. |
+| `licensePrice` | Price for one ongoing license, in the settlement token's atomic units. |
+| `streamPrice` | Stored playback rate. Setting it does not collect playback payments. |
+| `remixable` | Whether the original permits licensed variations. |
+| `metadataUri` | Nonempty URI for the song's metadata. Use your final `ipfs://` URI. |
+
+## Connect and read
+
+Use `publicClient`, `walletClient`, `account` and `evmContracts` from [Contracts stack](/web3/contracts/stack). This ABI includes only the calls and event used below:
+
+```javascript
+import { parseAbi, parseEventLogs } from 'viem';
+
+const factoryAbi = parseAbi([
+  'function getSong(uint256 songId) view returns ((uint256 licenseAmount, uint256 licensePrice, uint256 streamPrice, address creator, bool remixable, bool isRemix, uint256 parentSongId, string metadataUri) song)',
+  'function mintSong(uint256 licenseAmount, uint256 licensePrice, uint256 streamPrice, bool remixable, string metadataUri) returns (uint256 songId)',
+  'event SongMinted(uint256 indexed songId, address indexed creator, uint256 licenseAmount, uint256 licensePrice, uint256 streamPrice, bool remixable, string metadataUri)',
+]);
+const song = await publicClient.readContract({
+  address: evmContracts.factory, abi: factoryAbi,
+  functionName: 'getSong', args: [1n], // An existing ID on this deployment.
+});
+console.log(song.creator, song.licensePrice, song.metadataUri);
+```
+
+`getSong` returns fields in this order: `licenseAmount`, `licensePrice`, `streamPrice`, `creator`, `remixable`, `isRemix`, `parentSongId`, `metadataUri`. An original has `isRemix = false` and `parentSongId = 0`.
+
+The following call mints 20 licenses priced at 5 USDC each and a stored rate of 0.01 USDC. Set `metadataUri` to your final published URI:
+
+```javascript
+const { request } = await publicClient.simulateContract({
+  address: evmContracts.factory, abi: factoryAbi, account,
+  functionName: 'mintSong',
+  args: [20n, 5_000_000n, 10_000n, true, metadataUri],
+});
+const hash = await walletClient.writeContract(request);
+// Store hash in your product before waiting for confirmation.
+const receipt = await publicClient.waitForTransactionReceipt({ hash });
+if (receipt.status !== 'success') throw new Error('Mint failed');
+```
+
+## Confirm the minted song
+
+The transaction hash and song ID are different values. Decode the Factory's `SongMinted` event from the successful receipt:
+
+```javascript
+const mints = parseEventLogs({ abi: factoryAbi, eventName: 'SongMinted',
+  logs: receipt.logs.filter(log =>
+    log.address.toLowerCase() === evmContracts.factory.toLowerCase()),
+}).filter(event => event.args.creator.toLowerCase() === account.toLowerCase()
+  && event.args.metadataUri === metadataUri);
+if (mints.length !== 1) throw new Error('Expected one matching mint');
+const mintedId = mints[0].args.songId;
+```
+
+Read `getSong(mintedId)` and confirm its creator, URI, `isRemix = false` and `parentSongId = 0` before recording it in your catalog. If receipt confirmation was interrupted, recover the saved hash before submitting another mint.
+
+## Reads and creator updates
+
+| Call | Result or permission |
+| --- | --- |
+| `getSong(songId)` | Song terms and provenance. Reverts if absent. |
+| `songExists(songId)` | Whether the song exists. |
+| `getLicenseAmount(songId)` | Remaining allocation. |
+| `getSongCreator(songId)` | Recorded creator. |
+| `hasLicense(songId, user)` | Whether this address holds ongoing rights. |
+| `canRemix(songId)` | Original is remixable and has allocation left. This checks availability, not the caller's purchased rights. |
+| `totalSongs()` | Number of minted songs. IDs start at 1. |
+| `tokenURI(songId)` | Metadata URI. |
+| `ownerOf`, `balanceOf`, `approve`, `getApproved`, `setApprovalForAll`, `isApprovedForAll`, `transferFrom`, `safeTransferFrom` | Standard ERC-721 ownership, approvals and transfers. |
+| `supportsInterface(interfaceId)`, `name()`, `symbol()` | Interface and token identity. |
+| `updatePricing(songId, newLicensePrice, newStreamPrice)` | Recorded creator only. |
+| `updateMetadataUri(songId, newMetadataUri)` | Recorded creator only; URI must be nonempty. |
+
+To change prices, simulate the creator's call, sign it and check the receipt:
+
+```javascript
+const pricingAbi = parseAbi([
+  'function updatePricing(uint256 songId, uint256 newLicensePrice, uint256 newStreamPrice)',
+]);
+const { request: pricingRequest } = await publicClient.simulateContract({
+  address: evmContracts.factory, abi: pricingAbi, account,
+  functionName: 'updatePricing', args: [mintedId, 6_000_000n, 10_000n],
+});
+const pricingHash = await walletClient.writeContract(pricingRequest);
+const pricingReceipt = await publicClient.waitForTransactionReceipt({ hash: pricingHash });
+if (pricingReceipt.status !== 'success') throw new Error('Price update failed');
+```
+
+For metadata, use `parseAbi(['function updateMetadataUri(uint256 songId, string newMetadataUri)'])`, `functionName: 'updateMetadataUri'` and `args: [mintedId, newMetadataUri]` in the same sequence. Read the song again after either update.
+
+Transferring the token does not grant the new owner creator-only update permissions. Existing licenses survive a pricing change.
+
+## Events and errors
+
+Watch `SongMinted`, `LicenseConsumed`, `PricingUpdated` and `MetadataUriUpdated` for song changes. ERC-721 transfers emit `Transfer`. Filter logs by the Factory address and identify mints by creator and metadata URI.
+
+`SongNotFound`, `NotSongCreator`, `EmptyMetadataUri`, `SongNotRemixable` and `NoLicensesAvailable` describe the common rejected calls. The [Factory interface](https://github.com/rawchunks/blockchain/blob/main/contracts/src/interfaces/Ifactory.sol) defines their full fields.
+
+<Accordion title="Restricted interface">
+  `mintRemix(licenseAmount, licensePrice, streamPrice, parentSongId, remixer, metadataUri)` and `consumeLicense(songId, licensee)` require an authorized consumer or administrator. Use Remix's public calls for license purchases and variations.
+
+  `authorizeConsumer(consumer)`, `revokeConsumer(consumer)` and `transferAdmin(newAdmin)` require the administrator. `isAuthorizedConsumer(consumer)` and `getAdmin()` are public reads. These permissions are not required to integrate the public mint, license and variation calls.
+</Accordion>
+
+[Factory interface](https://github.com/rawchunks/blockchain/blob/main/contracts/src/interfaces/Ifactory.sol) · [Deployed Factory addresses](/web3/contracts/deployed-contracts)
