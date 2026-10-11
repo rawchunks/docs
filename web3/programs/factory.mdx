@@ -1,0 +1,129 @@
+---
+title: "Factory program"
+description: "Register originals and update song terms with exact instruction layouts and account roles."
+---
+
+Factory stores each original or variation in a [song account](/web3/programs/accounts#song-account). The creator signs original registration and later price or metadata updates.
+
+## Register an original
+
+Use `rpc`, `factoryProgram`, `systemProgram`, `signer` and `AccountRole` from [Programs stack](/web3/programs/stack#connect-your-project). Read the current next ID, derive its song address and encode the mint fields:
+
+```javascript
+import { getProgramDerivedAddress, getU64Encoder, fetchEncodedAccount,
+  assertAccountExists, getStructEncoder, getU8Encoder, getU16Encoder,
+  getBytesEncoder, addEncoderSizePrefix } from '@solana/kit';
+
+const [configAddress] = await getProgramDerivedAddress({
+  programAddress: factoryProgram, seeds: [new TextEncoder().encode('factory')],
+});
+const config = await fetchEncodedAccount(rpc, configAddress);
+assertAccountExists(config);
+if (config.programAddress !== factoryProgram || config.data.length !== 56 || config.data[0] !== 1) {
+  throw new Error('Invalid Factory config');
+}
+const songId = new DataView(config.data.buffer, config.data.byteOffset, config.data.byteLength)
+  .getBigUint64(40, true);
+const [songAddress] = await getProgramDerivedAddress({
+  programAddress: factoryProgram,
+  seeds: [new TextEncoder().encode('song'), getU64Encoder().encode(songId)],
+});
+const uri = new TextEncoder().encode(metadataUri);
+if (!uri.length || uri.length > 200) throw new Error('URI must be 1 to 200 UTF-8 bytes');
+```
+
+`metadataUri` is your final IPFS metadata URI. This example registers a remixable original with 20 licenses at 5 USDC and a stored rate of 0.01 USDC:
+
+```javascript
+const data = getStructEncoder([
+  ['operation', getU8Encoder()], ['licenseAmount', getU64Encoder()],
+  ['licensePrice', getU64Encoder()], ['streamPrice', getU64Encoder()],
+  ['remixable', getU8Encoder()], ['uri', addEncoderSizePrefix(getBytesEncoder(), getU16Encoder())],
+]).encode({ operation: 1, licenseAmount: 20n, licensePrice: 5_000_000n,
+  streamPrice: 10_000n, remixable: 1, uri });
+const instruction = {
+  programAddress: factoryProgram, data,
+  accounts: [
+    { address: signer.address, role: AccountRole.WRITABLE_SIGNER },
+    { address: configAddress, role: AccountRole.WRITABLE },
+    { address: songAddress, role: AccountRole.WRITABLE },
+    { address: systemProgram, role: AccountRole.READONLY },
+  ],
+};
+```
+
+[Send the instruction](/web3/programs/stack#send-an-instruction), then [read `songAddress`](/web3/programs/accounts#read-and-validate-accounts). Confirm the ID and URI, creator equals `signer.address`, `isRemix = false` and parent ID is `0`. Store the confirmed song ID separately from its transaction signature.
+
+### Instruction 1: mint song
+
+The first byte is `1`. Append these fields in order:
+
+| Field | Encoding |
+| --- | --- |
+| `licenseAmount`, `licensePrice`, `streamPrice` | Three u64 integers, little-endian |
+| `remixable` | One byte: `0` or `1` |
+| URI length | u16 little-endian, measured in UTF-8 bytes |
+| `metadataUri` | 1 to 200 UTF-8 bytes |
+
+Pass accounts in this order:
+
+| Index | Account | Role |
+| --- | --- | --- |
+| 0 | Creator | Writable signer; funds the new song account |
+| 1 | Factory config | Writable |
+| 2 | Song PDA for `nextSongId` | Writable |
+| 3 | System Program | Readonly |
+
+Read `nextSongId` from Factory config immediately before building. Another mint may use it first. After a confirmed seed conflict, read the latest ID and rebuild. If confirmation is uncertain, look up the saved signature before retrying.
+
+## Update a song
+
+Read the song to confirm its creator is your signer. Encode a price update with the Kit codecs already imported above:
+
+```javascript
+const pricingData = getStructEncoder([
+  ['operation', getU8Encoder()], ['songId', getU64Encoder()],
+  ['licensePrice', getU64Encoder()], ['streamPrice', getU64Encoder()],
+]).encode({ operation: 4, songId, licensePrice: 6_000_000n, streamPrice: 10_000n });
+const pricingInstruction = {
+  programAddress: factoryProgram, data: pricingData,
+  accounts: [
+    { address: signer.address, role: AccountRole.READONLY_SIGNER },
+    { address: songAddress, role: AccountRole.WRITABLE },
+  ],
+};
+```
+
+Use `pricingInstruction` as `instruction` in the [send sequence](/web3/programs/stack#send-an-instruction). Read the confirmed prices afterward. For a metadata update, keep the same accounts and encode the fields shown below, checking the URI byte length first.
+
+Both instructions use exactly two accounts: the **creator signer** (readonly) followed by the **song PDA** (writable).
+
+| First byte | Operation | Data after the first byte |
+| --- | --- | --- |
+| `4` | Update pricing | `songId`, `licensePrice`, `streamPrice`, each u64 little-endian |
+| `5` | Update metadata URI | `songId` u64, URI length u16, then URI bytes |
+
+Metadata uses the same 200-byte limit. The signer must match the song account's creator. Price changes preserve previously purchased rights.
+
+## Read songs and rights
+
+Use the [account reference](/web3/programs/accounts#read-and-validate-accounts) for song reads and license checks. It gives each PDA's seeds, owner, field offsets and layout checks.
+
+Logs identify `SongMinted`, `RemixMinted` and `LicenseConsumed`. Confirm state from the accounts; program logs are text, not EVM event topics.
+
+<Accordion title="Restricted instruction map">
+  These are part of the public source interface, but are not caller setup steps for an integration:
+
+  | Byte | Operation | Permission |
+  | --- | --- | --- |
+  | `0` | Initialize Factory config | Creates the config once |
+  | `2` | Mint remix | Authorized consumer or administrator |
+  | `3` | Consume license | Authorized consumer or administrator |
+  | `6` | Authorize consumer | Administrator |
+  | `7` | Revoke consumer | Administrator |
+  | `8` | Transfer administrator | Current administrator |
+
+  Use Remix's public purchase and variation instructions instead of calling `2` or `3` directly. The [source](https://github.com/rawchunks/blockchain/blob/main/programs/programs/factory/src/instructions.rs) defines their full account and data layouts.
+</Accordion>
+
+[Factory program source](https://github.com/rawchunks/blockchain/tree/main/programs/programs/factory) · [Program IDs](/web3/programs/deployed-programs)

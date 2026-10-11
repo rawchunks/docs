@@ -1,0 +1,129 @@
+---
+title: "Program accounts"
+description: "Derive song, license and variation addresses and decode their public account layouts."
+---
+
+Reads use `getAccountInfo` or `getMultipleAccounts` with base64 encoding. Check the account's owner, byte length and first-byte discriminator before decoding. An absent account is returned as `null`.
+
+## PDA seeds
+
+Encode seed labels as UTF-8, song IDs and indexes as u64 little-endian, and addresses as their raw 32 bytes.
+
+| Account | Owning program | Seeds |
+| --- | --- | --- |
+| Factory config | Factory | `['factory']` |
+| Song | Factory | `['song', songId]` |
+| License record | Factory | `['license', songId, userAddress]` |
+| Authorized consumer | Factory | `['consumer', consumerAddress]` |
+| Royalties config | Royalties | `['royalties']` |
+| Remix config | Remix | `['remix']` |
+| Original's remix count | Remix | `['remix_count', originalSongId]` |
+| Remix record | Remix | `['remix', originalSongId, remixIndex]` |
+
+The Remix authority address uses `['remix_authority']` under the Remix program ID. It is a PDA signer used by the purchase and variation instructions, not a wallet your project needs to create.
+
+Derive a song address with Kit's u64 encoder; no string conversion or decimal text goes into the seed:
+
+```javascript
+import { getProgramDerivedAddress, getU64Encoder } from '@solana/kit';
+
+const songId = 1n; // An existing ID on this deployment.
+const [songAddress] = await getProgramDerivedAddress({
+  programAddress: factoryProgram,
+  seeds: [new TextEncoder().encode('song'), getU64Encoder().encode(songId)],
+});
+```
+
+Use `factoryProgram` and `rpc` from [Programs stack](/web3/programs/stack#connect-your-project).
+
+## Song account
+
+Owner: Factory. Length: **280 bytes**. Discriminator: **2**.
+
+| Offset | Field | Encoding |
+| --- | --- | --- |
+| 0 | Discriminator | u8 |
+| 1 | PDA bump | u8 |
+| 2, 3 | `remixable`, `isRemix` | One byte each |
+| 4 | URI length | u16 little-endian |
+| 8 | Song ID | u64 little-endian |
+| 16 | Parent song ID | u64 little-endian; 0 for an original |
+| 24 | Remaining license allocation | u64 little-endian |
+| 32, 40 | License price, stored stream price | u64 little-endian each |
+| 48 | Creator | 32-byte address |
+| 80 | Metadata URI | Read exactly URI-length UTF-8 bytes, up to 200 |
+
+## License record
+
+Owner: Factory. Length: **48 bytes**. Discriminator: **4**. Song ID is at offset `8`; the user's 32-byte address is at offset `16`.
+
+Derive the address for the original and buyer. A valid record confirms ongoing rights. Check that the decoded song ID and user match your request. Zero remaining allocation does not invalidate a purchased license.
+
+## Remix records
+
+Owner: Remix.
+
+| Account | Length / discriminator | Fields |
+| --- | --- | --- |
+| Song remix count | 24 bytes / `2` | Original ID at `8`, count at `16`, both u64 |
+| Remix record | 64 bytes / `3` | Original ID at `8`, index at `16`, variation ID at `24`, remixer address at `32` |
+
+If the count account is absent, the original has no registered variations. Otherwise, fetch record indexes from `0` through `count - 1`. Validate each record's original ID and index, then read its variation song account.
+
+## Configuration accounts
+
+Each config has discriminator **1** and belongs to its named program.
+
+| Config | Length | Public fields and offsets |
+| --- | --- | --- |
+| Factory | 56 bytes | Admin at `8`; next song ID at `40`; total songs at `48` |
+| Remix | 112 bytes | Total variations at `8`; admin at `16`; Factory ID at `48`; Royalties ID at `80` |
+| Royalties | 104 bytes | Admin at `8`; treasury at `40`; token mint at `72` |
+
+Addresses occupy 32 bytes. Counters use u64 little-endian. The Factory authorized-consumer record is 40 bytes with discriminator `3` and consumer address at offset `8`.
+
+The [common state source](https://github.com/rawchunks/blockchain/blob/main/programs/crates/common/src/state.rs) defines these layouts.
+
+## Read and validate accounts
+
+For the `songAddress` derived above, fetch the bytes and check the public layout before reading fields:
+
+```javascript
+import { fetchEncodedAccount, assertAccountExists, getAddressDecoder } from '@solana/kit';
+
+const record = await fetchEncodedAccount(rpc, songAddress, { commitment: 'confirmed' });
+assertAccountExists(record);
+const bytes = record.data;
+if (record.programAddress !== factoryProgram || bytes.length !== 280 || bytes[0] !== 2) {
+  throw new Error('Invalid song account');
+}
+const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+const uriLength = view.getUint16(4, true);
+if (view.getBigUint64(8, true) !== songId || uriLength < 1 || uriLength > 200) {
+  throw new Error('Invalid song fields');
+}
+const creator = getAddressDecoder().decode(bytes.subarray(48, 80));
+const metadataUri = new TextDecoder('utf-8', { fatal: true })
+  .decode(bytes.subarray(80, 80 + uriLength));
+console.log(creator, metadataUri, view.getBigUint64(24, true));
+```
+
+Use the same owner, length and discriminator checks for the other layouts above. For a license, derive `['license', getU64Encoder().encode(songId), getAddressEncoder().encode(buyer)]` under Factory. Check the 48-byte record's ID at `8` and buyer at `16`; a missing record means no rights. `getAddressEncoder` is exported by Kit.
+
+## Common instruction errors
+
+Solana reports these as custom program errors. Decode the number in a failed transaction's logs:
+
+| Code | Meaning | Check |
+| --- | --- | --- |
+| `6003` | Not the song creator | Signer matches the recorded creator |
+| `6004` | Not authorized | Existing license rights and deployment permissions |
+| `6005` | Empty metadata URI | Final URI is nonempty |
+| `6006` / `6007` | Original is not remixable / is itself a remix | Selected original's flags |
+| `6008` | No licenses available | Remaining allocation before purchase |
+| `6011` | Invalid seeds | PDA inputs and current next song ID or remix index |
+| `6014` | Missing signature | Instruction signer roles and transaction signatures |
+| `6015` | Wrong account owner | Account's owning program |
+| `6016` | Invalid instruction data | Discriminator, field encoding and URI byte length |
+
+See the [error definitions](https://github.com/rawchunks/blockchain/blob/main/programs/crates/common/src/error.rs) for the full list. A failed transaction can still consume its network fee.

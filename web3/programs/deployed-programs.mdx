@@ -1,0 +1,56 @@
+---
+title: "Deployed programs"
+description: "Verified Solana program IDs, cluster availability and public configuration accounts."
+---
+
+These program IDs were checked on **12 October 2026** against Solana devnet and mainnet-beta. All three programs are executable on devnet. No program account was found at these IDs on mainnet-beta.
+
+| Program | ID | Devnet |
+| --- | --- | --- |
+| Factory | `EPKxVRtMaZbnoPgtpycYhXX7EGM3PzyCM36upmwJyenD` | [Executable](https://explorer.solana.com/address/EPKxVRtMaZbnoPgtpycYhXX7EGM3PzyCM36upmwJyenD?cluster=devnet) |
+| Remix | `5miVCjgcGe85EKRjTNSc8rbcd8pF64GUDHPNtFqzEtHr` | [Executable](https://explorer.solana.com/address/5miVCjgcGe85EKRjTNSc8rbcd8pF64GUDHPNtFqzEtHr?cluster=devnet) |
+| Royalties | `Gs7HCcMXgqfdQFyGdfggEsNTASiobu1T69kZJUXcRtWv` | [Executable](https://explorer.solana.com/address/Gs7HCcMXgqfdQFyGdfggEsNTASiobu1T69kZJUXcRtWv?cluster=devnet) |
+
+Use these IDs with your selected cluster's RPC and wallet connection.
+
+## Cluster availability
+
+| Cluster | CAIP-2 network ID | Status at these IDs |
+| --- | --- | --- |
+| Devnet | `solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1` | Programs and configs present; original registration available |
+| Mainnet-beta | `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp` | Programs and configs absent |
+
+<Note>
+  License purchases and variation registration are not ready on the published devnet configuration. The required authorization is absent. Use devnet for original registration and reads; do not present license or variation calls as available there.
+</Note>
+
+The devnet config accounts belong to their expected programs and match the documented lengths and discriminators. Remix's Factory and Royalties references match the IDs above. The executable program bytes matched the repository's built program artifacts at the time of this check; this is not an explorer source-verification claim.
+
+## Public config addresses
+
+| Config | Devnet address |
+| --- | --- |
+| Factory | [2aX5uN6S6gXJNsjdS4ydS2EVBa2nVxmuEmNVoGgGcom8](https://explorer.solana.com/address/2aX5uN6S6gXJNsjdS4ydS2EVBa2nVxmuEmNVoGgGcom8?cluster=devnet) |
+| Remix | [6wRPeo7iWz15ijw1ffknEZWQ4KZnVcueJ5ZapSquv52Z](https://explorer.solana.com/address/6wRPeo7iWz15ijw1ffknEZWQ4KZnVcueJ5ZapSquv52Z?cluster=devnet) |
+| Royalties | [4PERCoMJQz5xQkTRRe8VU4sWSbfxDiRw18QJAY3mKqAX](https://explorer.solana.com/address/4PERCoMJQz5xQkTRRe8VU4sWSbfxDiRw18QJAY3mKqAX?cluster=devnet) |
+
+Royalties config names devnet USDC mint [4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU](https://explorer.solana.com/address/4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU?cluster=devnet). Its decimals are `6`; its owner is the classic SPL Token Program, `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`.
+
+## Check program availability
+
+Install `@solana/kit`. Use the RPC and IDs from [Programs stack](/web3/programs/stack#connect-your-project):
+
+```javascript
+const genesis = await rpc.getGenesisHash().send();
+if (genesis !== 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG') {
+  throw new Error('Expected Solana devnet');
+}
+for (const id of [factoryProgram, remixProgram, royaltiesProgram]) {
+  const { value } = await rpc.getAccountInfo(id, {
+    encoding: 'base64', commitment: 'confirmed',
+  }).send();
+  if (!value?.executable) throw new Error(`Program unavailable: ${id}`);
+}
+```
+
+Executable-account checks establish that a program is present. Check its config and required operation permissions too. Use [the account reference](/web3/programs/accounts) to decode config and song state.

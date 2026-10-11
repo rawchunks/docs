@@ -1,0 +1,108 @@
+---
+title: "Remix program"
+description: "Build license-purchase and variation instructions with their exact data and account order."
+---
+
+Remix records ongoing license rights and variations through separate instructions. Read [deployment availability](/web3/programs/deployed-programs) first: license and variation calls are not ready on the current published devnet configuration.
+
+## Prepare the transaction
+
+Use the RPC, signer and program IDs from [Programs stack](/web3/programs/stack). Read the original's [song account](/web3/programs/accounts#song-account) and verify its creator and metadata URI against the song you selected. It must be a remixable original. Check the buyer's [license record](/web3/programs/accounts#license-record) before requesting payment.
+
+Build the instruction with the data and ordered accounts below, then use the [simulation and signing sequence](/web3/programs/stack#send-an-instruction). These operations require a deployment with license and variation permissions enabled.
+
+## Instruction 4: buy license
+
+Data is exactly **9 bytes**: first byte `4`, followed by the original song ID as u64 little-endian:
+
+```javascript
+import { getStructEncoder, getU8Encoder, getU64Encoder } from '@solana/kit';
+
+const data = getStructEncoder([
+  ['operation', getU8Encoder()], ['originalSongId', getU64Encoder()],
+]).encode({ operation: 4, originalSongId });
+```
+
+Set `originalSongId` to the verified original's u64 ID. The buyer needs SOL for fees and rent, plus enough of the configured token for a priced license.
+
+One purchase reduces allocation by one and records rights for that buyer. An existing buyer is not charged again. A zero-price license skips token transfers. A failed purchase leaves payment and rights unchanged.
+
+<Accordion title="Purchase accounts, in order">
+  | Index | Account | Role |
+  | --- | --- | --- |
+  | 0 | Buyer | Writable signer |
+  | 1 | Remix authority PDA | Writable |
+  | 2 | Remix config | Readonly |
+  | 3 | Factory program | Readonly |
+  | 4 | Royalties program | Readonly |
+  | 5 | Factory config | Readonly |
+  | 6 | Original song | Writable |
+  | 7 | Buyer license record | Writable |
+  | 8 | Factory consumer record for Remix authority | Readonly |
+  | 9 | Buyer token account | Writable |
+  | 10 | Original creator's token account | Writable |
+  | 11 | Configured treasury's token account | Writable |
+  | 12 | Royalties config | Readonly |
+  | 13 | SPL Token Program | Readonly |
+  | 14 | System Program | Readonly |
+
+  All three token accounts must use the configured mint. Derive the program accounts with the [PDA reference](/web3/programs/accounts). Read the mint and treasury from Royalties config, and the creator from the original song. For classic SPL associated token accounts, use Kit-compatible `findAssociatedTokenPda` and `getCreateAssociatedTokenIdempotentInstruction` from `@solana-program/token`; create missing accounts before the purchase instruction.
+</Accordion>
+
+## Instruction 1: register variation
+
+| Field | Encoding |
+| --- | --- |
+| Discriminator | First byte `1` |
+| `originalSongId`, `licenseAmount`, `licensePrice`, `streamPrice` | Four u64 integers, little-endian |
+| URI length | u16 little-endian |
+| Metadata URI | 1 to 200 UTF-8 bytes |
+
+Encode the data using Kit's codecs. `metadataUri` is the finished variation's IPFS URI:
+
+```javascript
+import { getU16Encoder, getBytesEncoder, addEncoderSizePrefix } from '@solana/kit';
+
+const uri = new TextEncoder().encode(metadataUri);
+if (!uri.length || uri.length > 200) throw new Error('URI must be 1 to 200 UTF-8 bytes');
+const variationData = getStructEncoder([
+  ['operation', getU8Encoder()], ['originalSongId', getU64Encoder()],
+  ['licenseAmount', getU64Encoder()], ['licensePrice', getU64Encoder()],
+  ['streamPrice', getU64Encoder()],
+  ['uri', addEncoderSizePrefix(getBytesEncoder(), getU16Encoder())],
+]).encode({ operation: 1, originalSongId, licenseAmount: 0n, licensePrice: 0n,
+  streamPrice: 10_000n, uri });
+```
+
+Use zero `licenseAmount` and `licensePrice`. A variation is always non-remixable. The signer must already hold rights for the original, even when the original's allocation is exhausted. Registering a variation does not charge the license price again.
+
+<Accordion title="Variation accounts, in order">
+  | Index | Account | Role |
+  | --- | --- | --- |
+  | 0 | Remixer | Writable signer |
+  | 1 | Remix authority PDA | Writable |
+  | 2 | Remix config | Writable |
+  | 3 | Factory program | Readonly |
+  | 4 | Factory config | Writable |
+  | 5 | Original song | Readonly |
+  | 6 | New variation song PDA | Writable |
+  | 7 | Remixer's license record | Readonly |
+  | 8 | Factory consumer record for Remix authority | Readonly |
+  | 9 | Original's remix-count PDA | Writable |
+  | 10 | Remix-record PDA at the next index | Writable |
+  | 11 | System Program | Readonly |
+
+  Read Factory's `nextSongId` and the original's current remix count before deriving the new addresses. The first remix-record index is `0`.
+</Accordion>
+
+## Read variations
+
+Remix config holds the total variation count. Each original has its own count account and indexed records containing the new song ID and remixer. The [account reference](/web3/programs/accounts#remix-records) gives seeds and offsets.
+
+Logs include `LicensePurchased` and `SongRemixed`. Read the confirmed license record or song account to verify the result.
+
+<Accordion title="Configuration instructions">
+  Byte `0` initializes Remix config once. Byte `2` updates Factory and Royalties program references; byte `3` transfers the administrator. The latter two require the current administrator. Your integration reads this configuration and uses its existing references.
+</Accordion>
+
+[Remix program source](https://github.com/rawchunks/blockchain/tree/main/programs/programs/remix) · [Solana workflow](/dev/guides/publish/solana)

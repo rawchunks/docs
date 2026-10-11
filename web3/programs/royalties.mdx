@@ -1,0 +1,47 @@
+---
+title: "Royalties program"
+description: "Read the token configuration and license split, and understand the settlement instruction."
+---
+
+import LicenseSplit from "/snippets/web3/license-split.mdx";
+
+Royalties settles license payments in the configured token. Use [Remix instruction 4](/web3/programs/remix#instruction-4-buy-license) to buy a license and record its rights.
+
+## Payment split
+
+<LicenseSplit />
+
+## Token configuration
+
+Read the Royalties config PDA derived from `['royalties']` under the Royalties program ID. Its [account layout](/web3/programs/accounts#configuration-accounts) contains the treasury and token mint. The verified devnet mint uses six decimals and the classic SPL Token Program.
+
+All payment token accounts must use that mint. The payer signs for its token account, the creator token account belongs to the original creator, and the treasury token account belongs to the configured treasury.
+
+## Instruction 1: distribute payment
+
+The data layout is:
+
+| Field | Encoding |
+| --- | --- |
+| Discriminator | First byte `1` |
+| `songId`, `licensePrice` | Two u64 integers, little-endian |
+| Expected creator | Optional 32-byte address; Remix supplies it |
+
+Accounts, in order: **payer** (writable signer), **payer token account** (writable), **creator token account** (writable), **treasury token account** (writable), **Royalties config** (readonly), **SPL Token Program** (readonly).
+
+This instruction transfers the split directly from the payer's token account. It does not create a license record. Remix supplies the original's price and creator when purchasing rights.
+
+A zero amount returns without a token transfer. A wrong mint, treasury recipient or supplied creator rejects a priced transfer. The program logs `LicensePaymentDistributed` with the song ID, amount and both shares.
+
+## Other instructions
+
+| First byte | Operation | Permission |
+| --- | --- | --- |
+| `0` | Initialize config with treasury and mint | Creates config once |
+| `2` | Set token mint | Administrator |
+| `3` | Set treasury | Administrator |
+| `4` | Transfer administrator | Current administrator |
+
+These configuration operations use the program's existing authority. Your product reads the selected deployment's configuration before constructing payment accounts.
+
+[Royalties program source](https://github.com/rawchunks/blockchain/tree/main/programs/programs/royalties) · [Deployed programs](/web3/programs/deployed-programs)

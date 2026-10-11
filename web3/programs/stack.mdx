@@ -1,0 +1,89 @@
+---
+title: "Programs stack"
+description: "Build with Pinocchio, test with LiteSVM and Mollusk, and integrate through Solana Kit."
+---
+
+| Layer | Used here |
+| --- | --- |
+| Programs | Rust 2021 edition, Pinocchio 0.11.2 |
+| System and token calls | pinocchio-system 0.6.1 and pinocchio-token 0.7.0 |
+| Instruction logging | pinocchio-log 0.5.1 |
+| Transaction tests | LiteSVM 0.17.0 |
+| Instruction tests | Mollusk SVM 0.16.0 |
+| Client examples | `@solana/kit`: addresses, PDAs, account roles, signing and confirmation |
+
+The programs use an explicit binary interface. There is no Anchor IDL in this repository. The references below define instruction bytes, account order and PDA seeds.
+
+## Connect your project
+
+Install `@solana/kit`. These examples use devnet and a Kit `signer` supplied by your connected wallet. Your wallet must support signing version-0 transactions.
+
+```javascript
+import { address, createSolanaRpc, createSolanaRpcSubscriptions, AccountRole } from '@solana/kit';
+
+const rpc = createSolanaRpc('https://api.devnet.solana.com');
+const rpcSubscriptions = createSolanaRpcSubscriptions('wss://api.devnet.solana.com');
+const factoryProgram = address('EPKxVRtMaZbnoPgtpycYhXX7EGM3PzyCM36upmwJyenD');
+const remixProgram = address('5miVCjgcGe85EKRjTNSc8rbcd8pF64GUDHPNtFqzEtHr');
+const royaltiesProgram = address('Gs7HCcMXgqfdQFyGdfggEsNTASiobu1T69kZJUXcRtWv');
+const systemProgram = address('11111111111111111111111111111111');
+```
+
+Use your provider's RPC and WebSocket URLs in a production integration. Keep the signer and cluster fixed throughout the operation. See [deployed programs](/web3/programs/deployed-programs) for availability and [Kit wallet signers](https://www.solanakit.com/docs/concepts/signers) for connecting your wallet. Rawchunks does not provide a separate Solana client package.
+
+## Send an instruction
+
+Each program reference gives the instruction's `data` and ordered `accounts`. Assemble them as `{ programAddress, accounts, data }`, then use this sequence. `instruction` is the object built on the [Factory page](/web3/programs/factory#register-an-original), or another documented program instruction.
+
+```javascript
+import { createTransactionMessage, setTransactionMessageFeePayerSigner,
+  setTransactionMessageLifetimeUsingBlockhash, appendTransactionMessageInstructions,
+  compileTransaction, getBase64EncodedWireTransaction, addSignersToInstruction,
+  signTransactionMessageWithSigners, assertIsSendableTransaction,
+  getSignatureFromTransaction, sendAndConfirmTransactionFactory } from '@solana/kit';
+
+const { value: blockhash } = await rpc.getLatestBlockhash().send();
+let message = createTransactionMessage({ version: 0 });
+message = setTransactionMessageFeePayerSigner(signer, message);
+message = setTransactionMessageLifetimeUsingBlockhash(blockhash, message);
+message = appendTransactionMessageInstructions([addSignersToInstruction([signer], instruction)], message);
+const { value: simulation } = await rpc.simulateTransaction(
+  getBase64EncodedWireTransaction(compileTransaction(message)),
+  { encoding: 'base64', sigVerify: false, replaceRecentBlockhash: true },
+).send();
+if (simulation.err) throw new Error(JSON.stringify(simulation.err));
+const transaction = await signTransactionMessageWithSigners(message);
+assertIsSendableTransaction(transaction);
+const signature = getSignatureFromTransaction(transaction);
+// Store signature in your product before submitting.
+await sendAndConfirmTransactionFactory({ rpc, rpcSubscriptions })(
+  transaction, { commitment: 'confirmed' },
+);
+```
+
+Show the simulated operation to the user before requesting their signature. After confirmation, read the resulting song or license account. If confirmation is uncertain, look up the saved signature before rebuilding or sending again. A seed conflict requires fresh counter reads; an expired blockhash requires a fresh transaction.
+
+## Build and test locally
+
+Clone the [blockchain repository](https://github.com/rawchunks/blockchain). Install Rust and the [Solana CLI toolchain](https://solana.com/docs/intro/installation). Run from `programs/`:
+
+The locked host-test dependencies require Rust **1.97.1 or newer**. The SBF build uses the Solana toolchain's compiler.
+
+```bash
+cargo build-sbf --manifest-path programs/factory/Cargo.toml
+cargo build-sbf --manifest-path programs/royalties/Cargo.toml
+cargo build-sbf --manifest-path programs/remix/Cargo.toml
+cargo test --workspace --locked
+```
+
+Build all three programs first. Tests load `rawchunks_factory.so`, `rawchunks_royalties.so` and `rawchunks_remix.so` from `target/deploy/`.
+
+LiteSVM runs transaction flows, including license purchases, variation minting, token balances and account validation. Mollusk runs individual instruction benchmarks. To run just those benchmarks:
+
+```bash
+cargo test -p rawchunks-tests mollusk --locked
+```
+
+Tests run locally without an RPC connection or network transaction.
+
+[Pinocchio](https://github.com/anza-xyz/pinocchio) · [LiteSVM](https://litesvm.com) · [Mollusk](https://github.com/anza-xyz/mollusk)
