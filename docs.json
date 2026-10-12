@@ -1,72 +1,348 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "theme": "linden",
+  "name": "RAWCHUNKS",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#00ff41",
+    "light": "#00ff41",
+    "dark": "#00ccff"
   },
-  "favicon": "/favicon.svg",
-  "navigation": {
-    "pages": [
+  "appearance": {
+    "default": "dark",
+    "strict": true
+  },
+  "background": {
+    "decoration": "grid",
+    "color": {
+      "light": "#000000",
+      "dark": "#000000"
+    }
+  },
+  "fonts": {
+    "family": "Courier New",
+    "heading": {
+      "family": "Courier New",
+      "weight": 900
+    },
+    "body": {
+      "family": "Courier New",
+      "weight": 400
+    }
+  },
+  "styling": {
+    "eyebrows": "section",
+    "codeblocks": {
+      "theme": {
+        "light": "github-dark",
+        "dark": "github-dark"
+      }
+    }
+  },
+  "favicon": "/favicon.ico",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://rawchunks.space"
+  },
+  "navbar": {
+    "links": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
+        "label": "Website",
+        "href": "https://rawchunks.space"
+      },
+      {
+        "type": "github",
+        "href": "https://github.com/rawchunks/blockchain"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Launch App",
+      "href": "https://app.rawchunks.space"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "App",
+        "groups": [
+          {
+            "group": "Start",
+            "pages": [
+              "app/overview",
+              "app/account",
+              "app/payments",
+              "app/generate"
+            ]
+          },
+          {
+            "group": "Create music",
+            "pages": [
+              "app/music-settings",
+              "app/lyrics",
+              "app/voices",
+              "app/covers-albums"
+            ]
+          },
+          {
+            "group": "Edit and arrange",
+            "pages": [
+              "app/editor",
+              "app/rework",
+              "app/extract-separate",
+              "app/layer",
+              "app/extend-restyle",
+              "app/takes-merge",
+              "app/keys",
+              "app/drums",
+              "app/live-code",
+              "app/samples",
+              "app/mixer-effects",
+              "app/history"
+            ]
+          },
+          {
+            "group": "Library and Market",
+            "pages": [
+              "app/library",
+              "app/publish",
+              "app/licenses",
+              "app/market"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Developer",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "dev/overview",
+              "dev/stack"
+            ]
+          },
+          {
+            "group": "Integration basics",
+            "pages": [
+              "dev/guides/connect",
+              "dev/guides/payments",
+              "dev/guides/jobs"
+            ]
+          },
+          {
+            "group": "Generate",
+            "pages": [
+              "dev/guides/generate/music",
+              "dev/guides/generate/lyrics",
+              "dev/guides/generate/voices",
+              "dev/guides/generate/artwork"
+            ]
+          },
+          {
+            "group": "Edit",
+            "pages": [
+              "dev/guides/edit/overview",
+              "dev/guides/edit/rework",
+              "dev/guides/edit/layer-accompany",
+              "dev/guides/edit/extract-separate",
+              "dev/guides/edit/extend-restyle",
+              "dev/guides/edit/takes",
+              "dev/guides/edit/merge",
+              "dev/guides/edit/arrangement"
+            ]
+          },
+          {
+            "group": "Library and publishing",
+            "pages": [
+              "dev/guides/library",
+              "dev/guides/publish/mint",
+              "dev/guides/publish/licenses",
+              "dev/guides/publish/solana",
+              "dev/guides/publish/contract-reference"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Endpoints",
+        "groups": [
+          {
+            "group": "Endpoint reference",
+            "pages": [
+              "dev/endpoints/overview"
+            ]
+          },
+          {
+            "group": "System",
+            "expanded": false,
+            "pages": [
+              "dev/endpoints/system/identity",
+              "dev/endpoints/system/health",
+              "dev/endpoints/system/options"
+            ]
+          },
+          {
+            "group": "Generation",
+            "expanded": false,
+            "pages": [
+              "dev/endpoints/generation/generate",
+              "dev/endpoints/generation/status",
+              "dev/endpoints/generation/events",
+              "dev/endpoints/generation/format",
+              "dev/endpoints/generation/sample",
+              "dev/endpoints/generation/cover"
+            ]
+          },
+          {
+            "group": "Editing",
+            "expanded": false,
+            "pages": [
+              "dev/endpoints/editing/source",
+              "dev/endpoints/editing/extract",
+              "dev/endpoints/editing/repaint",
+              "dev/endpoints/editing/layer",
+              "dev/endpoints/editing/extend",
+              "dev/endpoints/editing/remix",
+              "dev/endpoints/editing/separate",
+              "dev/endpoints/editing/apply",
+              "dev/endpoints/editing/status",
+              "dev/endpoints/editing/activate",
+              "dev/endpoints/editing/delete-take",
+              "dev/endpoints/editing/mixer",
+              "dev/endpoints/editing/history",
+              "dev/endpoints/editing/commits"
+            ]
+          },
+          {
+            "group": "Voices",
+            "expanded": false,
+            "pages": [
+              "dev/endpoints/voices/save",
+              "dev/endpoints/voices/upload",
+              "dev/endpoints/voices/list",
+              "dev/endpoints/voices/get",
+              "dev/endpoints/voices/events"
+            ]
+          },
+          {
+            "group": "Songs and takes",
+            "expanded": false,
+            "pages": [
+              "dev/endpoints/library/songs",
+              "dev/endpoints/library/song",
+              "dev/endpoints/library/stems",
+              "dev/endpoints/library/takes",
+              "dev/endpoints/library/update",
+              "dev/endpoints/library/version",
+              "dev/endpoints/library/remix",
+              "dev/endpoints/library/delete",
+              "dev/endpoints/library/delete-song-take",
+              "dev/endpoints/library/delete-take"
+            ]
+          },
+          {
+            "group": "Albums",
+            "expanded": false,
+            "pages": [
+              "dev/endpoints/albums/list",
+              "dev/endpoints/albums/create",
+              "dev/endpoints/albums/get",
+              "dev/endpoints/albums/update",
+              "dev/endpoints/albums/delete",
+              "dev/endpoints/albums/add-song",
+              "dev/endpoints/albums/remove-song"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Web3",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "web3/overview"
+            ]
+          },
+          {
+            "group": "Contracts",
+            "pages": [
+              "web3/contracts/overview",
+              "web3/contracts/stack",
+              "web3/contracts/factory",
+              "web3/contracts/remix",
+              "web3/contracts/royalties",
+              "web3/contracts/deployed-contracts"
+            ]
+          },
+          {
+            "group": "Programs",
+            "pages": [
+              "web3/programs/overview",
+              "web3/programs/stack",
+              "web3/programs/factory",
+              "web3/programs/remix",
+              "web3/programs/royalties",
+              "web3/programs/accounts",
+              "web3/programs/deployed-programs"
+            ]
+          }
         ]
       }
     ],
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "App",
+          "href": "https://app.rawchunks.space",
+          "icon": "wave-pulse"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Website",
+          "href": "https://rawchunks.space",
+          "icon": "globe"
         }
       ]
     }
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:support@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
-    }
+  "search": {
+    "prompt": "Search Rawchunks\u2026"
   },
   "contextual": {
     "options": [
       "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
+      "view"
+    ],
+    "display": "header"
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "website": "https://rawchunks.space",
+      "x": "https://x.com/rawchunks",
+      "github": "https://github.com/jabyl/rawchunks"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/app/overview"
+    },
+    {
+      "source": "/index",
+      "destination": "/app/overview"
+    },
+    {
+      "source": "/quickstart",
+      "destination": "/app/generate"
+    }
+  ],
+  "api": {
+    "playground": {
+      "display": "simple"
+    },
+    "examples": {
+      "autogenerate": false
     }
   }
 }
