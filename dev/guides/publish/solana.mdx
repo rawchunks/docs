@@ -1,0 +1,68 @@
+---
+title: "Integrate Solana minting and licenses"
+description: "Use the public programs with a Solana transaction signer and confirm the resulting accounts."
+---
+
+The Solana programs offer the same original mint, license purchase and remix relationship. Use the program IDs for the selected deployment, a funded Solana signer, and RPC plus subscription clients for that network.
+
+Check [deployed programs](/web3/programs/deployed-programs) before choosing a network. Original minting is available on devnet; license purchases and variations are not ready in its current configuration. The walkthrough below requires a deployment with those operations enabled.
+
+## Connect the wallet and network
+
+Use the [Solana Kit setup](/web3/programs/stack#connect-your-project) with your connected wallet's transaction signer. Check the selected cluster and program availability before enabling a mint button. The signer pays fees and account rent, and must match the Rawchunks song's creator.
+
+The references give actual instruction layouts and Kit examples. They do not require a separate Rawchunks SDK.
+
+## Mint an original
+
+Prepare the final song and metadata CID as in the [mint guide](/dev/guides/publish/mint#prepare-the-final-song). Set `metadataUri` to `ipfs://` followed by the CID. Follow the [Factory instruction example](/web3/programs/factory#register-an-original) with your song's terms:
+
+| Mint field | Value from your song |
+| --- | --- |
+| `licenseAmount` | `BigInt(project.song.licenses)` |
+| `licensePrice` | Decimal price converted to six-decimal atomic units; 5 USDC is `5_000_000n` |
+| `streamPrice` | Stored decimal rate converted to six-decimal atomic units; 0.01 USDC is `10_000n` |
+| `remixable` | `1` for a remixable original |
+| `uri` | UTF-8 bytes of the final metadata URI; 1 to 200 bytes |
+
+Read Factory's `nextSongId` and derive the song PDA immediately before building. [Simulate, sign and confirm](/web3/programs/stack#send-an-instruction) the instruction. Store its signature before sending, then [read the resulting song account](/web3/programs/accounts#read-and-validate-accounts). Confirm its ID, creator, URI and original flags.
+
+Another mint can use the next ID first. After a confirmed seed conflict, reload and rebuild. Do not resubmit a transaction with uncertain confirmation.
+
+## Record the confirmed result
+
+Here, `chainSongId` is the verified Factory song ID and `signature` is the confirmed transaction signature from the send step. Use the creator's [request client](/dev/guides/connect):
+
+```javascript
+await api.patch(`/api/songs/${encodeURIComponent(project.song.id)}`, {
+  metadata_cid: cid,
+  chain_song_id: chainSongId.toString(),
+  tx_hash: signature,
+  network: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+  public: true,
+});
+```
+
+The network ID above is devnet. Keep the network tied to the actual signer and RPC cluster. A catalog update records the result; it does not execute or verify a chain transaction.
+
+## Buy a license
+
+This step is unavailable on the current published devnet configuration. On a deployment where it is enabled:
+
+1. Read the original song and check its creator, URI, network and remixable-original flags.
+2. Check the buyer's [license PDA](/web3/programs/accounts#license-record). Existing rights do not require another purchase.
+3. Read the settlement mint and treasury from Royalties config. Derive the buyer, creator and treasury token accounts for that mint; create missing associated token accounts.
+4. Build [Remix instruction 4](/web3/programs/remix#instruction-4-buy-license) with its exact 9-byte data and 15 accounts, then simulate, sign and confirm.
+5. Read the resulting license record and check its song ID and buyer before opening an editable draft.
+
+The payer needs sufficient settlement tokens for a priced license and SOL for fees and rent. Display the actual token and chain price before requesting a signature.
+
+## Mint the variation
+
+With confirmed rights, create the REST draft and edit it as in [licenses and variations](/dev/guides/publish/licenses#open-and-edit-the-draft). Pin its final metadata.
+
+Build [Remix instruction 1](/web3/programs/remix#instruction-1-register-variation) with the confirmed original ID, zero allocation and license price, your stored stream rate and the final URI. Read the current Factory next ID and original remix count before deriving its new song and record PDAs. Use the exact account order in that reference.
+
+Simulate, sign and confirm. Read the new song and verify the remixer, URI, `isRemix = true` and original parent ID. Record its confirmed ID, signature, CID and network through the draft's song PATCH using the same fields as the original step.
+
+Use your [Rawchunks session](/dev/guides/payments) for paid music API calls. Chain minting and license purchases use wallet transactions on the selected deployment.

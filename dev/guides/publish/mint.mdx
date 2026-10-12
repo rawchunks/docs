@@ -1,0 +1,82 @@
+---
+title: "Mint an original"
+description: "Pin final metadata, mint with the creator wallet and record the confirmed chain identity."
+---
+
+Minting is a wallet transaction, not a Rawchunks REST endpoint. Finish the audio, pin the final song metadata to IPFS, call the Factory contract or Solana program, verify the mint, then record its chain identity through the song API.
+
+## Prepare the final song
+
+Load `/api/songs/{id}` with the creator's account header. Check that it has final audio, selling terms and artwork. The signer must be the song's creator. For an original, `source` must be empty.
+
+Use your own pinning account on your server. For example, this Pinata request pins the final song JSON and returns its CID:
+
+```javascript
+const pinned = await fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.PINATA_JWT}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    pinataContent: project.song,
+    pinataMetadata: { name: `${project.song.title}-metadata` },
+    pinataOptions: { cidVersion: 1 },
+  }),
+});
+const pin = await pinned.json();
+if (!pinned.ok || !pin.IpfsHash) throw new Error('Metadata pin failed');
+const cid = pin.IpfsHash;
+```
+
+Keep this provider credential on your server. Return the CID to the wallet flow. Pinning JSON does not execute a mint or make the audio URL itself an IPFS file.
+
+## Connect the chain client
+
+Use `publicClient`, `walletClient`, `account` and `evmContracts` from [Contracts stack](/web3/contracts/stack). Choose a network from [deployed contracts](/web3/contracts/deployed-contracts). Payment-network support alone does not establish a Factory deployment.
+
+## Mint and verify
+
+```javascript
+import { parseAbi, parseUnits } from 'viem';
+
+const song = project.song;
+if (song.source || song.creator.toLowerCase() !== account.toLowerCase()) {
+  throw new Error('Select the original creator wallet');
+}
+const metadataUri = `ipfs://${cid}`;
+const abi = parseAbi([
+  'function mintSong(uint256 licenseAmount, uint256 licensePrice, uint256 streamPrice, bool remixable, string metadataUri) returns (uint256 songId)',
+]);
+const { request } = await publicClient.simulateContract({
+  address: evmContracts.factory, abi, account, functionName: 'mintSong',
+  args: [BigInt(song.licenses), parseUnits(String(song.license_price), 6),
+    parseUnits(String(song.stream_price), 6), true, metadataUri],
+});
+const hash = await walletClient.writeContract(request);
+// Store song.id, cid and hash in your product before waiting.
+const receipt = await publicClient.waitForTransactionReceipt({ hash });
+if (receipt.status !== 'success') throw new Error('Mint failed');
+```
+
+Decode `mintedId` from this receipt using the [Factory event example](/web3/contracts/factory#confirm-the-minted-song). Read that song and verify its creator, URI and original-song flags before the catalog update below.
+
+Prices in the REST song are decimal amounts. `parseUnits` converts them to six-decimal atomic units; validate that user-entered prices have at most six decimal places. `licenseAmount` is the allocation. Read the selected network's settlement token before showing its currency in your UI.
+
+If confirmation is interrupted, recover the saved hash and receipt. Do not issue another mint because the browser stopped waiting. Wallet rejection, chain failure and catalog-update failure need different recovery actions.
+
+## Record and publish
+
+```javascript
+const updated = await api.patch(`/api/songs/${encodeURIComponent(song.id)}`, {
+  metadata_cid: cid,
+  chain_song_id: mintedId.toString(),
+  tx_hash: receipt.transactionHash,
+  network: `eip155:${publicClient.chain.id}`,
+  public: true,
+});
+```
+
+Use the [request client](/dev/guides/connect) with the creator account. Set `public: false` if the mint should stay out of the public catalog. A PATCH only records the result; your integration must verify the chain receipt first.
+
+For Solana, use the [Solana integration](/dev/guides/publish/solana) and record its confirmed song ID and transaction signature. For a variation, use the [licensed remix flow](/dev/guides/publish/licenses).

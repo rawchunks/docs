@@ -1,0 +1,74 @@
+---
+title: "Buy a license and mint a remix"
+description: "Read onchain rights, buy an original license, edit a draft and mint the variation."
+---
+
+A Rawchunks license enables its ongoing remix workflow. Purchasing reduces the original's available allocation; making another remix does not consume the buyer's license. Remixes cannot be licensed or remixed again in this workflow.
+
+Use the same network for the original, license purchase and remix mint. The license price comes from the confirmed chain record, not a cached catalog price.
+
+## Verify the original
+
+Use the [EVM setup](/web3/contracts/stack) and `factoryAbi` from [Factory reads](/web3/contracts/factory#connect-and-read). Set `sourceSongId` to the original's catalog ID. Load it with the [request client](/dev/guides/connect), then read its contract song:
+
+```javascript
+const sourceProject = await api.get(`/api/songs/${encodeURIComponent(sourceSongId)}`);
+const original = sourceProject.song;
+if (!original.network || !original.chain_song_id || !original.metadata_cid || original.source) {
+  throw new Error('Choose a minted original');
+}
+if (original.network !== `eip155:${publicClient.chain.id}`) throw new Error('Select the original network');
+const originalSongId = BigInt(original.chain_song_id);
+const state = await publicClient.readContract({
+  address: evmContracts.factory, abi: factoryAbi,
+  functionName: 'getSong', args: [originalSongId],
+});
+if (state.creator.toLowerCase() !== original.creator.toLowerCase() ||
+    state.metadataUri !== `ipfs://${original.metadata_cid}` || state.isRemix) {
+  throw new Error('Catalog and chain song do not match');
+}
+```
+
+## Buy and confirm
+
+Follow [Remix's purchase example](/web3/contracts/remix#connect-and-purchase) with this `originalSongId`, its verified `state` and the buyer's connected wallet. It reads existing rights, approves the actual settlement token when needed, sends `buyLicense` and verifies `Factory.hasLicense` after confirmation.
+
+Show the chain price and settlement currency before requesting signatures. Store the approval and purchase hashes as soon as your wallet returns them. Recover an interrupted confirmation from those hashes before retrying.
+
+For license payments, 80% goes to the original creator and 20% to the Rawchunks treasury. Session service fees and wallet costs are separate.
+
+## Open and edit the draft
+
+```javascript
+const draft = await api.post(`/api/songs/${encodeURIComponent(original.id)}/remix`);
+const remixSongId = draft.id;
+```
+
+Check the caller's chain license before this request. The REST draft route does not purchase or verify that license. It creates a private song with `source` linked to the original and zero license allocation. Use the returned ID for [editing](/dev/guides/edit/overview).
+
+## Mint the finished variation
+
+Pin the finished draft JSON to get `remixCid`, using the [metadata step](/dev/guides/publish/mint#prepare-the-final-song). Set `metadataUri` to `ipfs://` followed by `remixCid`. In [Remix's variation call](/web3/contracts/remix#mint-a-variation), use:
+
+| Field | Value |
+| --- | --- |
+| `originalSongId` | The confirmed original ID above |
+| `licenseAmount`, `licensePrice` | `0n` |
+| `streamPrice` | `parseUnits(String(finishedDraft.stream_price), 6)` from `viem` |
+| `metadataUri` | The finished variation's IPFS URI |
+
+Keep the original and remixer identities in the final metadata. After the successful receipt, use the [Factory event example](/web3/contracts/factory#confirm-the-minted-song) to obtain `mintedId`. Check the new song's creator, URI, `isRemix = true` and `parentSongId = originalSongId`. Then record the result with the remixer's request headers:
+
+```javascript
+await api.patch(`/api/songs/${encodeURIComponent(remixSongId)}`, {
+  metadata_cid: remixCid,
+  chain_song_id: mintedId.toString(),
+  tx_hash: receipt.transactionHash,
+  network: `eip155:${publicClient.chain.id}`,
+  public: true,
+});
+```
+
+A mint or license button does not establish copyright ownership, exclusivity or permission for outside distribution. Obtain any additional rights your product needs from the rights holder. The API and contract enforce the Rawchunks workflow described here.
+
+For Solana accounts, use the [Solana license and remix example](/dev/guides/publish/solana).
