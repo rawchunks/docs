@@ -1,0 +1,126 @@
+---
+title: "Tempo MPP"
+description: "Use MPP clients with x402 metered requests and batch payment channels in your product."
+---
+
+Rawchunks' `mpp-x402` package adds two custom payment methods to the Machine Payments Protocol (MPP). Use them in your API or client with a compatible x402 facilitator, including Compose. You supply the token, network, recipient and wallet.
+
+| You want to | Use | What gets paid |
+| --- | --- | --- |
+| Cap the cost of generation or audio processing | `x402/upto` | Server-measured work, up to the signed maximum. |
+| Charge for audio segments or listening checkpoints | `x402/batch-settlement` | Successive vouchers on a funded channel, claimed and settled together. |
+
+This lets music applications expose generation and listening as payable operations that other clients and agents can call. For streaming platforms, batch vouchers avoid an onchain transfer for every segment. You still implement the music operation, pricing and playback controls.
+
+## Choose the payment path
+
+To call Rawchunks' current APIs, use a [Rawchunks session](/dev/guides/payments). Selecting Tempo Moderato creates a Compose session that spends OUSD; that path does not invoke these MPP extensions.
+
+To add MPP payments to your own product, use the guide below. Both client and server need these custom `x402` methods. Tempo's built-in `charge` and `session` methods have different credentials. MACH and card checkout are separate integrations.
+
+## Install the extensions
+
+From a Rawchunks source checkout, copy `backend/mpp` into your project at `vendor/mpp`. Use Node.js 22 or newer and run:
+
+```bash
+npm --prefix vendor/mpp install
+npm --prefix vendor/mpp run build
+npm install ./vendor/mpp mppx@0.13.4 @x402/core@2.28.0 @x402/evm@2.28.0 viem@2.57.4
+```
+
+`vendor/mpp/README.md` contains the complete server adapters, approval code and storage requirements. The package is MIT licensed and can be used independently of Rawchunks.
+
+## Protect a metered operation
+
+Set `network` to a CAIP-2 identifier, `asset` and `recipient` to token and merchant addresses, and `resourceUrl` to your endpoint's absolute URL. `maximum` is an integer string in token base units. For Moderato, the network is `eip155:42431`.
+
+Use a facilitator that supports x402 v2 `upto` with the official EVM Permit2 proof. Check `/supported` and the required token/contract deployments before enabling the endpoint. Supply durable `Store.AtomicStore` storage as `store`, a stable service `namespace`, and your API domain as `realm`.
+
+```ts
+import { HTTPFacilitatorClient, createResourceServer, createHandler, upto } from 'mpp-x402/server';
+import { UptoEvmScheme } from '@x402/evm/upto/server';
+
+const facilitator = new HTTPFacilitatorClient({ url: facilitatorUrl });
+const server = createResourceServer(facilitator, [{ network, scheme: new UptoEvmScheme() }]);
+await server.initialize();
+const [requirements] = await server.buildPaymentRequirements({
+  scheme: 'upto', network, payTo: recipient,
+  price: { asset, amount: maximum }, maxTimeoutSeconds: 300,
+});
+if (!requirements) throw new Error('Unsupported payment offer');
+const method = upto({ server, facilitator, store, namespace });
+const handle = createHandler({ method, store, namespace, realm,
+  offer: { requirements, resource: { url: resourceUrl } },
+});
+
+export async function POST(request: Request) {
+  return handle(request, async () => {
+    const result = await render(await request.json());
+    return { response: Response.json(result.output), amount: BigInt(result.billedUnits).toString() };
+  });
+}
+```
+
+Mount `POST` at `resourceUrl` using your framework's Fetch API route. `render` is your own operation; compute its billed units on the server and keep them within `maximum`. Pass the request body unchanged to `handle`. If your facilitator needs authentication, configure its `createAuthHeaders` for `supported`, `verify` and `settle`.
+
+```mermaid
+flowchart LR
+  C[Your MPP client] -->|Signed x402 credential| A[Your API + extension]
+  A -->|Verify and settle| F[x402 facilitator]
+  F -->|Result| A
+  A -->|Output and MPP receipt| C
+  classDef raw fill:#121212,stroke:#00ff41,color:#ffffff;
+  classDef client fill:#121212,stroke:#00ccff,color:#ffffff;
+  class A,F raw;
+  class C client;
+```
+
+## Pay from your client
+
+Supply your connected x402 `ClientEvmSigner` as `signer` and the selected network's `rpcUrl`. Fund the token and confirm its Permit2 allowance first; the README includes the exact allowance check and approval transaction. A Compose session approval is a separate allowance.
+
+```ts
+import { x402Client } from '@x402/core/client';
+import { UptoEvmScheme } from '@x402/evm/upto/client';
+import { createClient, upto } from 'mpp-x402/client';
+
+const core = x402Client.fromConfig({ schemes: [], spendControls: {
+  allowedAssets: [{ network, asset, maxAmountPerPayment: maximum }],
+} }).register(network, new UptoEvmScheme(signer, { rpcUrl }));
+core.registerPolicy((_version, offers) => offers.filter(offer =>
+  offer.scheme === 'upto' && offer.network === network &&
+  offer.asset.toLowerCase() === asset.toLowerCase() &&
+  offer.payTo.toLowerCase() === recipient.toLowerCase() && BigInt(offer.amount) <= BigInt(maximum),
+));
+const client = createClient({ methods: [upto({ client: core, networks: [network] })], polyfill: false });
+const response = await client.fetch(resourceUrl, {
+  method: 'POST', headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ prompt: 'Instrumental acid house', seconds: 30 }),
+});
+if (!response.ok) throw new Error(await response.text());
+```
+
+The client handles the `402` challenge, signs the authorization and checks the `Payment-Receipt`. Allow the credential header in CORS and expose `WWW-Authenticate` and `Payment-Receipt` for browser clients. To retain separate Bearer authentication, set `header: 'Payment-Authorization'` on the server handler.
+
+## Use batch payments for streaming
+
+Copy `createBatchHandler` and the matching `batch` client setup from `vendor/mpp/README.md`. The adapter registers the official `BatchSettlementEvmScheme`, channel storage and receiver-authorizer signer, then returns `{ handle, manager }`. Set the endpoint price to one segment or checkpoint. Keep the same scheme instance for accepting vouchers and claiming funds.
+
+Call the batch client's `fetch` sequentially for that channel:
+
+```ts
+for (const segment of segments) {
+  const response = await client.fetch(resourceUrl, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ songId, segment }),
+  });
+  if (!response.ok) throw new Error(await response.text());
+  await consumeSegment(response);
+}
+```
+
+`segments`, `songId` and `consumeSegment` belong to your player. The first payment funds a channel; subsequent requests authorize cumulative vouchers. Await each receipt before requesting the next segment. Run `await manager.claimAndSettle()` in your server's settlement job to claim vouchers and transfer funds to the receiver. A `funded` or `accepted` receipt alone does not confirm treasury settlement.
+
+This supports x402-compatible continuous playback through paid segments or checkpoints. Your application controls delivery and measurement; the generic handler does not meter an indefinite open stream. Persist channel and receipt state, and reconcile uncertain settlements before charging again.
+
+[MPP custom methods](https://mpp.dev/payment-methods/custom) · [MPP challenge binding](https://mpp.dev/protocol/challenges) · [Rawchunks session guide](/dev/guides/payments)

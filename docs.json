@@ -262,7 +262,8 @@
           {
             "group": "Overview",
             "pages": [
-              "web3/overview"
+              "web3/overview",
+              "web3/tempo-mpp"
             ]
           },
           {
