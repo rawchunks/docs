@@ -1,45 +1,49 @@
 ---
 title: "Publish and mint a track"
 sidebarTitle: "Publish and mint"
-description: "Set selling terms, make a track public, and understand what minting records."
+description: "Review selling terms, mint a version, and list it in the Market."
 ---
 
 import MintNotice from "/snippets/app/mint-notice.mdx";
 
-Publishing lists a track in **MARKET**. If that version isn't minted yet, the app mints it before making the listing public.
+Publishing mints an unminted version and lists it in **MARKET** for listening and licensing.
 
 ## Choose selling terms
 
-Before generating an original, open Studio's **FINANCIALS**:
+Studio's **FINANCIALS** sets the starting terms for a new original:
 
-| Field | What you set | Default value |
+| Field | What you set | Default |
 | --- | --- | ---: |
-| **STREAM ($/MIN)** | The displayed listening rate | $0.01/min |
-| **LICENSE ($)** | The price of a remix license | $5 |
-| **LICENSES** | The number of licenses offered | 20 |
+| **STREAM ($/MIN)** | The listening rate | $0.01/min |
+| **LICENSE ($)** | Commercial remix license price | $5 |
+| **LICENSES** | Licenses offered | 20 |
 
-<Frame caption="Studio's Financials panel, showing the starting selling terms.">
-  <img src="/images/app/studio-financials.jpg" alt="Financials with stream price 0.01, license price 5 and license allocation 20." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/studio-financials.jpg" alt="Studio Financials with the stream rate, commercial license price, and license allocation." />
 </Frame>
 
-These are song selling terms, separate from [service fees](/app/payments). The current player does not charge listeners by the minute, so the displayed stream rate is not a promise of streaming earnings.
+These terms are separate from [generation fees](/app/payments). You can revise them in **MY SONGS → ••• → SONG DETAILS** before the version is minted or public.
 
 ## Make a track public
 
-1. Choose the song version you intend to publish and review its terms.
-2. Connect the creator account and choose the appropriate network.
-3. Select **MAKE PUBLIC** on the Studio variation, or enable **Public song** in **MY-PAGE → MY SONGS**.
-4. Review and complete any mint or activation prompts. Wait for confirmation.
-5. The public listing appears in Market.
+1. Select the version you intend to publish.
+2. Connect its creator account and choose the appropriate network.
+3. Select the upload icon beside **PRIVATE** in My Songs, or **MAKE PUBLIC** on a Studio variation.
+4. Review **CONFIRM PUBLICATION**, including the track, account, stream rate, license count, and price.
+5. Select **CONFIRM & PUBLISH** and complete the required prompts. Wait for confirmation before looking for it in Market.
+
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/publication-review.jpg" alt="Confirmation dialog with account, track title, album, listening rate, license allocation, and Confirm and Publish." />
+</Frame>
 
 <MintNotice />
 
-An original's mint records its creator, song metadata, license allocation, license price, and stream rate. A remix's mint links it to the original on the same network. Minting records this relationship; it does not check that every lyric, recording, or other input is cleared for your intended use.
+An original's mint records its creator, metadata, licensing terms, and stream rate. A remix's mint links it to the original on the same network. Clear the rights to your recordings and lyrics before publishing.
 
-## Keep working after minting
+## Keep working
 
-**EDIT** opens a new editable version based on a minted song. Publish or download that version when it's ready; it has its own mint.
+Editing a minted song creates a new editable version. Publish or download that version when it is ready; it has its own mint.
 
-Use **MAKE PRIVATE** or clear **Public song** to remove a Market listing. The onchain record and public metadata remain.
+Where a **MAKE PRIVATE** control is offered, it removes the Market listing. The onchain record and public metadata remain.
 
-To understand license sales and remix permissions, see [licenses](/app/licenses).
+See [licenses](/app/licenses) for the creator's share of a license sale and the remix workflow.
