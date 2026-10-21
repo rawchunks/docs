@@ -1,37 +1,45 @@
 ---
 title: "Manage songs in My Page"
 sidebarTitle: "My Page and versions"
-description: "Find songs, choose versions, edit them, and download completed audio."
+description: "Edit song details, open the audio editor, and download your work."
 ---
 
 import MintNotice from "/snippets/app/mint-notice.mdx";
 
-**MY-PAGE** has collapsible sections for **MY SONGS**, **MY LICENSES**, **MY ALBUMS**, and **MY VOICES**. Connect the account that owns your work and choose the matching network.
+**MY-PAGE** holds **MY SONGS**, **MY LICENSES**, **MY ALBUMS**, and **MY VOICES**. Connect the account that owns your work. Each section can be collapsed.
 
-## Choose a song version
+## Choose a song and open its menu
 
-Related versions share a song card. Select a numbered version badge before playing or using the menu. Changing the active song's version loads that version and pauses playback.
+Use numbered version pills when offered to choose a version. Open the card's **•••** menu for its actions.
 
-Open **••• → EDIT** to continue in the editor. An unminted version opens directly; editing a minted version creates an editable version based on it.
-
-<Frame caption="Example songs and versions, shown in My Page with the action menu open.">
-  <img src="/images/app/library-menu.jpg" alt="My Songs cards with version badges and the menu containing Edit, Download and Delete." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/library-menu.jpg" alt="My Songs with compact cards and the Song Details, Audio Editor, Download, and Delete menu." />
 </Frame>
+
+**AUDIO EDITOR** continues an unminted version directly. Editing a minted song creates another editable version.
+
+## Edit song details
+
+For a private, unminted track, select **SONG DETAILS**. Change its title, genre, artwork, stream price, license allocation, and license price, then **SAVE DETAILS**.
+
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/library-details.jpg" alt="Edit Song Details dialog with title, genre, artwork, stream price, total licenses, and license price." />
+</Frame>
+
+Review these terms before [publishing](/app/publish). The menu no longer offers Song Details once that version is public or minted.
 
 ## Download a song
 
-Select the version, then **••• → DOWNLOAD**. Complete any required mint, activation, or wallet prompts. Once the audio is fetched, your browser starts the download with a title-based WAV filename.
+Select **••• → DOWNLOAD**. Complete any required mint or account-activation prompts. The browser downloads a title-based WAV file.
 
 <MintNotice />
 
-Downloading can mint a version even while its app listing says **PRIVATE**. If the audio download fails after minting, retrying the download does not undo that mint.
+A download can mint a version while its listing remains **PRIVATE**. If the file download fails after minting, retrying does not undo the mint.
 
-## List or remove a song
+## Publish or delete
 
-The **Public song** switch controls whether it appears in Market. Read [publishing](/app/publish) before enabling it for the first time.
+The upload icon beside **PRIVATE** opens the [publication review](/app/publish#make-a-track-public). Review it before confirming.
 
-**••• → DELETE** immediately deletes the selected song version from the library. The current app has no confirmation dialog or undo control for that action.
+**••• → DELETE** deletes that version immediately. The app has no confirmation or recovery control for this action.
 
-## Find other saved work
-
-**MY LICENSES** provides the [REMIX entry](/app/licenses#open-a-remix) for purchased originals still in the public catalog. **MY ALBUMS** shows [album cards](/app/covers-albums). **MY VOICES** shows samples and [preparation status](/app/voices).
+**MY LICENSES** holds [licensed originals](/app/licenses#open-a-remix) still in the public catalog. **MY ALBUMS** holds [album cards](/app/covers-albums); **MY VOICES** holds [saved vocal profiles](/app/voices).
