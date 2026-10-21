@@ -1,44 +1,42 @@
 ---
 title: "Use a custom voice"
 sidebarTitle: "Voices and training"
-description: "Upload a vocal reference, save a song's voice, and reuse a voice when its mode is ready."
+description: "Upload a vocal reference or reuse a prepared voice in generation."
 ---
 
-Open Studio → **GLOBAL PARAMETERS** → **VOICE**. **CUSTOM VOCAL** offers an uploaded reference sample or a trained voice from **SAVED VOICES**.
+Open **STUDIO → GLOBAL PARAMETERS → VOICE**. Choose **UPLOAD** for a reference file or **SAVED** for a prepared voice.
 
 ## Use a vocal reference
 
-1. Select **UPLOAD SAMPLE** and choose or drop an audio file. The dialog lists WAV, MP3, FLAC, OGG, and WebM.
-2. Review the filename and size. Use **REPLACE** or **REMOVE** to change it.
-3. Set **VOCAL RESEMBLANCE**, then **DONE**.
-4. Confirm your generation. The app uploads and saves the sample at this point, then uses it as a reference for the track.
+1. In **UPLOAD**, select or drop an audio file. Supported formats are WAV, MP3, FLAC, OGG, and WebM.
+2. Review the selected file. Replace or clear it if needed.
+3. Set **RESEMBLANCE**, then **DONE**.
+4. Confirm generation. The app saves the sample at that point and uses it as a vocal reference.
 
-<Frame caption="The app's Upload Sample tab.">
-  <img src="/images/app/voice-upload.jpg" alt="Custom Vocal dialog with Upload Sample and an audio drop area listing supported formats." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/voice-upload.jpg" alt="Current Voice dialog with Saved and Upload tabs and the reference audio drop area." />
 </Frame>
 
-Choose an isolated **mono or stereo** vocal recording of no more than **four minutes** if you want it prepared for trained use. Uploads must be under **50 MiB**. A sample can be saved before preparation finishes; a long recording can save and still fail preparation.
+For trained reuse, choose an isolated mono or stereo vocal recording of no more than **four minutes**. Uploads must be under **50 MiB**. A longer recording can save and still fail preparation.
 
-Selecting a file alone does not upload it. The upload and generation have separate [service charges](/app/payments#service-prices).
+Selecting a local file does not upload it. A new upload has its own [service charge](/app/payments#service-prices), separate from generation.
 
-## Save vocals from a generated song
+## Save a song's voice
 
-On a **READY** Studio variation, select **SAVE VOICE**. Rawchunks keeps a voice profile named from the song and starts preparing its vocals for reuse.
+On a **READY** Studio variation, select **SAVE VOICE**. Rawchunks saves its vocals as a voice profile and prepares them for reuse. Find it in **MY-PAGE → MY VOICES** or the **SAVED** selector.
 
-Check it in **MY-PAGE → MY VOICES**, or reopen **VOICE → SAVED VOICES**. You may see **SAVED**, **PREPARING**, **READY**, or **ERROR**, with separate **Fast** and **Master** status.
+## Reuse a prepared voice
 
-## Reuse a trained voice
+Choose **FAST** or **MASTER** in Studio first. Open **VOICE → SAVED**, select an enabled voice, then **DONE**. A voice that is not ready for the selected mode stays disabled.
 
-Choose **FAST** or **STUDIO MASTER** in Studio first. Open **SAVED VOICES**, select a voice marked **Ready** for that mode, then **DONE**. Unready voices are disabled for the selected mode.
-
-<Frame caption="An example prepared voice in the app's saved-voice selector.">
-  <img src="/images/app/voice-saved.jpg" alt="Saved voice selected in Custom Vocal, with Fast Ready, Master Ready and a Vocal Resemblance slider." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/voice-saved.jpg" alt="Saved voice selected in the current Voice dialog with resemblance slider and Clear, Cancel, and Done." />
 </Frame>
 
-Preparation trains a small custom voice adaptation, called **LoRA**, for each generation mode. You don't set training parameters or start a separate training job in the app. A reference sample can be usable before the trained voice is ready.
+Preparation creates a small trained voice adaptation, called **LoRA**, for each generation mode. Saving the voice starts this preparation.
 
-## Adjust resemblance and check the result
+## Set resemblance
 
-**VOCAL RESEMBLANCE** covers **10–100%**, starting at **65%**. It controls how strongly you request the voice's character. Even at its highest setting, listen to the result before treating it as a match.
+**RESEMBLANCE** covers **10–100%**, starting at **65%**. Higher values request a closer match to the voice. Listen to the result before using it as a finished vocal.
 
-In **MY VOICES**, **PLAY SAMPLE** plays the saved reference. **RETRY** refreshes voice status after a loading error; it does not restart training. Use **REMOVE VOICE** in the Studio dialog to clear the generation selection.
+**CLEAR** removes the voice from your generation settings. **RETRY** after a loading error refreshes the list; it does not restart training.
