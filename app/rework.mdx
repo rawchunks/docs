@@ -1,29 +1,29 @@
 ---
 title: "Rework a section"
 sidebarTitle: "Rework"
-description: "Generate a new take for a selected part of the song."
+description: "Generate a different take for a selected part of your song."
 ---
 
 import EditResult from "/snippets/app/edit-result.mdx";
 
-Select the part you want to change on the waveform, then **REWORK**. You can also open **STUDIO** in the toolbox and choose **Rework**.
+Select a range, then **REWORK** beside it. You can also choose **REWORK** in AI Studio.
 
 <Steps>
   <Step title="Describe the change">
-    Enter **SOUND DESCRIPTION** or use the toolbox's **Describe the music…** field. Describe the new part: “A dry snare and sparse bass under the vocal,” for example. Add optional **LYRICS** for the section.
+    Enter the new part in the prompt: “A dry snare and sparse bass under the vocal,” for example. The prompt's expand icon gives you more writing space. Open **LYRICS** if the section needs different words.
   </Step>
-  <Step title="Choose how much to change">
-    Under **REWORK INTENSITY & MODE**, choose **Conservative**, **Balanced**, or **Aggressive**. **STRENGTH** is adjustable only in Balanced, from **0–100%**.
+  <Step title="Set the intensity">
+    Open **INTENSITY**. Choose **Subtle (0%)**, **Light (25%)**, **Balanced (50%)**, **Strong (75%)**, or **Bold (100%)**, or adjust the slider between them. Lower values keep more of the source; higher values request a larger change.
 
-    **Transition length (seconds)** offers **0–10 seconds** to guide the join around the changed section. Listen to the join after processing.
+    **BOUNDARY SEAM CROSSFADE** covers **0–2 seconds**. Use it to adjust the join around the section, then listen to that boundary in the result.
   </Step>
-  <Step title="Make the take">
-    Choose an available **Flexible**, **Detailed**, or **Fast** processing mode in the toolbox header. Select **REWORK** and wait for the operation to finish.
+  <Step title="Generate the take">
+    Choose an available **Flexible**, **Detailed**, or **Fast** mode. Select **REWORK** and wait for the take.
   </Step>
 </Steps>
 
-<Frame caption="Rework controls in an example Rawchunks project.">
-  <img src="/images/app/editor-rework.jpg" alt="Rework panel with processing mode, intensity choices, strength, lyrics, sound description and Rework action." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-rework.jpg" alt="Rework settings dialog with five intensity presets, intensity slider, boundary crossfade, and quality choices." />
 </Frame>
 
 <EditResult />
