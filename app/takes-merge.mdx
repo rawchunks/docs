@@ -1,55 +1,48 @@
 ---
 title: "Compare, mount and merge takes"
 sidebarTitle: "Takes and merging"
-description: "Hear a candidate in the arrangement, compare it to the original, and keep selected sections."
+description: "Listen to candidates and keep the parts you choose."
 ---
 
-A **take** is a candidate from an edit or extraction. **BASE** mounts it on Master so you can hear and position it. **Merge** keeps the audible result in Master.
+A **take** is a candidate from an edit or extraction. Mounting puts it in the arrangement for comparison. Merging keeps the chosen audio.
 
-```mermaid
-flowchart TB
-  A["Preview the take"] --> B["BASE: mount on Master"]
-  B --> C["Compare ORG and TK#"]
-  C --> D["Merge a section or all mounted takes"]
-  classDef candidate fill:#121212,stroke:#00ccff,color:#ffffff;
-  classDef mounted fill:#121212,stroke:#ff00a0,color:#ffffff;
-  classDef kept fill:#121212,stroke:#00ff41,color:#ffffff;
-  class A candidate;
-  class B,C mounted;
-  class D kept;
-```
+Full-song Restyle results use **#TK1**, **#TK2**, and the other numbered buttons beside **MASTER**. Choose **MASTER** to return to the base mix.
 
-## Mount and compare
+## Mount a section on Master
 
-1. Expand the take group under **EXTRACTED**. Use the take's play button to hear it alone.
-2. Select **BASE** to mount it. The button becomes a checkmark, and a **TK** overlay appears on Master.
-3. Select the overlay. Drag it horizontally to change its position; use its reset arrow to return it to the original position.
-4. Use **ORG** for the original audio underneath and **TK#** for the take. Turn each on or off to compare.
+For a Rework or extracted section:
 
-When a group has several takes, its numbered buttons choose the candidate. The expand arrow shows all takes in that group together.
+1. Select a take in the matrix, **+N** vault, or **HISTORY → TAKES**.
+2. Use its play icon to hear it alone. Numbered pills choose between candidates.
+3. Select **BASE** on the focused take. It becomes a checkmark when mounted. In History, the same action is **MOUNT**, then **BASE**.
+4. Select the small **MST** horizon to return to Master. The mounted section appears on its waveform; the **TK#** button enables or silences that take.
 
-<Frame caption="A mounted take and its comparison, merge, discard and reset controls in an example project.">
-  <img src="/images/app/editor-merge.jpg" alt="Mounted Take 2 overlay on Master with original and take toggles, merge checkmark, trash and reset controls." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-take-base.jpg" alt="Focused Rework take with numbered selector and its mounted Base checkmark." />
 </Frame>
 
-For an added layer, leave **ORG** and **TK#** on to hear both. For a replacement, turn **ORG** off in that region. The selected overlay's play button previews its section.
+## Layer on Master
 
-## Merge one section
+A generated Layer plays in its own instrument lane alongside Master. Select its numbered take, keep Master unmuted, and use the top transport to hear them together. Use **M** to compare the mix with and without the layer.
 
-Select the mounted overlay and use its merge checkmark. If you've selected a smaller range inside the take, only that portion is merged. The unused portion stays pending.
+The lane's **Merge Layer** checkmark keeps that take in the instrument lane. It does not fold the layer into Master; **Merge all** does not include these lanes.
 
-Listen with the intended original/take toggles before merging. A silenced take isn't included.
+## Merge all
 
-## Merge all mounted takes
+On Master's control bar, select the stacked-layer icon, **Merge all mounted sections**. Enable the takes you want to include and listen before merging.
 
-Use the stacked-layer icon on the Master row, labeled **Merge all mounted sections**, to keep all audible mounted overlays.
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-merge.jpg" alt="Master waveform with a mounted take, TK2 playback toggle, and Merge all icon in the control bar." />
+</Frame>
 
-This merges Master and its mounted takes. Ordinary lanes such as a separate Keys or Drums track are not automatically included just because you can hear them playing.
+This keeps Master and the enabled mounted takes. Ordinary Keys, Drums, Code, and sample lanes are not included automatically.
 
-## Unmount or discard
+## Merge a section
 
-Select the take's mounted checkmark again to unmount it while keeping the candidate. Use the trash control to discard a take you don't want.
+The current layout does not expose the individual **Merge**, **ORG**, position reset, and discard controls after you select a mounted section. Use **Merge all** for the enabled mounted takes. A smaller waveform selection alone does not make **Merge all** merge only that selection.
 
-**SET AS BASE** in **HISTORY** mounts the take too. Mounting alone does not replace the saved Master audio.
+## Unmount or remove a take
 
-When **RESTORE MIX** appears in the board transport, it switches Master back to the available original generation take. It does not restore an earlier full arrangement or snapshot.
+Select the take's mounted checkmark again to unmount it and keep the candidate. **HISTORY → TAKES** offers a delete control for candidates you no longer want.
+
+**Reset Master** returns to the available original mix and resets its wave sculpting. Use [History](/app/history) for saved arrangement milestones.
