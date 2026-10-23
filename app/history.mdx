@@ -1,23 +1,28 @@
 ---
-title: "Save snapshots and inspect history"
+title: "Save and restore project snapshots"
 sidebarTitle: "History and snapshots"
-description: "Save a named arrangement milestone and inspect its takes and commits."
+description: "Use Undo and Redo, save milestones, and return to an earlier arrangement."
 ---
 
-Select **COMMIT** in the editor header, or **COMMIT SNAPSHOT** inside **HISTORY**.
+Rawchunks saves unfinished editing work as you go. **Undo** and **Redo** on the waveform control bar handle recent arrangement changes.
 
-1. Enter a description of this project state.
-2. Select **SAVE SNAPSHOT** with your account connected.
-3. Open **HISTORY** to see the saved message and time under **COMMITS**.
+## Save a milestone
 
-<Frame caption="History with an example take and snapshot in the Rawchunks editor.">
-  <img src="/images/app/editor-history.jpg" alt="History panel showing Active Takes, a mounted Base take and a Commits entry." />
+1. Select **COMMIT** on the waveform bar or in **HISTORY**.
+2. Enter a short description, such as “Before the chorus rework.”
+3. Select **SAVE SNAPSHOT** with your account connected.
+4. Open **HISTORY → COMMITS** to see the saved milestone.
+
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-history.jpg" alt="History with Takes and Commits tabs, an example saved milestone, and Restore button." />
 </Frame>
 
-Snapshots keep the arrangement state as a milestone. The current History panel lists commits; it doesn't have a restore button for choosing an earlier commit.
+## Restore a snapshot
 
-Reopening the project loads its saved editing state, or the latest arrangement snapshot when available. Use **COMMIT** to save a named milestone before leaving.
+Choose a commit under **COMMITS**, then **RESTORE**. The editor applies saved track settings and tempo. Existing clips and additional lanes can remain, so this is not a complete rollback. Commit your current work first if you want a milestone to return to.
 
-**ACTIVE TAKES** lists the available candidates. **SET AS BASE** mounts one on Master. The History **AUDITION** control selects a take; use the take's play button in **EXTRACTED** to start its preview.
+## Inspect takes
 
-A snapshot and a merged audio result serve different purposes. See [takes and merging](/app/takes-merge) to keep a candidate in Master, then [download the song](/app/library#download-a-song) from My Page.
+**TAKES** lists the available candidates. Select one to reveal **PLAY**, **MOUNT**, and its delete control. **MOUNT** becomes **BASE** when active. Rework and extracted takes mount for comparison; a Layer switches the active version of its instrument lane. Neither action merges audio into Master.
+
+A snapshot saves an arrangement state. [Merging](/app/takes-merge) keeps chosen audio in Master; [downloading](/app/library#download-a-song) retrieves the song file.
