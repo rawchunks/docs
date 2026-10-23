@@ -1,40 +1,29 @@
 ---
-title: "Write a Live Code pattern"
-sidebarTitle: "Live Code / Strudel"
-description: "Use supported Strudel-style sound and note patterns in a repeating lane."
+title: "Write a Code pattern"
+sidebarTitle: "Code / Strudel"
+description: "Write a Strudel pattern or ask AI Code for a starting part."
 ---
 
-Open **LIVE CODE** in the toolbox. Select **CREATE LIVE CODE TRACK** if needed.
+Open **CODE** in the manual dock or **+N** menu, then **OPEN CODE REPL**. Create a Code track if prompted.
 
-<Frame caption="Live Code with an example pattern in the Rawchunks editor.">
-  <img src="/images/app/editor-strudel.jpg" alt="Live Code editor with pattern text and Run Pattern, Stop and Clear controls." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-strudel.jpg" alt="Expanded Code REPL with Strudel text, starter patterns, AI prompt, Run, version selectors, and sound macros." />
 </Frame>
 
-Enter a sound pattern:
+Choose **4/4 TECHNO**, **BREAKBEAT**, or **ACID BASS** as a starter, or enter your own pattern. A simple beat is:
 
 ```javascript
 s("bd sd hh cp")
 ```
 
-Or a note pattern:
+Select **RUN** or press **Shift+Enter** in the editor to evaluate it and sync playback to the project tempo. The stop and clear icons control playback and the current text.
 
-```javascript
-note("c3 e3 g3")
-```
+## Ask for a pattern
 
-Select **RUN PATTERN**, or press **Shift+Enter** in the editor. This starts the arrangement and applies the project's displayed BPM to the pattern. **STOP** stops the arrangement and returns to the beginning; **CLEAR** empties the pattern.
+Enter a musical request in the **AI Live-Code prompt**, such as “A muted bass pulse and a sparse offbeat hi-hat,” then **AI CODE**. The request uses the current song's musical context. Read and run the returned pattern, then listen before keeping it.
 
-## Supported pattern tools
+## Change the sound
 
-| Write | To request… |
-| --- | --- |
-| `s("bd ~ sd hh")` | Sounds with a rest; `bd` is kick, `sd` snare, `hh` hi-hat |
-| `s("[bd hh] sd")` | A grouped subdivision |
-| `s("hh*4")` | Repeated hits |
-| `s("bd(3,8)")` | Three hits spread across eight steps |
-| `note("c3 e3 g3").slow(2)` | Notes at a slower rate |
-| `.fast(2)` or `.speed(2)` | A faster rate |
+**SPEED**, **LPF CUTOFF**, **REVERB**, and **DELAY** provide quick adjustments. Numbered pills switch Code versions; **+** creates another version.
 
-You can separate expressions with commas, semicolons, or newlines. Other named sounds include **cp/clap**, **tom**, **perc/rim**, and **crash/cymbal**.
-
-This panel supports a subset of Strudel-style notation. Full Strudel programs and arbitrary JavaScript aren't supported. A successful console status doesn't mean every modifier is supported. Keep patterns small and listen after changes; editing the text can update an already playing lane.
+The editor supports sound and note patterns, rests, subdivisions, repetition, and timing modifiers. Keep patterns small while testing them. Arbitrary JavaScript and every Strudel feature are not supported here.
