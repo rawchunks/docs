@@ -1,41 +1,45 @@
 ---
 title: "Balance lanes and add effects"
 sidebarTitle: "Mixer and effects"
-description: "Adjust level, pan and tone, then enable effects for the selected lane."
+description: "Adjust level and tone, then add effects or spatial placement."
 ---
 
-Select a lane and open **MIXER**. Use its fader for level, **PAN** for left/right position, and **BASS / MID / HIGH** for tone. The EQ controls cover **−12 to +12 dB**.
+Focus a lane and open **MIXER**. Its channel badge cycles the target. The fader adjusts level; **PAN** sets left/right position. **BASS**, **MID**, and **HIGH** cover **−12 to +12 dB**. Double-click controls to reset them.
 
-**M** mutes, **S** solos, and the lane play icon auditions it alone. You can solo more than one lane; a muted lane stays silent.
+A selected Master range adds **TRIM** for its level. Check the whole song after tone changes; the section's EQ controls affect Master tone beyond that range.
 
-<Frame caption="Mixer controls in an example Rawchunks project.">
-  <img src="/images/app/editor-mixer.jpg" alt="Mixer channel controls with faders, pan, mute, solo and tone controls." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-mixer.jpg" alt="Current Mixer with target badge, level fader, tone controls, filter, and pan." />
 </Frame>
 
-## Use the FX Rack
+## Add effects
 
-Open **FX RACK** for the selected lane. Each module has **ON / OFF**. EQ starts on; the other modules start bypassed. Enable a module, then adjust it while listening.
+Open **FX**. Check the target badge, choose a module, enable **ON**, then adjust it while listening. EQ starts enabled; other effect modules start bypassed.
 
-| Module | Controls |
+| Tab | Controls |
 | --- | --- |
-| **3-BAND EQ** | Low, Mid, High gain |
-| **STATE-VARIABLE FILTER** | Low-pass, high-pass or band-pass; cutoff and resonance |
-| **SATURATION / DRIVE** | Drive and dry/wet blend |
-| **STEREO CHORUS** | Rate, depth and dry/wet blend |
-| **TEMPO FEEDBACK DELAY** | Delay time, feedback and dry/wet blend |
-| **ALGORITHMIC REVERB** | Decay and dry/wet blend |
-| **BUS COMPRESSOR** | Threshold, ratio, attack and release |
+| **WAV** | [Wave sculpting](/app/wave-sculpting) |
+| **EQ** | Low, Mid, High gain |
+| **FLT** | Filter type, cutoff, resonance |
+| **DRV** | Drive and dry/wet blend |
+| **CHR** | Chorus rate, depth, blend |
+| **DLY** | Delay time, feedback, blend |
+| **REV** | Reverb decay and blend |
+| **CMP** | Compressor threshold, ratio, attack, release |
+| **3D** | Spatial azimuth, elevation, distance |
 
-<Frame caption="FX Rack controls and their on/off switches in an example project.">
-  <img src="/images/app/editor-effects.jpg" alt="FX Rack showing all seven modules: EQ, filter, drive, chorus, delay, reverb and compressor, with their enable switches." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-effects.jpg" alt="FX panel with target badge and tabs for wave sculpting, EQ, filter, drive, chorus, delay, reverb, compressor, and 3D." />
 </Frame>
 
-Enable the filter in FX Rack before using the Mixer's **FILTER** cutoff. Delay presets labeled **1/8**, **1/4**, and **1/2** currently use fixed times of **0.25**, **0.5**, and **1 second**; they don't follow BPM changes.
+Enable **FLT** before using Mixer's filter cutoff. Delay presets use fixed times, so check them against the project tempo.
 
-## Master and selected sections
+## Place a sound in 3D
 
-Master's effects also affect takes mounted on it. Ordinary lanes have their own mixer controls.
+Choose **3D**, turn it **ON**, then set **AZIMUTH** for direction around you, **ELEVATION** for height, and **DISTANCE** for how far away the sound sits. Listen on headphones while positioning it.
 
-The Mixer offers a trim control when a Master range is selected. Its section EQ currently changes Master tone across the song. Listen to the whole arrangement after adjusting it.
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-spatial.jpg" alt="3D binaural effect enabled with azimuth, elevation, and distance sliders." />
+</Frame>
 
-[Source extraction](/app/extract-separate) doesn't bake mixer changes or effects. [Merging](/app/takes-merge) keeps Master with the mounted takes you include.
+Master effects also affect takes mounted on it. Ordinary lanes have their own settings. [Source extraction](/app/extract-separate#extract-a-section) does not bake these effects into its slice.
