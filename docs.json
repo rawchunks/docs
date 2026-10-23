@@ -91,12 +91,14 @@
               "app/rework",
               "app/extract-separate",
               "app/layer",
+              "app/accompany",
               "app/extend-restyle",
               "app/takes-merge",
               "app/keys",
               "app/drums",
               "app/live-code",
               "app/samples",
+              "app/wave-sculpting",
               "app/mixer-effects",
               "app/history"
             ]
