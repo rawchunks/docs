@@ -1,25 +1,20 @@
 ---
 title: "Write a Keys pattern"
 sidebarTitle: "Keys"
-description: "Add notes to a repeating two-bar piano roll."
+description: "Play and record notes in a repeating two-bar piano roll."
 ---
 
-Open **KEYS** in the toolbox. If there isn't a piano track, select **CREATE KEYS TRACK**.
+Open **KEYS** in the manual dock or **+N** menu. Create a Keys track if prompted, then select **OPEN KEYS EDITOR**. The waveform's add menu also creates a Keys lane.
 
-<Frame caption="Keys with an example note pattern in the Rawchunks editor.">
-  <img src="/images/app/editor-keys.jpg" alt="Keys piano roll with pitch rows, timing grid, note length, octave controls, quantize, clear and velocity." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-keys.jpg" alt="Expanded Keys editor with two-bar piano roll, computer-keyboard notes, note division, velocity, version selector, and recording control." />
 </Frame>
 
-1. Select a key in the left gutter to hear its pitch. Use **OCT** arrows to view another octave range.
-2. Choose **1/4**, **1/8**, **1/16**, or **1/32** for the length of new notes.
-3. Select a pitch/time cell to add a note. Select an existing note to remove it.
-4. Adjust **VELOCITY** for subsequent notes and key previews, from **10–100%**.
-5. Use the board's **PLAY** control to hear the repeating two-bar part alongside the arrangement.
+1. Choose **1/4**, **1/8**, **1/16**, or **1/32** for new note lengths, and a **VEL** value for their velocity.
+2. Select a pitch/time cell to add a note. Select an existing note to remove it.
+3. Play the pitch labels or use the laptop keys printed beside them. **Z/X** change octave; **C/V** change velocity.
+4. Enable **KEY** step recording to enter notes with your keyboard. Each recorded note advances the cursor. The left/right arrows move that cursor.
+5. Use **QUANTIZE** to align notes to the chosen grid, or the clear icon to empty the pattern.
+6. Play the arrangement to hear the two-bar part repeat. Set its tempo with the header's **BPM** badge.
 
-**QUANTIZE** moves existing note starts and lengths to the chosen grid. **CLEAR** removes the notes. Changing Velocity doesn't change notes you've already entered.
-
-The current piano roll supports cell-based entry. It does not offer MIDI file import/export or hardware MIDI input.
-
-For tempo, see the [editor's BPM control](/app/editor#select-and-listen).
-
-Use [Mixer and effects](/app/mixer-effects) to balance this lane. [Merge all](/app/takes-merge#merge-all-mounted-takes) only includes mounted takes on Master, so it does not automatically bake a Keys lane into the song.
+The compact preview gives you quick access to the pattern. Numbered pills switch versions; **+** creates a fresh version on the same lane. Balance it with [Mixer and effects](/app/mixer-effects).
