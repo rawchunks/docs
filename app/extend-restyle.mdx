@@ -1,33 +1,33 @@
 ---
 title: "Extend or restyle a song"
 sidebarTitle: "Extend and Restyle"
-description: "Continue past the ending or request a different musical style."
+description: "Add a continuation or request a different musical style."
 ---
 
 import EditResult from "/snippets/app/edit-result.mdx";
 
-## Extend the ending
+## Extend
 
-Open **STUDIO → Extend**. Set **TARGET DURATION** to the total length you want, not the number of seconds to add. To take a 40-second song to 90 seconds, choose **90s**.
+Choose **EXTEND → LENGTH** in AI Studio. The presets show both added time and the new total: **+30s (78s)** adds 30 seconds to a 48-second source. The slider sets the total target, up to **300 seconds**, and must exceed the current length.
 
-The target must be longer than the current song. The control supports targets up to **300 seconds**. Add continuation instructions in **SOUND DESCRIPTION** if needed, and set the optional **Transition length** control.
+Clear the range selection to continue at the ending. With a selected range ending earlier in the song, the continuation is inserted after that endpoint and the later audio moves forward.
 
-Choose an available **Flexible**, **Detailed**, or **Fast** processing mode, then **EXTEND**.
+Enter a continuation prompt and optional **LYRICS**. Choose **Flexible**, **Detailed**, or **Fast**, then **EXTEND**.
 
-<Frame caption="Extend controls in an example Rawchunks project.">
-  <img src="/images/app/editor-extend.jpg" alt="Extend panel with total target duration, transition length, description and Extend action." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-extend.jpg" alt="Extend dialog with added-seconds presets, total duration slider, and quality choices." />
 </Frame>
 
-## Change the style
+## Restyle
 
-Open **STUDIO → Restyle** and describe the new sound in **SOUND DESCRIPTION**. For example: “Turn this into a slow acoustic arrangement with brushed drums.”
+Choose **RESTYLE** and describe the new arrangement: “Slow acoustic arrangement with brushed drums,” for example.
 
-**SOURCE RESEMBLANCE** runs from **0–100%**, starting at **65%**. **Source detail** offers a separate **0–1** adjustment. These guide the transformation; compare the completed audio to hear what they changed.
+Open **BLEND**. The presets are **Subtle (35%)**, **Balanced (65%)**, **Bold (85%)**, and **Full Cover (100%)**. The slider covers **5–100%**. Higher values request a larger style change.
 
-Choose an available **Flexible**, **Detailed**, or **Fast** processing mode, then **RESTYLE**.
+Focus a lane or Master and select a range if needed. Choose **Flexible**, **Detailed**, or **Fast**, then **RESTYLE**. Open **LYRICS** to change the words.
 
-<Frame caption="Restyle controls in an example Rawchunks project.">
-  <img src="/images/app/editor-restyle.jpg" alt="Restyle panel with source detail, source resemblance, description and Restyle action." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-restyle.jpg" alt="Restyle dialog with blend presets, style-transfer slider, and quality choices." />
 </Frame>
 
 <EditResult />
