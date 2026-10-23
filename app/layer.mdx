@@ -1,31 +1,31 @@
 ---
 title: "Add an instrument with Layer"
 sidebarTitle: "Layer"
-description: "Generate a new part guided by Master or selected lanes."
+description: "Generate a new part alongside the song or selected reference lanes."
 ---
 
 import EditResult from "/snippets/app/edit-result.mdx";
 
-Use **Layer** when you want a new instrument alongside the source: a bass part, percussion, or a piano answer to a melody.
+Use **LAYER** for one new part: a bass line, percussion, or a guitar answer between vocal lines.
 
 <Steps>
-  <Step title="Choose what should guide it">
-    Master is the starting reference. Use **L** on an ordinary lane to choose it as a Layer reference. Choosing an ordinary lane removes Master from the reference set; you can choose several lanes together.
+  <Step title="Choose the reference">
+    Start with Master, or use **L** on source lanes to choose what should guide the part. Choosing an ordinary lane removes Master from the reference set; you can combine several reference lanes. Select a range if you only need part of the song.
   </Step>
-  <Step title="Describe the new part">
-    Open **STUDIO → Layer**. Under **ADD AN INSTRUMENT**, enter **INSTRUMENT**, then **SOUND DESCRIPTION**. Both are required.
+  <Step title="Choose the instrument">
+    Open **LAYER → STEM**. Choose an instrument preset or enter a **CUSTOM INSTRUMENT TARGET**, such as cello or sax. Describe what it should play in the prompt.
 
-    You can also supply **Song description** and **Instrument groups (comma separated)**. Use these for context; keep the new part's request in Sound Description.
+    **Vocals** and **Backing Vocals** open the lyrics editor. Write the words for the new vocal part there.
   </Step>
-  <Step title="Generate the layer">
-    Layer currently uses **Flexible** processing. Select **LAYER** and wait for its take.
+  <Step title="Generate and listen">
+    Select **LAYER**. It uses **Flexible** mode. The result appears in its instrument lane with a numbered take selector.
   </Step>
 </Steps>
 
-<Frame caption="Layer controls in an example Rawchunks project.">
-  <img src="/images/app/editor-layer.jpg" alt="Layer panel showing instrument and sound description fields with the Layer action." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-layer.jpg" alt="Layer dialog showing instrument presets and a custom instrument target." />
 </Frame>
 
-<EditResult />
+Choose **ORG** to hear an existing source stem, or a numbered take to hear the generated part. The lane's **Merge Layer** checkmark keeps that take in the lane. To combine a layer with Master, use the [take controls](/app/takes-merge#layer-on-master).
 
-To hear the new part alongside the song, mount it with **BASE**, keep **ORG** and **TK#** on, and adjust its placement. The [take controls](/app/takes-merge) explain how to compare and merge it.
+<EditResult />
