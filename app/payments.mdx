@@ -1,55 +1,61 @@
 ---
 title: "Service prices and session spending"
 sidebarTitle: "Prices and payments"
-description: "Check per-request prices and set a spending cap for your session."
+description: "Pay with USDC or prepaid Credits, and choose a spending cap."
 ---
 
-Rawchunks charges for generation, online edits, and saving voice samples. Service payments use USDC and x402. In the app, you authorize spending through **SESSION**.
+Open **SESSION** to fund generation, online edits, voice preparation, and listening. Choose **USDC**, **CREDIT CARD**, or an available **CAMPAIGN** offer. **1 Credit = $0.01**.
 
 ## Service prices
 
-| Action | Price per request |
-| --- | ---: |
-| Generate with **FAST** | $0.05 |
-| Generate with **STUDIO MASTER** | $0.10 |
-| **Rework**, **Layer**, **Extend**, or **Restyle** | $0.02 |
-| **Separate** stems | $0.02 |
-| **Extract** a source section | $0.02 |
-| **SAVE VOICE** from a song | $0.05 |
-| Upload a vocal reference for generation | $0.10 |
+| Action | USD | Credits |
+| --- | ---: | ---: |
+| Generate with **FAST** | $0.05 | 5 |
+| Generate with **MASTER** (Studio Master) | $0.10 | 10 |
+| **Rework**, **Layer**, **Accompany**, **Extend**, or **Restyle** | $0.02 | 2 |
+| Isolate stems or instruments with **EXTRACT** | $0.02 | 2 |
+| Extract a selected source section | $0.02 | 2 |
+| **SAVE VOICE** from a song | $0.05 | 5 |
+| Upload a vocal reference | $0.05 | 5 |
 
-A new vocal upload is charged separately from its generation. Saving a voice includes its preparation; there is no separate training purchase in the app.
-
-Prices are per request. Don't assume an unsuccessful request is free or automatically refunded.
+A new vocal upload is charged separately from generation. Voice preparation is included in saving the sample; there is no separate training purchase.
 
 ## Start a session
 
-<Steps>
-  <Step title="Connect and choose the network">
-    Connect your account and choose the payment network in the header. You need enough USDC on that network for the cap you select.
-  </Step>
-  <Step title="Set the cap and duration">
-    Open **SESSION**. Choose **$1**, **$5**, **$10**, **$25**, **$50**, or a custom amount of at least **$0.10**. Choose **1 HOUR**, **6 HOURS**, **24 HOURS**, or **7 DAYS**.
-  </Step>
-  <Step title="Authorize the session">
-    Select **START SESSION** and review any approval or account-activation prompts. Wait for the session to become active before submitting paid work.
-  </Step>
-</Steps>
-
-<Frame caption="Session setup with an example account and balance.">
-  <img src="/images/app/session-setup.jpg" alt="Session Controls dialog with budget presets, custom amount, duration choices and Start Session button." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/session-funding.jpg" alt="Session Controls with USDC, Credit Card, and Campaign funding choices." />
 </Frame>
 
-The default selection is **$10 for 24 hours**. The cap authorizes spending; it is not an upfront purchase or subscription. A session belongs to one account and network. Switching networks does not transfer its funds or authorization.
+### USDC
+
+Connect your account and choose a payment network. Select **USDC** in Session, then set the cap: **100 ($1)**, **500 ($5)**, **1K ($10)**, **2.5K ($25)**, or **5K ($50)**. The custom field takes **Credits**, so enter **1000** for a $10 cap.
+
+Choose **1 HOUR**, **6 HOURS**, **24 HOURS**, or **7 DAYS**. The default is **1K ($10) for 24 hours**. Select **START SESSION** and review the approval or account-activation prompts.
+
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/session-setup.jpg" alt="USDC session setup with Credit-denominated cap presets, custom cap, duration, and Start Session." />
+</Frame>
+
+The cap authorizes spending; your funds stay in your wallet until used. Service payments use x402. A session belongs to one account and network.
+
+### Credit card and prepaid Credits
+
+Select **CREDIT CARD**, choose **1K ($10)**, **2.5K ($25)**, or **10K ($100)**, then complete the offered checkout. If you already have an available balance, **USE CREDITS** starts a session from it.
+
+Unspent prepaid Credits return to your available balance when that session ends. Card checkout availability depends on the options offered in your account.
+
+### Campaign
+
+The welcome campaign offers **100 free Credits ($1)** to the first **1,000 eligible users**, once per account. It requires a verified social, email, or passkey login. Select **CAMPAIGN** and claim the offer when available.
+
+Campaign Credits cover AI song generation and stem editing. They cannot pay another creator for streaming. The campaign starts a six-hour session.
+
+## Listening and selling
+
+Listening to another creator's track uses its listed **$/MIN** rate and your active session. Your own tracks are exempt. Check the rate before playing; pausing stops listening time from increasing.
+
+Song selling terms and commercial license purchases are separate from these service fees. See [publishing](/app/publish) and [licenses](/app/licenses).
 
 ## Check or end a session
 
-Reopen **SESSION** to see the displayed remaining budget, limit, amount used, and expiration. Use the refresh button to retrieve the current status.
-
-**END SESSION** revokes the session key. It does not remove an existing token approval from your wallet. Minting and buying licenses can still require separate wallet prompts.
-
-## Selling prices are separate
-
-Studio's **FINANCIALS** sets the prices you list for a song. It does not show the generation fee. The generation confirmation also shows those selling terms.
-
-See [publishing and selling terms](/app/publish) for the stream rate, license price, and license allocation. Wallet transaction or account-activation costs are separate from the service prices above.
+Reopen **SESSION** to check remaining, used, reserved, and total budget plus expiration. Refresh for current status. **END SESSION** closes the session. It does not remove a token approval from your wallet.
