@@ -1,37 +1,35 @@
 ---
 title: "Extract a section or separate stems"
-sidebarTitle: "Extract and Separate"
-description: "Download a slice of source audio, or split a recording into instrument lanes."
+sidebarTitle: "Extract and separate"
+description: "Save a source slice, or isolate the instruments in a recording."
 ---
 
-**EXTRACT** cuts out a time range. **Separate** splits a recording into stems such as vocals, drums, and bass.
+**EXTRACT** appears in two places. Beside a selected waveform range, it cuts an audio slice. In AI Studio, it isolates instruments.
 
-## Extract a source section
+## Extract a section
 
-1. Select **Master** or a separated source lane.
-2. Drag a range over its waveform and adjust the handles.
-3. Select **EXTRACT** in the board transport.
-4. Wait for the source slice. It appears as a take under **EXTRACTED**, and the board action starts a WAV download.
+1. Focus Master or a source stem and select the range.
+2. Select **EXTRACT** beside **AUDITION** and **REWORK**.
+3. Wait for the take and WAV download. Find the take in the matrix or **+N** vault.
 
-<Frame caption="A selected range in an example Rawchunks project. Extract is beside Loop Region and Rework.">
-  <img src="/images/app/editor-timeline.jpg" alt="Editor transport and selected waveform range with Extract, Audition, Loop Region and Rework controls." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-timeline.jpg" alt="Selected range with the Extract action beside Audition and Rework." />
 </Frame>
 
-The Mixer also offers **EXTRACT SECTION**. That creates a take without starting the board's download.
+The slice uses the source audio. It does not export the complete arrangement with every added lane and effect.
 
-Extraction uses the source audio. It does not include the current mixer or effects, and it is not an export of every added lane. See [mounting and merging](/app/takes-merge) to keep generated takes in Master.
+## Isolate instruments
 
-## Separate stems
+1. Choose **EXTRACT** in AI Studio.
+2. Open **TARGET**, or select a visible quick target.
+3. Choose **All**, **Vocals**, **Drums**, **Bass**, **Other**, or **Instrumental**. Additional targets include backing vocals, guitar, keyboard, percussion, strings, synth, FX, brass, and woodwinds.
+4. Select **EXTRACT** and wait for the result.
+5. Choose a resulting lane in the matrix or vault. Use its play icon to check it, then **M**, **S**, and [Mixer](/app/mixer-effects) to balance it.
 
-1. Open the toolbox's **STUDIO** tab and choose **Separate**.
-2. Set **TARGET STEM** to **All**, **Vocals**, **Drums**, **Bass**, **Other**, or **Instrumental**.
-3. Select **SEPARATE** and wait for the stems.
-4. Expand **LANES**. Use the lane play buttons to check the parts, **M** to mute, **S** to solo, and the faders to balance them. New stems may start muted; check **M** before playback.
-
-<Frame caption="Separate controls in an example Rawchunks project.">
-  <img src="/images/app/editor-separate.jpg" alt="Separate panel with All, Vocals, Drums, Bass, Other and Instrumental target buttons." />
+<Frame caption="Example project in the current Rawchunks app.">
+  <img src="/images/app/editor-separate.jpg" alt="Extract settings dialog with standard stem targets and specific instrument targets." />
 </Frame>
 
-The Master row's split icon requests all stems the first time. Once stems exist, it switches between compact and expanded views.
+New stems can start muted. Check **M** before arrangement playback. The matrix's **SPLIT STEMS** shortcut requests all stems when no extracted stems exist.
 
-Both source extraction and separation have [per-request service prices](/app/payments#service-prices).
+Both actions use your [session budget](/app/payments#service-prices).
