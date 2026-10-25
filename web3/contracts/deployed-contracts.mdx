@@ -17,18 +17,12 @@ Use these addresses with the network you select for your RPC and wallet clients.
 
 | Network | Chain ID | Factory | Remix | Royalties |
 | --- | --- | --- | --- | --- |
-| Arbitrum Sepolia | `421614` | [Present](https://sepolia.arbiscan.io/address/0x4Ac838b970D44AB9056b4201e9ED3c1Ce271545e) | [Present](https://sepolia.arbiscan.io/address/0xC5c7d2645A7119b538C8d752Ce61c9706cDF7A36) | [Present](https://sepolia.arbiscan.io/address/0xff402e0C8c9a19f855200524260A858DDF99EdcD) |
 | Base Sepolia | `84532` | [Present](https://base-sepolia.blockscout.com/address/0x4Ac838b970D44AB9056b4201e9ED3c1Ce271545e) | [Present](https://base-sepolia.blockscout.com/address/0xC5c7d2645A7119b538C8d752Ce61c9706cDF7A36) | [Present](https://base-sepolia.blockscout.com/address/0xff402e0C8c9a19f855200524260A858DDF99EdcD) |
 | Tempo Moderato | `42431` | [Present](https://explore.testnet.tempo.xyz/address/0x4Ac838b970D44AB9056b4201e9ED3c1Ce271545e) | [Present](https://explore.testnet.tempo.xyz/address/0xC5c7d2645A7119b538C8d752Ce61c9706cDF7A36) | [Present](https://explore.testnet.tempo.xyz/address/0xff402e0C8c9a19f855200524260A858DDF99EdcD) |
-| Robinhood testnet | `46630` | [Present](https://explorer.testnet.chain.robinhood.com/address/0x4Ac838b970D44AB9056b4201e9ED3c1Ce271545e) | No code | [Present](https://explorer.testnet.chain.robinhood.com/address/0xff402e0C8c9a19f855200524260A858DDF99EdcD) |
-| Arbitrum One | `42161` | No code | No code | No code |
-| Base | `8453` | No code | No code | No code |
-| Tempo | `4217` | No code | No code | No code |
-| Robinhood mainnet | `4663` | No code | No code | No code |
 
 “Present” means `eth_getCode` returned contract code at the address. “No code” means it returned `0x` at the checked block. These checks do not certify that source code has been verified on an explorer.
 
-Use Arbitrum Sepolia, Base Sepolia or Tempo Moderato for the complete contract interface. Robinhood testnet does not have Remix at the configured address, so license and variation calls through that address are unavailable.
+Use Base Sepolia or Tempo Moderato for the complete contract interface.
 
 ## License settlement tokens
 
@@ -36,7 +30,6 @@ The complete deployments returned matching `Remix.factory()` and `Remix.royaltie
 
 | Network | Token | Address |
 | --- | --- | --- |
-| Arbitrum Sepolia | USDC | [0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d](https://sepolia.arbiscan.io/address/0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d) |
 | Base Sepolia | USDC | [0x036CbD53842c5426634e7929541eC2318f3dCF7e](https://base-sepolia.blockscout.com/address/0x036CbD53842c5426634e7929541eC2318f3dCF7e) |
 | Tempo Moderato | OUSD | [0x20c0000000000000000000006a37DA5C996874BE](https://explore.testnet.tempo.xyz/address/0x20c0000000000000000000006a37DA5C996874BE) |
 
@@ -45,7 +38,7 @@ Always read `Royalties.usdc()` before an approval. Its name does not guarantee t
 ## Check your connection
 
 ```bash
-export RPC_URL=https://sepolia-rollup.arbitrum.io/rpc
+export RPC_URL=${NETWORK_RPC_URL}
 cast chain-id --rpc-url "$RPC_URL"
 cast code 0x4Ac838b970D44AB9056b4201e9ED3c1Ce271545e --rpc-url "$RPC_URL"
 cast call 0xC5c7d2645A7119b538C8d752Ce61c9706cDF7A36 'factory()(address)' --rpc-url "$RPC_URL"
