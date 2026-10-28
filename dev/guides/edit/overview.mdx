@@ -16,7 +16,7 @@ For a minted song, first call `POST /api/songs/{id}/version` and use the returne
 | Generate accompaniment | `/api/editing/apply` with `complete` | `complete` | Pending take |
 | Continue past the ending | `/api/editing/extend` | `extend` | Pending longer take |
 | Change the audio style | `/api/editing/remix` | `cover` | Pending restyled take |
-| Separate instruments | `/api/editing/separate` | `extract` | Stems, initially muted |
+| Separate instruments | `/api/editing/isolate` | `extract` | Stems, initially muted |
 | Slice a source interval | `/api/editing/extract` | No job polling | Inactive section take |
 
 `POST /api/editing/apply` supports all six model task kinds and forwards seed, BPM, key and language controls. The Rework, Layer and Restyle shortcuts do not forward those four fields. Use `/apply` when you need them.

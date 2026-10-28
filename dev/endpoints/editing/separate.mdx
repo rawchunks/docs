@@ -6,7 +6,7 @@ playground: "simple"
 ---
 
 import Errors from '/snippets/dev/errors.mdx';
-import SeparateBody from '/snippets/dev/requests/separate.mdx';
+import SeparateBody from '/snippets/dev/requests/isolate.mdx';
 import SessionHeader from '/snippets/dev/session-header.mdx';
 import StemFields from '/snippets/dev/models/stem.mdx';
 
@@ -159,7 +159,7 @@ Budget headers use six-decimal USDC atomic units. See [session payments](/dev/gu
 <RequestExample>
 
 ```bash cURL
-curl --fail-with-body -X POST "$RAWCHUNKS_API/api/editing/separate" \
+curl --fail-with-body -X POST "$RAWCHUNKS_API/api/editing/isolate" \
   -H "Authorization: Bearer $SESSION_TOKEN" \
   -H "x-network-id: $NETWORK" \
   -H "x-session-user-address: $USER_ADDRESS" \

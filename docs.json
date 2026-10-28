@@ -52,7 +52,7 @@
       },
       {
         "type": "github",
-        "href": "https://github.com/rawchunks/"
+        "href": "https://github.com/rawchunks"
       }
     ],
     "primary": {
@@ -78,6 +78,7 @@
           {
             "group": "Create music",
             "pages": [
+              "app/vibe",
               "app/music-settings",
               "app/lyrics",
               "app/voices",
@@ -206,7 +207,7 @@
               "dev/endpoints/editing/layer",
               "dev/endpoints/editing/extend",
               "dev/endpoints/editing/remix",
-              "dev/endpoints/editing/separate",
+              "dev/endpoints/editing/isolate",
               "dev/endpoints/editing/apply",
               "dev/endpoints/editing/status",
               "dev/endpoints/editing/activate",

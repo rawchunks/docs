@@ -38,7 +38,7 @@ Use your own account, session token and returned resource IDs in the examples.
 | `POST` | `/api/editing/layer` | [Layer an instrument](/dev/endpoints/editing/layer) |
 | `POST` | `/api/editing/extend` | [Extend music](/dev/endpoints/editing/extend) |
 | `POST` | `/api/editing/remix` | [Restyle audio](/dev/endpoints/editing/remix) |
-| `POST` | `/api/editing/separate` | [Separate stems](/dev/endpoints/editing/separate) |
+| `POST` | `/api/editing/isolate` | [Separate stems](/dev/endpoints/editing/isolate) |
 | `POST` | `/api/editing/apply` | [Apply an edit operation](/dev/endpoints/editing/apply) |
 | `GET` | `/api/editing/status/{taskId}` | [Edit status](/dev/endpoints/editing/status) |
 | `POST` | `/api/editing/activate` | [Activate or merge a take](/dev/endpoints/editing/activate) |
@@ -91,7 +91,7 @@ Use the canonical routes above in new integrations. The API also registers these
 | Alias | Canonical route |
 | --- | --- |
 | `/generate`, `/status/{taskId}`, `/sample`, `/format` | Corresponding `/api/generation/*` route |
-| `/repaint`, `/layer`, `/extend`, `/remix`, `/separate` | Corresponding `/api/editing/*` route |
+| `/repaint`, `/layer`, `/extend`, `/remix`, `/isolate` | Corresponding `/api/editing/*` route |
 | `/songs` | `GET /api/songs` |
 | `/voices` and its subpaths | `/api/voices` and matching subpaths |
 | `POST /voice` | `POST /api/voices` |
