@@ -1,0 +1,39 @@
+---
+title: "Create a Credits order"
+description: "Prepare checkout for a Credits pack."
+api: "POST https://api.rawchunks.space/api/credits/paypal/create-order"
+playground: "simple"
+---
+
+Prepare checkout for a Credits pack.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Authentication
+
+Use [Credits authentication](/dev/guides/payments#pay-with-credits) for owner-scoped calls. Send `x-idempotency-key` with 8 to 128 characters.
+
+## JSON body
+
+<ParamField body="packId" type="string" required>
+`usd-10`, `usd-25` or `usd-100`.
+</ParamField>
+
+<ParamField body="checkout" type="object">
+Optional `{ kind: "balance" }`.
+</ParamField>
+
+
+## Response
+
+<ResponseField name="operationId" type="string">
+Save for capture and recovery.
+</ResponseField>
+
+<ResponseField name="orderId" type="string">
+PayPal checkout order.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+Current order status.
+</ResponseField>

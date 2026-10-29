@@ -1,0 +1,47 @@
+---
+title: "Read a payment operation"
+description: "Recover the status of a Credits or license operation."
+api: "GET https://api.rawchunks.space/api/credits/operations/{id}"
+playground: "simple"
+---
+
+Recover the status of a Credits or license operation.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Authentication
+
+Use [Credits authentication](/dev/guides/payments#pay-with-credits) for owner-scoped calls.
+
+## Path
+
+<ParamField path="id" type="string" required>
+Operation ID, 1 to 128 characters.
+</ParamField>
+
+
+## Response
+
+<ResponseField name="id" type="string">
+Operation ID.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+Current payment state.
+</ResponseField>
+
+<ResponseField name="amountAtomics" type="string">
+Six-decimal amount.
+</ResponseField>
+
+<ResponseField name="orderId" type="string or null">
+Provider order ID.
+</ResponseField>
+
+<ResponseField name="kind" type="string">
+Purchase or license operation.
+</ResponseField>
+
+<ResponseField name="coinflowPaymentId" type="string or null">
+License checkout payment ID.
+</ResponseField>

@@ -1,0 +1,29 @@
+---
+title: "Capture a Credits order"
+description: "Complete an approved Credits order."
+api: "POST https://api.rawchunks.space/api/credits/paypal/capture-order"
+playground: "simple"
+---
+
+Complete an approved Credits order.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Authentication
+
+Use [Credits authentication](/dev/guides/payments#pay-with-credits) for owner-scoped calls.
+
+## JSON body
+
+<ParamField body="operationId" type="string" required>
+Saved operation ID, 1 to 128 characters.
+</ParamField>
+
+<ParamField body="orderId" type="string" required>
+Approved order ID, 1 to 128 characters.
+</ParamField>
+
+
+## Response
+
+Returns `operationId` and `status`; provider IDs can accompany the result. `credited` means the purchase has reached the balance. Read the balance before enabling paid actions.
