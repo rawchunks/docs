@@ -1,0 +1,18 @@
+---
+title: "Read a Credits balance"
+description: "Read available purchased and promotional Credits."
+api: "GET https://api.rawchunks.space/api/credits/balance"
+playground: "simple"
+---
+
+Read available purchased and promotional Credits.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Authentication
+
+Use [Credits authentication](/dev/guides/payments#pay-with-credits) for owner-scoped calls.
+
+## Response
+
+Returns `userAddress`, `availableAtomics`, `reservedAtomics`, `spentAtomics`, `suspendedAtomics`, `promo`, `packs`, `paypalClientId` and `environment`. Balance amounts use six-decimal USD atomic units. [Balance fields](/dev/guides/payments#read-the-balance).

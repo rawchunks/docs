@@ -1,0 +1,18 @@
+---
+title: "Claim campaign Credits"
+description: "Claim the campaign allocation for an eligible account."
+api: "POST https://api.rawchunks.space/api/credits/promo/claim"
+playground: "simple"
+---
+
+Claim the campaign allocation for an eligible account.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Headers
+
+Send `x-wallet-auth-token`, `x-session-user-address` and `x-idempotency-key` (8 to 128 characters).
+
+## Response
+
+Returns the balance response. The campaign offers 100 Credits to the first 1,000 eligible accounts. Reuse the same key for the same claim; eligibility and rate limits can reject a request.

@@ -1,0 +1,33 @@
+---
+title: "Read Credits offers"
+description: "Read the campaign status and available Credits packs."
+api: "GET https://api.rawchunks.space/api/credits/promo"
+playground: "simple"
+---
+
+Read the campaign status and available Credits packs.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Response
+
+<ResponseField name="promo" type="object">
+`eligible`, `claimed`, `remaining`, `maxClaims`, `amountAtomics`, `availableAtomics`, `reservedAtomics`, `spentAtomics`; optional `reason`.
+</ResponseField>
+
+<ResponseField name="packs" type="object[]">
+Pack `id`, `amountAtomics`, `usd`.
+</ResponseField>
+
+<ResponseField name="paypalClientId" type="string">
+Public client ID for checkout.
+</ResponseField>
+
+<ResponseField name="environment" type="string">
+Checkout environment.
+</ResponseField>
+
+
+## Access
+
+This route is public. [Prices and packs](/dev/guides/payments#prices).
