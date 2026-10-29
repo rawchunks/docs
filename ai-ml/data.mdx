@@ -1,0 +1,27 @@
+---
+title: "Data, media and playback"
+sidebarTitle: "Data and playback"
+description: "How project records, cached audio and local rendering support an interactive editor."
+---
+
+Audio playback, keys, drums, Code patterns and effects run locally. Zustand holds the arrangement; Tone.js and Web Audio schedule its tracks. An offline render combines the chosen parts before the API stores the merged audio.
+
+## Project records
+
+Neon stores songs, stems, takes, albums, history and account data. Drizzle defines their schemas; separate account and music clients keep query responsibilities distinct.
+
+The database cache has a bounded process layer of 10,000 entries and a Valkey layer. It covers paired accounts, Credits identity and authentication, balances and campaign availability. Single-flight reads combine simultaneous requests for the same cached item.
+
+Valkey request, WIP and cache connections can be configured separately. WIP writes use the primary; reads can use a replica. The seven-day WIP TTL refreshes on read. [WIP endpoints](/dev/endpoints/editing/wip-get) save unfinished lanes and edits between visits.
+
+## Make media available
+
+R2 stores audio and artwork. During fast persistence, the API retains available output bytes locally and publishes a short-lived mapping to the worker source while the R2 upload completes. Other API replicas can resolve the same output. Audio reads coalesce and a bounded recent-buffer cache avoids fetching the same media repeatedly.
+
+## Draw waveforms without decoding whole tracks
+
+WAV uploads precompute 512-bin bipolar peaks. The [peaks endpoint](/dev/endpoints/editing/peaks) serves minimum and maximum values with duration. The browser caches peaks in IndexedDB and audio in the Cache API.
+
+The Editor can draw the waveform from these small arrays, then fetch audio for playback. Selection changes, mixer moves and instrument edits stay local until you save or render them.
+
+Use [arrangement integration](/dev/guides/edit/arrangement) for state and [merge integration](/dev/guides/edit/merge) for rendered audio.
