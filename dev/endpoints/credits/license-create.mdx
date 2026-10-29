@@ -1,0 +1,41 @@
+---
+title: "Create a license checkout"
+description: "Prepare checkout for a song license."
+api: "POST https://api.rawchunks.space/api/credits/license/create-order"
+playground: "simple"
+---
+
+Prepare checkout for a song license.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Authentication
+
+Use [Credits authentication](/dev/guides/payments#pay-with-credits) for owner-scoped calls. Send `x-idempotency-key` with 8 to 128 characters.
+
+## JSON body
+
+<ParamField body="songId" type="string" required>
+Catalog song ID, 1 to 128 characters.
+</ParamField>
+
+<ParamField body="chainSongId" type="string" required>
+Onchain song ID, 1 to 128 characters.
+</ParamField>
+
+<ParamField body="network" type="string" required>
+Supported checkout network.
+</ParamField>
+
+<ParamField body="walletAddress" type="string" required>
+License recipient, 1 to 128 characters.
+</ParamField>
+
+<ParamField body="amountAtomics" type="string" required>
+Positive integer with at most 18 digits. Caller-supplied amount in six-decimal USD units; rounded to cents with a one-cent minimum.
+</ParamField>
+
+
+## Response
+
+Returns `operationId`, `orderId`, `status`. Supported checkout networks are Base Sepolia (`eip155:84532`), Tempo Moderato (`eip155:42431`) and Solana devnet (`solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1`).

@@ -1,0 +1,18 @@
+---
+title: "Receive PayPal events"
+description: "Receive signed PayPal notifications for payment reconciliation."
+api: "POST https://api.rawchunks.space/api/credits/paypal/webhook"
+playground: "simple"
+---
+
+Receive signed PayPal notifications for payment reconciliation.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Request
+
+PayPal sends its event JSON and webhook signature headers. This route verifies the notification and reconciles the matching payment operation.
+
+## Response
+
+Returns `{ received: true }`. `/api/payments/paypal/webhook` is an alias. Checkout clients use [operation status](/dev/endpoints/credits/operation) to recover.

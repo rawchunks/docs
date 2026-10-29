@@ -1,0 +1,33 @@
+---
+title: "Capture a license checkout"
+description: "Continue an approved song-license checkout."
+api: "POST https://api.rawchunks.space/api/credits/license/capture-order"
+playground: "simple"
+---
+
+Continue an approved song-license checkout.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Authentication
+
+Use [Credits authentication](/dev/guides/payments#pay-with-credits) for owner-scoped calls.
+
+## JSON body
+
+<ParamField body="operationId" type="string" required>
+Saved operation and order IDs, each 1 to 128 characters.
+</ParamField>
+
+<ParamField body="orderId" type="string" required>
+Saved operation and order IDs, each 1 to 128 characters.
+</ParamField>
+
+<ParamField body="card" type="object">
+Optional card payload: `number` (12 to 24 characters), `expiry` (4 to 10), `securityCode` (3 to 4), optional `name` (at most 128).
+</ParamField>
+
+
+## Response
+
+Returns `operationId`, `status` and checkout fields such as `coinflowPaymentId` or `orderId`. [License integration](/dev/guides/publish/licenses) covers the wallet and license workflow.
