@@ -1,0 +1,36 @@
+---
+title: "Settle a listening checkpoint"
+description: "Record listened time for an authorized playback."
+api: "POST https://api.rawchunks.space/api/songs/{id}/stream/checkpoint"
+playground: "simple"
+---
+
+Record listened time for an authorized playback.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Path
+
+<ParamField path="id" type="string" required>
+Song ID.
+</ParamField>
+
+
+## JSON body
+
+<ParamField body="paymentIntentId" type="string" required>
+Intent returned by playback authorization.
+</ParamField>
+
+<ParamField body="listenedSeconds" type="number">
+Cumulative nonnegative listened time in seconds. Required for Credits checkpoints.
+</ParamField>
+
+<ParamField body="terminal" type="boolean">
+Credits only: release the remaining playback hold when finished.
+</ParamField>
+
+
+## Response
+
+USDC returns `{ success, result }`. Credits returns `{ success: true, result: { billedWei, status: "credited" } }`. Send the same funding and account headers as playback. `/api/stream/{id}/checkpoint` is an alias.

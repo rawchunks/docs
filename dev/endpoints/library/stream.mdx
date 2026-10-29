@@ -1,0 +1,66 @@
+---
+title: "Open paid playback"
+description: "Authorize song playback and receive its audio URL."
+api: "GET https://api.rawchunks.space/api/songs/{id}/stream"
+playground: "simple"
+---
+
+import SessionHeader from '/snippets/dev/session-header.mdx';
+
+Authorize song playback and receive its audio URL.
+
+<SessionHeader />
+
+## Path and headers
+
+<ParamField path="id" type="string" required>
+Song ID.
+</ParamField>
+
+<ParamField header="Accept" type="string">
+Use `application/json` for metadata; otherwise the response redirects to audio.
+</ParamField>
+
+
+## JSON response
+
+<ResponseField name="id" type="string">
+Song and playable media.
+</ResponseField>
+
+<ResponseField name="title" type="string">
+Song and playable media.
+</ResponseField>
+
+<ResponseField name="url" type="string">
+Song and playable media.
+</ResponseField>
+
+<ResponseField name="creator" type="string">
+Song and playable media.
+</ResponseField>
+
+<ResponseField name="duration" type="number">
+Seconds.
+</ResponseField>
+
+<ResponseField name="isCreator" type="boolean">
+Whether the listener is exempt as the creator.
+</ResponseField>
+
+<ResponseField name="paymentIntentId" type="string or null">
+Save for checkpoints.
+</ResponseField>
+
+<ResponseField name="streamPriceUsd" type="number">
+Price per minute; zero for an exempt creator.
+</ResponseField>
+
+<ResponseField name="streamPriceWei" type="string">
+Six-decimal rate.
+</ResponseField>
+
+
+## Playback billing
+
+Use a USDC session or purchased Credits. Promo Credits cannot fund listening. `/api/stream/{id}` is an alias. Submit [checkpoints](/dev/endpoints/library/checkpoint) as listening progresses.
