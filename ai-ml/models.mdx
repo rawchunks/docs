@@ -1,0 +1,39 @@
+---
+title: "Models and their jobs"
+sidebarTitle: "Models"
+description: "The audio, language, vision, transcription and artwork models used by Rawchunks."
+---
+
+Rawchunks assigns each model a specific job. Audio generation runs on L4 workers. Songwriter and Composer use hosted language models; speech and image models prepare their inputs or related assets.
+
+## Music and separation
+
+| Model | Use |
+| --- | --- |
+| `acestep-v15-xl-turbo` | **FAST** generation, eight diffusion steps and guidance 1. Also serves the edits that support Turbo. |
+| `acestep-v15-xl-sft` | **MASTER** generation, 50 diffusion steps and guidance 7. Also serves the edits that support SFT. |
+| `acestep-v15-xl-base` | Layering, accompaniment, instrument extraction and Base editing. |
+| `acestep-5Hz-lm-0.6B` | ACE-Step's music language model, served through vLLM. Prepares music codes and descriptions used by the audio pipeline. The training configuration also selects this model. |
+| `Qwen3-Embedding-0.6B` | Text conditioning for ACE-Step. |
+| Demucs `htdemucs` | Separates vocals, drums, bass and other audio. Uses zero shifts and 0.1 overlap. |
+
+Read [music options](/dev/endpoints/system/options) for the modes supported by each edit. A Layer or Accompany request uses Base; Rework, Extend and Restyle expose their supported alternatives.
+
+## Language and vision
+
+| Model | Use |
+| --- | --- |
+| `nvidia/Nemotron-3-Ultra-550b-a55b` | Songwriter's planning and lyric streams; Composer's graph-guided tool calls and pattern repair. Served by Nebius Token Factory. |
+| `nvidia/Nemotron-3.5-Super-VL` | Converts an image's mood, theme and visual context into a musical brief for Songwriter. Served by Nebius Token Factory. |
+
+[Songwriter](/ai-ml/songwriter) and [Composer](/ai-ml/composer) explain the context and outputs for each agent.
+
+## Speech and artwork
+
+| Model | Use |
+| --- | --- |
+| Cartesia `ink-whisper` | Primary transcription for spoken or sung Vibe recordings. |
+| ElevenLabs `scribe_v2` | Fallback Vibe transcription and Editor vocal transcription. ElevenLabs forced alignment places supplied lyrics against the recording. |
+| Google `gemini-nano-banana-2.1` | Generates separate song-cover artwork from the brief, title and style. The cover prompt uses Rawchunks' black, acid-green, magenta and cyan palette. |
+
+Vibe audio also goes through local signal analysis, so a hum can supply musical information without transcribed words. [Saved voices](/ai-ml/voices) use ACE-Step reference conditioning and LoRA preparation.
