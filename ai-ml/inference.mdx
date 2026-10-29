@@ -1,0 +1,34 @@
+---
+title: "Generation and editing speed"
+sidebarTitle: "Inference"
+description: "Compiled model stages, resident weights and reused audio keep repeated work out of the generation path."
+---
+
+Generation and editing share ACE-Step's conditioning, diffusion and waveform stages. Rawchunks prepares those stages at worker startup and reuses source material across edits.
+
+## Compile and warm the pipeline
+
+The worker compiles individual diffusion-transformer layers with `torch.compile(dynamic=True)`. Rotary embeddings and output RMS normalization also use compiled paths. The VAE decoder compiles separately and receives contiguous decode inputs.
+
+TorchInductor and Triton keep compiler artifacts in runtime caches. Startup warmups exercise short and long diffusion shapes with two steps. VAE warmups cover 256 and 1,536 frames, tiled decoding at 4,500 frames, and a ten-second stereo encode. The decoder chunk size is 1,536 frames.
+
+Generation pools keep model weights on the GPU with CPU offload and save-memory mode disabled. TF32 and high float32 matmul precision configure the matrix paths. The Base pool eagerly loads Demucs for separation.
+
+## Avoid repeated inference work
+
+Cross-attention keys and values are prepared once and reused across diffusion steps. Windowed classifier-free guidance skips the unconditional half-batch outside its configured interval. The fast conditioning path avoids unused audio-code and cover preparation.
+
+[Fast and Master](/ai-ml/models) use different step and guidance settings. Editing selects the model supported by the requested operation.
+
+## Reuse source audio
+
+| Cache | Reused work |
+| --- | --- |
+| Download cache, 32 files | Fetching the same source URL; a per-URL lock combines simultaneous downloads. |
+| Decoded-waveform cache, eight entries | Decoding a recording for repeated edits. |
+| VAE latent cache, 16 CPU entries | Encoding the same waveform content, shape and dtype. |
+| Batch reuse | Encoding equal waveforms more than once within a batch. |
+| Prepared silence latent | Rebuilding empty-source conditioning. |
+| LoRA hot cache | Reloading the same voice adapter for repeated use. |
+
+These caches sit alongside [GPU coordination](/ai-ml/concurrency#coordinate-work-on-each-gpu). An adapter can remain loaded between jobs while the worker disables or restores it for the next operation.

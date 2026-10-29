@@ -1,0 +1,41 @@
+---
+title: "Concurrency and scaling"
+description: "How jobs, GPU pools and shared reads handle concurrent generation and editing."
+---
+
+Rawchunks distributes audio jobs across model pools, shares progress subscriptions and keeps playback and manual editing in each browser. Fastify runs two CPU replicas; accepted audio jobs wait in Valkey independently of request connections.
+
+## Scale each model separately
+
+Each worker pod has one L4. Turbo, SFT and Base have their own pending queues. KEDA checks generation queues every five seconds and targets two pending jobs per replica.
+
+| Pool | Warm replicas | Maximum replicas | Work |
+| --- | ---: | ---: | --- |
+| XL Turbo | 1 | 8 | Fast generation and supported edits |
+| XL SFT | 1 | 4 | Master generation and supported edits |
+| XL Base | 1 | 4 | Layering, accompaniment, extraction and Base edits |
+| Training | 1 | 1 | Saved-voice adaptations |
+
+Generation pools scale down after a 300-second cooldown. Training uses a ten-second polling interval and a 600-second cooldown. Warm minimums retain loaded models; separate pools allocate added GPU capacity to the model receiving work.
+
+## Admit, claim and recover
+
+The default pending capacity is 200 jobs per model namespace. Admission atomically saves the request, job identity, request digest, temporary-file ownership and pending membership. Workers claim jobs atomically with an executor owner and claim token.
+
+An executor holds a 30-second lease and renews it about every ten seconds. Progress updates and completion acknowledgements require the current owner and token. Recovery requeues unfinished jobs whose executor lease expired. A worker exits on lease loss, ending its CUDA work; graceful shutdown waits for active work before releasing ownership.
+
+The configuration allows 32 leased executor registrations per model namespace. Each worker process runs one API worker and one queue-consumer loop. Replica scaling distributes queued execution.
+
+## Coordinate work on each GPU
+
+Ordinary generation uses a shared GPU gate. Separate locks protect the music language model, tokenizer, diffusion and VAE stages. LoRA changes, Demucs and training take an exclusive gate; waiting exclusive operations stop new shared admissions. This keeps model state and voice adapters isolated while stages share a resident runtime.
+
+## Share reads and finalization
+
+One Valkey subscriber per API process serves multiple observers. Back-to-back progress updates coalesce, and streams send a small heartbeat every 15 seconds. Clients follow the same job instead of submitting again.
+
+Finalization uses a renewable per-song lock and deterministic output identities. Multiple status readers can converge on one saved result. Worker results remain available for 24 hours by default.
+
+These controls work with [compiled inference](/ai-ml/inference) and [media caches](/ai-ml/data) to reduce repeated GPU work, downloads and database round trips.
+
+Pool limits and cooldowns bound GPU allocation. Short [agent output budgets](/ai-ml/composer#keep-response-work-small) and [local instrument rendering](/ai-ml/data) keep that work off the audio-model GPUs.
