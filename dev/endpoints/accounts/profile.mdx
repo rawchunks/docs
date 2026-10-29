@@ -1,0 +1,43 @@
+---
+title: "Update a profile"
+description: "Update the selected account’s public profile."
+api: "PATCH https://api.rawchunks.space/api/user/profile"
+playground: "simple"
+---
+
+Update the selected account’s public profile.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+<ParamField body="address" type="string">
+Target account; defaults to selected account.
+</ParamField>
+
+<ParamField body="nickname" type="string or null">
+At most 50 characters.
+</ParamField>
+
+<ParamField body="avatar" type="string or null">
+At most 2048 characters.
+</ParamField>
+
+<ParamField body="bio" type="string or null">
+At most 280 characters.
+</ParamField>
+
+<ParamField body="evmAddress" type="string">
+Valid paired wallet addresses.
+</ParamField>
+
+<ParamField body="svmAddress" type="string">
+Valid paired wallet addresses.
+</ParamField>
+
+
+## Response
+
+Returns the updated account record. `PUT` and `POST /api/user/profile` accept the same body.
+
+Use the [account structure](/dev/endpoints/accounts/get#account-structure) for the returned record.
