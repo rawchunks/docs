@@ -1,0 +1,23 @@
+---
+title: "Look up accounts"
+description: "Look up wallet pairs for a group of addresses."
+api: "GET https://api.rawchunks.space/api/users"
+playground: "simple"
+---
+
+Look up wallet pairs for a group of addresses.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Query
+
+<ParamField query="addresses" type="string">
+Comma-separated addresses. Duplicates are removed; at most 100 are read.
+</ParamField>
+
+
+## Response
+
+Returns an array of account records. Omitted or empty input returns an empty array.
+
+Use the [account structure](/dev/endpoints/accounts/get#account-structure) for the returned record.

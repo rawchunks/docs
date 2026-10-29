@@ -1,0 +1,27 @@
+---
+title: "Read an account"
+description: "Read the wallet pair and public profile for an address."
+api: "GET https://api.rawchunks.space/api/user/{address}"
+playground: "simple"
+---
+
+Read the wallet pair and public profile for an address.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Path
+
+<ParamField path="address" type="string" required>
+Valid EVM or Solana address.
+</ParamField>
+
+
+## Response
+
+Returns the account record with `evmAddress`, `svmAddress`, `nickname`, `avatar` and `bio`. Returns 404 when no pair exists.
+
+## Account structure
+
+import Account from '/snippets/dev/models/account.mdx';
+
+<Account />

@@ -1,0 +1,27 @@
+---
+title: "Register wallet addresses"
+description: "Create or update the selected account’s wallet pair."
+api: "PUT https://api.rawchunks.space/api/user"
+playground: "simple"
+---
+
+Create or update the selected account’s wallet pair.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+<ParamField body="evmAddress" type="string">
+Valid EVM address.
+</ParamField>
+
+<ParamField body="svmAddress" type="string">
+Valid Solana address.
+</ParamField>
+
+
+## Response
+
+At least one address is required and the selected account must match the pair. Returns the account record with `evmAddress`, `svmAddress`, `nickname`, `avatar` and `bio`.
+
+Use the [account structure](/dev/endpoints/accounts/get#account-structure) for the returned record.
