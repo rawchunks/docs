@@ -1,0 +1,36 @@
+---
+title: "Voice references and LoRA"
+sidebarTitle: "Voices"
+description: "Use a recording directly or prepare a reusable voice for Fast and Master generation."
+---
+
+You can upload a vocal recording or save vocals from an owned song. Saving from a song first extracts its vocals. The saved profile keeps the sample and preparation status.
+
+## Reference conditioning
+
+Reference mode conditions generation on the recording. A saved `sample_url` makes that recording available before training finishes. You can also submit a direct `voiceReferenceUrl` instead of a saved voice ID.
+
+The resemblance control maps to `voiceCoverStrength`. It ranges from 0 to 1 in the API. [Voice integration](/dev/guides/generate/voices) covers the request fields.
+
+## Train for reuse
+
+The saved-voice flow prepares LoRA adapters for the configured Turbo and SFT checkpoints. LoRA trains a small adaptation for the selected model while keeping the underlying checkpoint reusable.
+
+Preparation uses isolated mono or stereo vocals up to four minutes. Each model has its own availability status, so the same profile can be ready for one mode while another is still processing.
+
+| State | Meaning |
+| --- | --- |
+| `saved` | The profile exists. |
+| `extracting` | Vocals are being recovered from a song. |
+| `queued` | Preparation is waiting for a worker. |
+| `training` | The adaptation is being trained. |
+| `ready` | The configured adaptation is available. |
+| `error` | Read the profile's error details. |
+
+Training uses its own worker pool. Inference applies the selected adapter under an exclusive GPU gate, then disables or restores it after the job. The hot cache reuses a loaded adapter when the same voice returns.
+
+## Use the result
+
+For trained mode, check `voice.availability[modelVariant].status` before generation. Send `voiceId` and `voiceMode: "trained"`. For a recording, use `voiceMode: "reference"` with a saved ID or direct URL.
+
+The [voice walkthrough](/app/voices) shows selection and resemblance. [Voice events](/dev/endpoints/voices/events) report preparation without repeated submissions.
