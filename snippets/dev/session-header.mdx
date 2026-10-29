@@ -1,3 +1,7 @@
-<ParamField header="Authorization" type="string" required>
-`Bearer $SESSION_TOKEN`. Use the complete token from your active [Rawchunks session](/dev/guides/payments).
+Paid requests accept [USDC session or Credits headers](/dev/guides/payments). Use the selected account consistently in headers and creator fields.
+
+<ParamField header="Authorization" type="string">
+For USDC: `Bearer` followed by the complete issued session token.
 </ParamField>
+
+For Credits, send `x-wallet-auth-token` and `x-credit-source` (`card` or `promo`). A stable `x-idempotency-key` of at most 80 characters identifies a paid service operation.

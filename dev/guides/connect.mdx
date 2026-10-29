@@ -1,9 +1,9 @@
 ---
 title: "Set up API requests"
-description: "Use your Rawchunks session key to call the music API."
+description: "Set account and funding headers for music and agent requests."
 ---
 
-Create a session in [Rawchunks](https://app.rawchunks.space) through **SESSION**, following the [session walkthrough](/app/payments#start-a-session). Use that session's full token as the bearer credential for paid API calls.
+Choose [USDC or Credits funding](/dev/guides/payments) for paid calls. Send the selected account address for project, edit and voice operations.
 
 All music requests go to `https://api.rawchunks.space`. The examples use Node.js 20 or later and native `fetch`.
 
@@ -20,6 +20,8 @@ Use the same address in request fields such as `creatorAddress`, `creator` and `
 
 ## Reuse the request headers
 
+This helper uses a USDC session. For Credits, replace the funding headers with the [Credits header set](/dev/guides/payments#pay-with-credits).
+
 Define this small request helper in your integration. The following guides use `api` and `userAddress` from this block.
 
 ```javascript
@@ -30,11 +32,11 @@ const sessionHeaders = {
   'x-network-id': process.env.NETWORK,
 };
 
-async function request(path, { method = 'GET', json, form, signal } = {}) {
+async function request(path, { method = 'GET', json, form, signal, headers = {} } = {}) {
   const response = await fetch('https://api.rawchunks.space' + path, {
     method, signal,
     headers: {
-      ...sessionHeaders,
+      ...sessionHeaders, ...headers,
       ...(json === undefined ? {} : { 'Content-Type': 'application/json' }),
     },
     body: json === undefined ? form : JSON.stringify(json),
@@ -53,6 +55,7 @@ const api = {
   request,
   get: path => request(path),
   post: (path, json) => request(path, { method: 'POST', json }),
+  put: (path, json) => request(path, { method: 'PUT', json }),
   patch: (path, json) => request(path, { method: 'PATCH', json }),
   delete: path => request(path, { method: 'DELETE' }),
 };
@@ -71,3 +74,7 @@ curl --fail-with-body "$RAWCHUNKS_API/api/options"
 ```
 
 Endpoint examples also use `curl` and `jq`. Set `USER_ADDRESS`, `NETWORK`, `SESSION_TOKEN` and the returned resource IDs to your own values. See [session payments](/dev/guides/payments) for fees and [job handling](/dev/guides/jobs) before adding retries.
+
+## Request sizes
+
+JSON bodies accept up to 20 MiB. Multipart files accept up to 250 MiB. Let `fetch` set the multipart boundary. Keep media data URLs within the JSON body limit.
