@@ -1,0 +1,43 @@
+---
+title: "Read signed consent"
+description: "Check whether an account has a saved consent record."
+api: "GET https://api.rawchunks.space/api/user/consent/{address}"
+playground: "simple"
+---
+
+Check whether an account has a saved consent record.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Path and query
+
+<ParamField path="address" type="string" required>
+Valid wallet address.
+</ParamField>
+
+<ParamField query="version" type="string">
+Policy version.
+</ParamField>
+
+<ParamField query="type" type="string">
+Disclaimer type.
+</ParamField>
+
+
+## Response
+
+<ResponseField name="consented" type="boolean">
+A matching record exists.
+</ResponseField>
+
+<ResponseField name="evmAddress" type="string or null">
+Addresses associated with the record.
+</ResponseField>
+
+<ResponseField name="svmAddress" type="string or null">
+Addresses associated with the record.
+</ResponseField>
+
+<ResponseField name="record" type="object or null">
+Saved [consent record](/dev/endpoints/accounts/consent#response).
+</ResponseField>

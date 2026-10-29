@@ -1,0 +1,53 @@
+---
+title: "Save signed consent"
+description: "Save a consent signature for the selected account."
+api: "POST https://api.rawchunks.space/api/user/consent"
+playground: "simple"
+---
+
+Save a consent signature for the selected account.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+<ParamField body="address" type="string">
+At least one valid wallet address is required.
+</ParamField>
+
+<ParamField body="evmAddress" type="string">
+At least one valid wallet address is required.
+</ParamField>
+
+<ParamField body="svmAddress" type="string">
+At least one valid wallet address is required.
+</ParamField>
+
+<ParamField body="signature" type="string" required>
+Nonempty signature.
+</ParamField>
+
+<ParamField body="policyVersion" type="string">
+Defaults to 1.0.0.
+</ParamField>
+
+<ParamField body="disclaimerType" type="string">
+Disclaimer identifier.
+</ParamField>
+
+<ParamField body="message" type="string">
+Signed message.
+</ParamField>
+
+<ParamField body="metadata" type="object">
+Consent metadata.
+</ParamField>
+
+<ParamField body="chainId" type="positive integer">
+Signing chain ID.
+</ParamField>
+
+
+## Response
+
+Returns `evmAddress`, `svmAddress`, `policyVersion`, `signature`, `message`, optional `metadata` and `signedAt`. `PUT /api/user/consent` accepts the same body.

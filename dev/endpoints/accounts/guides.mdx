@@ -1,0 +1,25 @@
+---
+title: "Save completed guides"
+description: "Save the selected account’s guide IDs."
+api: "POST https://api.rawchunks.space/api/user/guides"
+playground: "simple"
+---
+
+Save the selected account’s guide IDs.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+<ParamField body="address" type="string">
+Target account; defaults to selected account.
+</ParamField>
+
+<ParamField body="guides" type="string[]" required>
+At most 32 nonempty guide IDs.
+</ParamField>
+
+
+## Response
+
+Returns `{ guides }`. `PUT /api/user/guides` accepts the same body.

@@ -1,0 +1,23 @@
+---
+title: "Read completed guides"
+description: "Read the guide IDs saved for an account."
+api: "GET https://api.rawchunks.space/api/user/guides/{address}"
+playground: "simple"
+---
+
+Read the guide IDs saved for an account.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Path
+
+<ParamField path="address" type="string" required>
+Valid wallet address.
+</ParamField>
+
+
+## Response
+
+<ResponseField name="guides" type="string[]">
+Saved guide IDs.
+</ResponseField>
