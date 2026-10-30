@@ -72,3 +72,7 @@ await api.patch(`/api/songs/${encodeURIComponent(remixSongId)}`, {
 A mint or license button does not establish copyright ownership, exclusivity or permission for outside distribution. Obtain any additional rights your product needs from the rights holder. The API and contract enforce the Rawchunks workflow described here.
 
 For Solana accounts, use the [Solana license and remix example](/dev/guides/publish/solana).
+
+## Card checkout
+
+Use [license checkout](/dev/endpoints/credits/license-create) to prepare the payment, then capture the approved order and retain the operation ID. Supply the song, chain song ID, recipient wallet, supported network and amount. [Payment integration](/dev/guides/payments#checkout-and-playback) lists the supported checkout networks.

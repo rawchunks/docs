@@ -57,3 +57,7 @@ const proposed = {
 The sample route returns text and settings, not audio. Let your user review them, validate against the generation bounds, then submit `proposed` with the account, mode and selling terms.
 
 Set `instrumental: true` to request music without vocals. Blank lyrics with vocal generation use automatic sampling; they do not guarantee English lyrics. Provide lyrics and the language when your product needs a particular sung text.
+
+## Write lyrics with Songwriter
+
+[POST /api/vibe/lyrics](/dev/endpoints/vibe/lyrics) writes tagged lyrics from a brief. It streams by default; send `stream: false` for `{ lyrics }`. Use [Songwriter](/dev/guides/generate/vibe) to prepare the complete musical form.

@@ -43,8 +43,6 @@ Play `audioUrl` after `ready`. The project contains the initial active master ta
 
 Use [Music options](/dev/endpoints/system/options) to populate the modes, languages and keys your product offers. Fast uses `turbo`; Studio Master uses `sft`. Duration is 5 to 300 seconds and BPM is 30 to 300. A seed is an optional nonnegative safe integer.
 
-Generation options are requests to the model. Listen to the output before treating tempo, duration, lyrics or voice resemblance as accepted results.
-
 Send selling terms explicitly when your UI sets them. Backend omitted-field values are `licenses: 0`, `license_price: 25`, and `stream_price: 0.02`; the browser Studio has its own defaults. These fields do not pay for generation or mint a song.
 
 The complete field list is on [Generate music](/dev/endpoints/generation/generate). Continue with [lyrics](/dev/guides/generate/lyrics), [voices](/dev/guides/generate/voices), or [editing](/dev/guides/edit/overview).

@@ -30,6 +30,6 @@ const { imageUrl } = await api.request('/api/generation/cover', {
 });
 ```
 
-Send one nonempty `image/*` file, at most 50 MiB. Do not set a multipart Content-Type manually. If you use albums, save the URL as the album's `cover` field through [album update](/dev/endpoints/albums/update).
+Send one nonempty `image/*` file, at most 250 MiB. Do not set a multipart Content-Type manually. If you use albums, save the URL as the album's `cover` field through [album update](/dev/endpoints/albums/update).
 
 Artwork generation is separate from [audio Restyle](/dev/guides/edit/extend-restyle).
