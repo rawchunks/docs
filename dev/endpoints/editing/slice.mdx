@@ -1,0 +1,54 @@
+---
+title: "Slice a section"
+description: "Create an inactive take from an existing audio interval."
+api: "POST https://api.rawchunks.space/api/editing/slice"
+playground: "simple"
+---
+
+import SessionHeader from '/snippets/dev/session-header.mdx';
+
+Create an inactive take from an existing audio interval.
+
+<SessionHeader />
+
+## JSON body
+
+<ParamField body="songId" type="string" required>
+Editable song ID.
+</ParamField>
+
+<ParamField body="start" type="number" required>
+Nonnegative seconds; end must exceed start.
+</ParamField>
+
+<ParamField body="end" type="number" required>
+Nonnegative seconds; end must exceed start.
+</ParamField>
+
+<ParamField body="stemId" type="string">
+Source stem.
+</ParamField>
+
+<ParamField body="sourceTakeId" type="string">
+Source take.
+</ParamField>
+
+<ParamField body="srcAudioUrl" type="string">
+HTTP(S) or relative source override.
+</ParamField>
+
+
+## Response (201)
+
+<ResponseField name="success" type="boolean">
+Operation result.
+</ResponseField>
+
+<ResponseField name="take" type="object">
+New inactive take. Audio is at `take.url`.
+</ResponseField>
+
+
+## Next step
+
+Preview the take, then [activate or merge](/dev/endpoints/editing/activate).

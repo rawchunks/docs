@@ -1,103 +1,37 @@
 ---
-title: "Extract a section"
-description: "Slice a source interval into an inactive take."
+title: "Extract an instrument"
+description: "Recover an instrument with Base or slice a source interval."
 api: "POST https://api.rawchunks.space/api/editing/extract"
 playground: "simple"
 ---
 
-import Errors from '/snippets/dev/errors.mdx';
 import SessionHeader from '/snippets/dev/session-header.mdx';
-import TakeFields from '/snippets/dev/models/take.mdx';
+import EditSource from '/snippets/dev/requests/edit-source.mdx';
 
-This slices the selected source track. It does not separate instruments or render your current mixed arrangement.
-
-[Extract and separate](/dev/guides/edit/extract-separate).
-
-## Headers and parameters
+Send `trackName` or `stemType` for Base-model instrument extraction. Omit both to slice an interval. Use [the dedicated slice route](/dev/endpoints/editing/slice) when you only need a section.
 
 <SessionHeader />
 
-<ParamField header="x-session-user-address" type="string" required>
-Selected account address. Required for owner-scoped reads and writes. It identifies the account; your product must authenticate its own users.
-</ParamField>
-
-<ParamField header="x-network-id" type="string">
-Session network in CAIP-2 form, for example eip155:8453.
-</ParamField>
-
 ## JSON body
 
-<ParamField body="songId" type="string" required>
-Opaque ID returned by the API. Minimum length: `1`.
-</ParamField>
+<EditSource />
 
-<ParamField body="stemId" type="string" />
+| Field | Type | Use |
+| --- | --- | --- |
+| `trackName` | string | Instrument to extract. |
+| `stemType` | string | Alternative instrument target. `trackName` takes precedence. |
+| `prompt` | string | Extraction direction. |
+| `lyrics` | string | Vocal text. |
+| `globalCaption` | string | Overall musical context. |
+| `start`, `end` | number | Nonnegative region bounds in seconds. Required for slicing; end must exceed start. |
+| `repaintingStart`, `repaintingEnd` | number | Extraction bounds; take precedence over start/end. |
 
-<ParamField body="start" type="number" required>
-Minimum: `0`.
-</ParamField>
+Instrument extraction selects Base. The slicing path uses `songId`, source fields and start/end bounds.
 
-<ParamField body="end" type="number" required>
-Must exceed start and fit the source. Minimum: `0`.
-</ParamField>
+## Response
 
-## Response (201)
+Instrument extraction returns HTTP 202 with `taskId`, `songId`, `status`, optional `stemId` and `task: "extract"`. Follow [edit status](/dev/endpoints/editing/status) or [events](/dev/endpoints/editing/events).
 
-Success.
+Slicing returns HTTP 201 with `{ success, take }`. Its audio is at `take.url`. The new section take starts inactive.
 
-<ResponseField name="success" type="boolean" required />
-
-<ResponseField name="take" type="object" required>
-<Expandable title="Properties">
-<TakeFields />
-</Expandable>
-</ResponseField>
-
-Budget headers use six-decimal USDC atomic units. See [session payments](/dev/guides/payments#track-or-end-a-session).
-
-## Errors
-
-<Errors />
-
-| Status | Meaning |
-| --- | --- |
-| `400` | Invalid request. |
-| `401` | Invalid or expired session token. |
-| `402` | Payment required or insufficient session budget. |
-| `403` | Account does not match resource. |
-| `404` | Resource not found. |
-| `409` | Resource conflict; reload state or open an editable version. |
-| `500` | Request failed. |
-
-<RequestExample>
-
-```bash cURL
-curl --fail-with-body -X POST "$RAWCHUNKS_API/api/editing/extract" \
-  -H "Authorization: Bearer $SESSION_TOKEN" \
-  -H "x-network-id: $NETWORK" \
-  -H "x-session-user-address: $USER_ADDRESS" \
-  -H "Content-Type: application/json" \
-  --data "$(jq -nc --arg song "$SONG_ID" '{
-  "songId": $song,
-  "start": 15,
-  "end": 30
-}')"
-```
-
-</RequestExample>
-
-<ResponseExample>
-
-```json 201
-{
-  "success": true,
-  "take": {
-    "id": "take-example",
-    "song_id": "sng-example",
-    "url": "https://example.com/extracted.wav",
-    "is_active": false
-  }
-}
-```
-
-</ResponseExample>
+[Extraction guide](/dev/guides/edit/extract-separate).

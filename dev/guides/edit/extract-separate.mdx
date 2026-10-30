@@ -10,7 +10,7 @@ import ClientSetup from '/snippets/dev/client-setup.mdx';
 ## Extract a time range
 
 ```javascript
-const extracted = await api.post('/api/editing/extract', {
+const extracted = await api.post('/api/editing/slice', {
   songId, start: 15, end: 30,
 });
 const take = extracted.take;
@@ -19,6 +19,10 @@ const take = extracted.take;
 The response is ready immediately with an inactive take. `start` and `end` are seconds on the selected source. Pass `stemId` to slice a particular stem. This does not bounce your live arrangement or effects.
 
 The extracted file begins at its own time zero; its provenance records where it belongs on the song timeline. Use [candidate merge](/dev/guides/edit/merge) to place it correctly.
+
+## Extract one instrument
+
+Call [POST /api/editing/extract](/dev/endpoints/editing/extract) with `trackName` or `stemType`, such as `vocals` or `bass`. This uses Base-model extraction and returns a 202 job. Follow it with `task: "extract"`; optional source and region fields select the audio to process.
 
 ## Separate instruments
 
