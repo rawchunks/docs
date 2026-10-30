@@ -1,0 +1,27 @@
+---
+title: "Interpret an image brief"
+description: "Turn an image into a written musical brief."
+api: "POST https://api.rawchunks.space/api/vibe/vision"
+playground: "simple"
+---
+
+Turn an image into a written musical brief.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+<ParamField body="image" type="string" required>
+Image URL or data URL.
+</ParamField>
+
+<ParamField body="prompt" type="string">
+Additional written direction.
+</ParamField>
+
+
+## Response
+
+<ResponseField name="prompt" type="string">
+Musical interpretation of the image.
+</ResponseField>

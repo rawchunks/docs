@@ -1,0 +1,35 @@
+---
+title: "Analyze a Vibe recording"
+description: "Turn a hum, sung phrase or spoken recording into a musical brief."
+api: "POST https://api.rawchunks.space/api/vibe/audio"
+playground: "simple"
+---
+
+Turn a hum, sung phrase or spoken recording into a musical brief.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+<ParamField body="audio" type="string" required>
+Audio data URL or base64 recording.
+</ParamField>
+
+<ParamField body="prompt" type="string">
+Additional written brief.
+</ParamField>
+
+
+## Response
+
+<ResponseField name="prompt" type="string">
+Combined musical brief.
+</ResponseField>
+
+<ResponseField name="features" type="object">
+`durationSec`, `bpm`, `keyScale`, `scaleMode`, `meanPitchHz`, `pitchRangeSemitones`, `contour`, `groove`, `onsetRatePerSec`, `energyLevel`, `energyTrend`, `vocalTone`, `mood`.
+</ResponseField>
+
+<ResponseField name="stt" type="object">
+`text`, `language`, `isLexical`, optional `flaggedAs`, and `provider` (`cartesia`, `elevenlabs`, `none`).
+</ResponseField>
