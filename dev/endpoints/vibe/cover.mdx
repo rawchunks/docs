@@ -1,0 +1,40 @@
+---
+title: "Create Vibe cover artwork"
+description: "Generate artwork from the song brief."
+api: "POST https://api.rawchunks.space/api/vibe/cover"
+playground: "simple"
+---
+
+Generate artwork from the song brief.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+<ParamField body="prompt" type="string">
+Artwork brief.
+</ParamField>
+
+<ParamField body="title" type="string">
+Song title.
+</ParamField>
+
+<ParamField body="style" type="string">
+Production or visual style.
+</ParamField>
+
+
+## Response
+
+<ResponseField name="url" type="string">
+Generated cover URL.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+`ready`.
+</ResponseField>
+
+
+## Related route
+
+[Generation artwork](/dev/endpoints/generation/cover) returns `imageUrl` and also accepts an image upload.

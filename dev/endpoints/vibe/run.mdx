@@ -1,0 +1,50 @@
+---
+title: "Prepare a song from a vibe"
+description: "Prepare Studio fields, tagged lyrics and artwork from text, an image or a recording."
+api: "POST https://api.rawchunks.space/api/vibe/"
+playground: "simple"
+---
+
+import SessionHeader from '/snippets/dev/session-header.mdx';
+
+Prepare Studio fields, tagged lyrics and artwork from text, an image or a recording.
+
+<SessionHeader />
+
+## JSON body
+
+<ParamField body="prompt" type="string">
+At least two characters unless an image or audio is supplied.
+</ParamField>
+
+<ParamField body="image" type="string">
+Image URL or image data URL.
+</ParamField>
+
+<ParamField body="audio" type="string">
+Audio data URL or base64 recording.
+</ParamField>
+
+<ParamField body="modelVariant" type="string">
+Accepted `turbo` or `sft`; audio mode is chosen on the generation request.
+</ParamField>
+
+
+## NDJSON response
+
+| Field | Type | Use |
+| --- | --- | --- |
+| `status` | event | `step` describes preparation. |
+| `field` | event | `field` and `value` update a Studio control. |
+| `lyrics_start` | event | Clear the previous lyric buffer. |
+| `lyrics_delta` | event | Append `delta` to the lyrics. |
+| `cover_start` | event | Artwork preparation started. |
+| `songwriter_ready` | event | Musical fields and lyrics are ready; artwork may still be running. |
+| `cover` | event | `imageUrl` supplies completed artwork. |
+| `done` | event | The full run finished. |
+| `error` | event | `message` describes a failed run. |
+
+
+## Draft fields
+
+`field` events can set `title`, `prompt`, `instrumental`, `vocalLanguage`, `tags`, `bpm`, `keyScale` and `audioDuration`. Instrumental drafts skip vocal lyrics. [Integrate Songwriter](/dev/guides/generate/vibe).

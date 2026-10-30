@@ -1,0 +1,37 @@
+---
+title: "Prepare a song with Songwriter"
+sidebarTitle: "Songwriter / Vibe"
+description: "Fill a musical draft from text, an image, a hum or speech."
+---
+
+Send a brief to `POST /api/vibe/`. You can combine `prompt`, `image` and `audio`. Images accept URLs or data URLs; recordings accept data URLs or base64. [Request fields](/dev/endpoints/vibe/run).
+
+Use the [paid request headers](/dev/guides/payments). Songwriter returns NDJSON, so read the response stream rather than calling `response.json()`.
+
+## Fill your form as events arrive
+
+Reuse the [NDJSON reader](/dev/guides/jobs#generation-edit-and-voice-streams). Dispatch each event by `type`:
+
+| Event | Client action |
+| --- | --- |
+| `field` | Set the control named by `field` to `value`. |
+| `lyrics_start` | Clear the lyric buffer. |
+| `lyrics_delta` | Append `delta`. |
+| `cover_start` | Show artwork preparation. |
+| `cover` | Store `imageUrl`. |
+| `songwriter_ready` | Enable review and audio generation. |
+| `done` | Close the full preparation state. |
+| `status` | Show `step`. |
+| `error` | Show `message` and preserve the draft received so far. |
+
+Songwriter can set title, production prompt, instrumental choice, vocal language, tags, BPM, key/scale and duration. Instrumental drafts skip vocal lyric writing. Artwork can finish after `songwriter_ready`.
+
+## Generate the reviewed draft
+
+Pass the reviewed fields to [music generation](/dev/guides/generate/music). Add `creatorAddress`, `modelVariant`, voice selection and selling terms from your product. Songwriter prepares the musical form; the audio request chooses Fast or Master and submits a separate paid job.
+
+## Use individual actions
+
+The [Vibe endpoints](/dev/endpoints/vibe/audio) also expose audio and image interpretation, lyric writing, cover creation, libraries and normalization. Use them when your UI needs one part of the preparation flow.
+
+The [App walkthrough](/app/vibe) shows the current Studio controls. [Songwriter architecture](/ai-ml/songwriter) explains models and processing.
