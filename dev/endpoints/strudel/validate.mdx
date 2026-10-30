@@ -1,0 +1,36 @@
+---
+title: "Validate a Code pattern"
+description: "Clean a pattern and check supported Rawchunks notation."
+api: "POST https://api.rawchunks.space/api/strudel/validate"
+playground: "simple"
+---
+
+Clean a pattern and check supported Rawchunks notation.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+<ParamField body="code" type="string">
+Pattern to check. Omitted input becomes an empty string.
+</ParamField>
+
+
+## Response
+
+<ResponseField name="cleaned" type="string">
+Pattern after cleanup.
+</ResponseField>
+
+<ResponseField name="valid" type="boolean">
+Whether the notation passes validation.
+</ResponseField>
+
+<ResponseField name="error" type="string">
+Validation problem when invalid.
+</ResponseField>
+
+
+## Playback
+
+Validation checks notation and supported methods. Use the client parser and audio engine to schedule the result. [Composer integration](/dev/guides/edit/strudel).

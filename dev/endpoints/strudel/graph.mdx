@@ -1,0 +1,63 @@
+---
+title: "Resolve a Composer graph"
+description: "Inspect the musical routing for a request without generating code."
+api: "POST https://api.rawchunks.space/api/strudel/graph"
+playground: "simple"
+---
+
+Inspect the musical routing for a request without generating code.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+import ComposeFields from '/snippets/dev/requests/strudel.mdx';
+
+<ComposeFields />
+
+## Response
+
+<ResponseField name="intent" type="string">
+`compose` or `transform`.
+</ResponseField>
+
+<ResponseField name="targetLayers" type="string[]">
+`drums`, `bass`, `chords`, `arp`.
+</ResponseField>
+
+<ResponseField name="mountedLibraries" type="string[]">
+Library slices selected for this request.
+</ResponseField>
+
+<ResponseField name="archetypeId" type="string">
+Selected genre reference.
+</ResponseField>
+
+<ResponseField name="archetypeLabel" type="string">
+Selected genre reference.
+</ResponseField>
+
+<ResponseField name="refRole" type="string">
+`drums`, `bass`, `vocals`, `keys`, `master`.
+</ResponseField>
+
+<ResponseField name="sectionNode" type="string">
+`intro`, `verse`, `build`, `drop`, `breakdown`.
+</ResponseField>
+
+<ResponseField name="estimatedTokens" type="integer">
+Character-based estimate of the prepared messages.
+</ResponseField>
+
+<ResponseField name="theory" type="object">
+Key, scale notes, bass roots, chord symbols, voicings, chord map and four-bar reference patterns.
+</ResponseField>
+
+<ResponseField name="messages" type="object[]">
+Prepared `role` and `content` messages.
+</ResponseField>
+
+
+## Use the result
+
+The response returns `estimatedTokens` with the routing and prepared messages. `stream` has no effect here. See [Composer](/ai-ml/composer#route-before-calling-the-model).
