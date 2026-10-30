@@ -1,0 +1,47 @@
+<ParamField body="songId" type="string" required>
+Owned, editable song ID.
+</ParamField>
+
+<ParamField body="userAddress" type="string">
+Selected account. Paid routes can fill this from `x-session-user-address`.
+</ParamField>
+
+<ParamField body="stemId" type="string">
+Target stem. Omit for the master.
+</ParamField>
+
+<ParamField body="sourceTakeId" type="string">
+Source take from this project.
+</ParamField>
+
+<ParamField body="srcAudioUrl" type="string">
+Explicit HTTP(S) or relative source, such as an uploaded render.
+</ParamField>
+
+<ParamField body="modelQuality" type="string">
+`turbo`, `sft` or `base`, as supported by the task in `/api/options`. Default Base. Layer and Accompany require Base.
+</ParamField>
+
+<ParamField body="modelVariant" type="string">
+Alias for `modelQuality`. Both values must match when supplied together.
+</ParamField>
+
+<ParamField body="seed" type="integer">
+Nonnegative safe integer, up to `9007199254740991`.
+</ParamField>
+
+<ParamField body="bpm" type="number">
+Tempo from 30 to 300 BPM.
+</ParamField>
+
+<ParamField body="keyScale" type="string">
+Key and scale, such as A minor.
+</ParamField>
+
+<ParamField body="timeSignature" type="string">
+Meter, such as 4/4.
+</ParamField>
+
+<ParamField body="vocalLanguage" type="string">
+Vocal language code from `/api/options`.
+</ParamField>
