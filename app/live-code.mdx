@@ -7,7 +7,7 @@ description: "Write a Strudel pattern or ask AI Code for a starting part."
 Open **CODE** in the manual dock or **+N** menu, then **OPEN CODE REPL**. Create a Code track if prompted.
 
 <Frame caption="Example project in the current Rawchunks app.">
-  <img src="/images/app/editor-strudel.jpg" alt="Expanded Code REPL with Strudel text, starter patterns, AI prompt, Run, version selectors, and sound macros." />
+  <img src="/images/app/editor-strudel.png" alt="Expanded Code REPL with Strudel text, starter patterns, AI prompt, Run, version selectors, and sound macros." />
 </Frame>
 
 Choose **4/4 TECHNO**, **BREAKBEAT**, or **ACID BASS** as a starter, or enter your own pattern. A simple beat is:
@@ -20,10 +20,25 @@ Select **RUN** or press **Shift+Enter** in the editor to evaluate it and sync pl
 
 ## Ask for a pattern
 
-Enter a musical request in the **AI Live-Code prompt**, such as “A muted bass pulse and a sparse offbeat hi-hat,” then **AI CODE**. The request uses the current song's musical context. Read and run the returned pattern, then listen before keeping it.
+Enter a musical request in the **AI Live-Code prompt**, such as “A muted bass pulse and a sparse offbeat hi-hat,” then **AI CODE**. The Algorithmic Composer uses the song tempo, key, selected region and musical context. Choose **REF** to use the master or an audio track as its reference. Select a timeline range first to give the request a section to work around. The pattern appears in the REPL and starts playing at the project tempo.
+
+To change an existing pattern, describe the change in the same prompt: “Keep the rhythm, lower the filter and add a little delay.” The Composer uses the current code. Its progress and a short explanation appear in **LOG**.
 
 ## Change the sound
 
 **SPEED**, **LPF CUTOFF**, **REVERB**, and **DELAY** provide quick adjustments. Numbered pills switch Code versions; **+** creates another version.
 
-The editor supports sound and note patterns, rests, subdivisions, repetition, and timing modifiers. Keep patterns small while testing them. Arbitrary JavaScript and every Strudel feature are not supported here.
+## Pattern notation
+
+| Write | Use |
+| --- | --- |
+| `s("bd sd hh cp")` | Drum sounds. |
+| `note("a2 ~ e3 ~")` | Pitches and rests. |
+| `note("[a3,c4,e4]")` | Notes played as a chord. |
+| `n("0 2 4").scale("A:minor").s("sine")` | Scale degrees with a synth sound. |
+| `s("hh(5,8,1)")` | Five hits across eight steps, rotated by one. |
+| `stack(...)` | Several parts playing together. |
+
+Square brackets subdivide a step; angle brackets alternate patterns across cycles. Use `.fast()`, `.slow()`, `.rev()`, `.gain()`, `.lpf()`, `.hpf()`, `.pan()`, `.room()` and `.delay()` for timing and sound changes.
+
+Code stays on its own lane. [Merge the arrangement](/app/takes-merge) to include it in saved audio. Keep patterns small while testing them; the REPL uses Rawchunks’ supported notation.

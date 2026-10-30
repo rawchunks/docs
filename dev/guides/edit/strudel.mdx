@@ -1,0 +1,52 @@
+---
+title: "Integrate Algorithmic Composer"
+sidebarTitle: "Code / Strudel"
+description: "Compose playable patterns around the current project or transform existing code."
+---
+
+Call `POST /api/strudel/` with a nonempty `prompt`. Supply project context so the new part fits the arrangement. [Complete request fields](/dev/endpoints/strudel/compose).
+
+```json
+{
+  "prompt": "A sparse bass part around the drums",
+  "bpm": 110,
+  "keyScale": "A minor",
+  "timeSignature": "4/4",
+  "selectedTrack": "Drums",
+  "selection": { "start": 15, "end": 30 },
+  "stream": true
+}
+```
+
+## Supply context
+
+Send `songId` to load song metadata. Add `stylePrompt`, active `stems` and `tracks`, plus `musicalContext` extracted by your client. Track entries require `id`, `name` and `type`; `muted` and `solo` are optional.
+
+Use `selection` for a region or `playhead` for the current position. Send `currentCode` to transform a pattern. Context aliases resolve in this order: `songContext`, `musicalContext`, `musical_context`.
+
+## Read and play the pattern
+
+JSON returns `code`, optional `reasoning` and a `graph` summary. Enable NDJSON with `stream: true` or `Accept: application/x-ndjson`. Reuse the [NDJSON reader](/dev/guides/jobs#generation-edit-and-voice-streams).
+
+| Event | Client action |
+| --- | --- |
+| `graph` | Show the chosen layers and musical reference if useful. |
+| `status` | Show `step`. |
+| `reasoning` | Show the short musical rationale in `text`. |
+| `code` | Update the editor with `code`. |
+| `done` | Commit final `code` and optional `reasoning`. |
+| `error` | Show `message`; retain the current pattern. |
+
+Rawchunks validates the final pattern with its client parser and schedules it locally at the project BPM. Your integration supplies its own player or reuses the open-source app's parser and audio engine.
+
+<Frame caption="Current Code REPL with Composer output and local playback controls.">
+  <img src="/images/app/editor-strudel.png" alt="Code pattern with reference selector, AI Code action, Run, macros and Composer log." />
+</Frame>
+
+## Inspect before generating
+
+Use [graph routing](/dev/endpoints/strudel/graph) to inspect selected libraries and theory references without model generation. [Validation](/dev/endpoints/strudel/validate) cleans code and checks supported notation. Drum, harmony, synth and archetype library routes expose the musical references.
+
+`POST /api/editing/strudel` accepts the same context fields and returns only `{ code }`. Use the primary route for streaming and graph details.
+
+The [Code walkthrough](/app/live-code) covers versions and macros. [Composer architecture](/ai-ml/composer) explains graph routing and ReAct.
