@@ -31,7 +31,7 @@ const job = await api.post('/api/editing/apply', {
 });
 ```
 
-`coverStrength` is required and ranges from 0 to 1. `coverNoiseStrength` is optional with the same range. They control the source treatment. For the shortcut, call `/api/editing/remix`; it does not forward seed, BPM, key or language.
+`coverStrength` is required and ranges from 0 to 1. `coverNoiseStrength` is optional with the same range. They control the source treatment. The `/api/editing/remix` shortcut forwards seed, BPM, key, meter and vocal language as well.
 
 Restyle changes audio. [Creating a licensed remix draft](/dev/guides/publish/licenses) is a separate library and wallet workflow.
 

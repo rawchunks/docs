@@ -21,7 +21,7 @@ const job = await api.post('/api/editing/apply', {
 
 Layer requires a nonempty `trackName` and Base mode. `prompt` describes the part; `globalCaption` describes the song. Use `trackClasses` for instrument groups.
 
-To layer against a mixed arrangement, render that context, [upload it](/dev/endpoints/editing/source) and set `srcAudioUrl`. A list of `legoContextTrackIds` does not replace audible source context. The `/layer` shortcut is available when you do not need seed, BPM, key or language controls.
+To layer against a mixed arrangement, render that context, [upload it](/dev/endpoints/editing/source) and set `srcAudioUrl`. A list of `legoContextTrackIds` does not replace audible source context. The `/layer` shortcut also accepts seed, BPM, key, meter and vocal language.
 
 ## Create accompaniment
 
