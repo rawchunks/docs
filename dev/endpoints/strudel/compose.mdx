@@ -1,0 +1,60 @@
+---
+title: "Compose a Code pattern"
+description: "Compose a new Strudel part or transform the current pattern."
+api: "POST https://api.rawchunks.space/api/strudel/"
+playground: "simple"
+---
+
+Compose a new Strudel part or transform the current pattern.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+import ComposeFields from '/snippets/dev/requests/strudel.mdx';
+
+<ComposeFields />
+
+## JSON response
+
+<ResponseField name="code" type="string">
+Validated pattern.
+</ResponseField>
+
+<ResponseField name="reasoning" type="string">
+Short musical rationale.
+</ResponseField>
+
+<ResponseField name="graph" type="object">
+Routing summary described below.
+</ResponseField>
+
+
+## Graph summary
+
+| Field | Type | Use |
+| --- | --- | --- |
+| `intent` | string | `compose` or `transform`. |
+| `targetLayers` | string[] | `drums`, `bass`, `chords`, `arp`. |
+| `mountedLibraries` | string[] | Library slices selected for this request. |
+| `archetypeId / archetypeLabel` | string | Selected genre reference. |
+| `refRole` | string | `drums`, `bass`, `vocals`, `keys`, `master`. |
+| `sectionNode` | string | `intro`, `verse`, `build`, `drop`, `breakdown`. |
+| `estimatedTokens` | integer | Character-based estimate of the prepared messages. |
+
+
+## NDJSON events
+
+| Field | Type | Use |
+| --- | --- | --- |
+| `graph` | event | Routing summary. |
+| `status` | event | `step` describes current work. |
+| `reasoning` | event | `text` explains the musical choices. |
+| `code` | event | `code` updates the REPL. |
+| `done` | event | Final `code` and optional `reasoning`. |
+| `error` | event | `message` describes a failed run. |
+
+
+## Use the result
+
+[Integrate Composer](/dev/guides/edit/strudel). JSON is the default; consume streamed events by `type`. The `/strudel/` alias has the same contract.

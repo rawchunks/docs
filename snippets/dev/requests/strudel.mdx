@@ -1,0 +1,63 @@
+<ParamField body="prompt" type="string" required>
+Nonempty musical request.
+</ParamField>
+
+<ParamField body="songId" type="string">
+Saved project to supply metadata.
+</ParamField>
+
+<ParamField body="currentCode" type="string">
+Existing pattern to transform.
+</ParamField>
+
+<ParamField body="bpm" type="number">
+30 to 300.
+</ParamField>
+
+<ParamField body="keyScale" type="string">
+For example, A minor.
+</ParamField>
+
+<ParamField body="stylePrompt" type="string">
+Song style.
+</ParamField>
+
+<ParamField body="timeSignature" type="string">
+For example, 4/4.
+</ParamField>
+
+<ParamField body="selectedTrack" type="string">
+Reference track name.
+</ParamField>
+
+<ParamField body="selection" type="object">
+Nonnegative `start`, `end` in seconds; optional `trackId`.
+</ParamField>
+
+<ParamField body="playhead" type="number">
+Nonnegative position in seconds.
+</ParamField>
+
+<ParamField body="stems" type="string[]">
+Active stem names.
+</ParamField>
+
+<ParamField body="tracks" type="object[]">
+Each requires `id`, `name`, `type`; optional boolean `muted`, `solo`.
+</ParamField>
+
+<ParamField body="songContext" type="string">
+Context, at most 4,000 characters. Takes precedence over the aliases.
+</ParamField>
+
+<ParamField body="musicalContext" type="string">
+Context alias, at most 4,000 characters.
+</ParamField>
+
+<ParamField body="musical_context" type="string">
+Second context alias, at most 4,000 characters.
+</ParamField>
+
+<ParamField body="stream" type="boolean">
+Enable NDJSON. `Accept: application/x-ndjson` also enables it.
+</ParamField>

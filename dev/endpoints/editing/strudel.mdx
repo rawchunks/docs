@@ -1,0 +1,25 @@
+---
+title: "Compose through the editing route"
+description: "Generate a Code pattern with a JSON-only response."
+api: "POST https://api.rawchunks.space/api/editing/strudel"
+playground: "simple"
+---
+
+Generate a Code pattern with a JSON-only response.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+Use the [Composer request fields](/dev/endpoints/strudel/compose#json-body), excluding `stream`.
+
+## Response
+
+<ResponseField name="code" type="string">
+Validated pattern.
+</ResponseField>
+
+
+## Choose a route
+
+Use [POST /api/strudel/](/dev/endpoints/strudel/compose) for graph details, rationale and streaming.
