@@ -136,6 +136,7 @@
           {
             "group": "Generate",
             "pages": [
+              "dev/guides/generate/vibe",
               "dev/guides/generate/music",
               "dev/guides/generate/lyrics",
               "dev/guides/generate/voices",
@@ -152,7 +153,8 @@
               "dev/guides/edit/extend-restyle",
               "dev/guides/edit/takes",
               "dev/guides/edit/merge",
-              "dev/guides/edit/arrangement"
+              "dev/guides/edit/arrangement",
+              "dev/guides/edit/strudel"
             ]
           },
           {
@@ -163,6 +165,35 @@
               "dev/guides/publish/licenses",
               "dev/guides/publish/solana",
               "dev/guides/publish/contract-reference"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "AI/ML",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "ai-ml/overview",
+              "ai-ml/stack"
+            ]
+          },
+          {
+            "group": "Models & Agents",
+            "pages": [
+              "ai-ml/models",
+              "ai-ml/songwriter",
+              "ai-ml/composer",
+              "ai-ml/voices"
+            ]
+          },
+          {
+            "group": "Runtime",
+            "pages": [
+              "ai-ml/concurrency",
+              "ai-ml/inference",
+              "ai-ml/data"
             ]
           }
         ]
@@ -214,7 +245,17 @@
               "dev/endpoints/editing/delete-take",
               "dev/endpoints/editing/mixer",
               "dev/endpoints/editing/history",
-              "dev/endpoints/editing/commits"
+              "dev/endpoints/editing/commits",
+              "dev/endpoints/editing/slice",
+              "dev/endpoints/editing/events",
+              "dev/endpoints/editing/wip-get",
+              "dev/endpoints/editing/wip-put",
+              "dev/endpoints/editing/wip-delete",
+              "dev/endpoints/editing/peaks",
+              "dev/endpoints/editing/reset",
+              "dev/endpoints/editing/lyrics-get",
+              "dev/endpoints/editing/lyrics",
+              "dev/endpoints/editing/strudel"
             ]
           },
           {
@@ -241,7 +282,9 @@
               "dev/endpoints/library/remix",
               "dev/endpoints/library/delete",
               "dev/endpoints/library/delete-song-take",
-              "dev/endpoints/library/delete-take"
+              "dev/endpoints/library/delete-take",
+              "dev/endpoints/library/stream",
+              "dev/endpoints/library/checkpoint"
             ]
           },
           {
@@ -255,6 +298,65 @@
               "dev/endpoints/albums/delete",
               "dev/endpoints/albums/add-song",
               "dev/endpoints/albums/remove-song"
+            ]
+          },
+          {
+            "group": "Songwriter",
+            "expanded": false,
+            "pages": [
+              "dev/endpoints/vibe/run",
+              "dev/endpoints/vibe/audio",
+              "dev/endpoints/vibe/vision",
+              "dev/endpoints/vibe/lyrics-library",
+              "dev/endpoints/vibe/lyrics",
+              "dev/endpoints/vibe/styles-library",
+              "dev/endpoints/vibe/styles",
+              "dev/endpoints/vibe/parameters-library",
+              "dev/endpoints/vibe/parameters",
+              "dev/endpoints/vibe/details",
+              "dev/endpoints/vibe/cover"
+            ]
+          },
+          {
+            "group": "Algorithmic Composer",
+            "expanded": false,
+            "pages": [
+              "dev/endpoints/strudel/compose",
+              "dev/endpoints/strudel/graph",
+              "dev/endpoints/strudel/drums",
+              "dev/endpoints/strudel/harmony",
+              "dev/endpoints/strudel/synths",
+              "dev/endpoints/strudel/archetypes",
+              "dev/endpoints/strudel/validate"
+            ]
+          },
+          {
+            "group": "Accounts",
+            "expanded": false,
+            "pages": [
+              "dev/endpoints/accounts/pair",
+              "dev/endpoints/accounts/get",
+              "dev/endpoints/accounts/list",
+              "dev/endpoints/accounts/profile",
+              "dev/endpoints/accounts/consent-get",
+              "dev/endpoints/accounts/consent",
+              "dev/endpoints/accounts/guides-get",
+              "dev/endpoints/accounts/guides"
+            ]
+          },
+          {
+            "group": "Credits and checkout",
+            "expanded": false,
+            "pages": [
+              "dev/endpoints/credits/promo",
+              "dev/endpoints/credits/balance",
+              "dev/endpoints/credits/claim",
+              "dev/endpoints/credits/create-order",
+              "dev/endpoints/credits/capture-order",
+              "dev/endpoints/credits/license-create",
+              "dev/endpoints/credits/license-capture",
+              "dev/endpoints/credits/operation",
+              "dev/endpoints/credits/webhook"
             ]
           }
         ]
@@ -339,6 +441,10 @@
     {
       "source": "/quickstart",
       "destination": "/app/generate"
+    },
+    {
+      "source": "/dev/endpoints/editing/separate",
+      "destination": "/dev/endpoints/editing/isolate"
     }
   ],
   "api": {
