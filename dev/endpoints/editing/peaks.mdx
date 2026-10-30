@@ -1,0 +1,35 @@
+---
+title: "Read waveform peaks"
+description: "Read bipolar waveform peaks without decoding the whole track in your client."
+api: "GET https://api.rawchunks.space/api/editing/peaks"
+playground: "simple"
+---
+
+Read bipolar waveform peaks without decoding the whole track in your client.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Query
+
+<ParamField query="url" type="string" required>
+Audio URL.
+</ParamField>
+
+<ParamField query="bins" type="integer">
+16 to 2048; defaults to 512.
+</ParamField>
+
+
+## Response
+
+<ResponseField name="mins" type="number[]">
+Minimum amplitudes per bin.
+</ResponseField>
+
+<ResponseField name="maxs" type="number[]">
+Maximum amplitudes per bin.
+</ResponseField>
+
+<ResponseField name="duration" type="number">
+Audio duration in seconds.
+</ResponseField>

@@ -1,0 +1,21 @@
+---
+title: "Reset editor history"
+description: "Reset edits to the song baseline and clear unfinished work."
+api: "POST https://api.rawchunks.space/api/editing/reset/{songId}"
+playground: "simple"
+---
+
+Reset edits to the song baseline and clear unfinished work.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Path
+
+<ParamField path="songId" type="string" required>
+Owned, editable song ID.
+</ParamField>
+
+
+## Response
+
+Returns `{ success, songId, ...history }` using the [history structure](/dev/endpoints/editing/history). The alias `POST /api/editing/reset` takes `songId` in its JSON body.
