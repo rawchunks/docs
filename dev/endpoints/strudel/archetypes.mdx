@@ -1,0 +1,16 @@
+---
+title: "Read genre archetypes"
+description: "Read the ten musical archetypes used by Composer."
+api: "GET https://api.rawchunks.space/api/strudel/archetypes"
+playground: "simple"
+---
+
+Read the ten musical archetypes used by Composer.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Response
+
+<ResponseField name="archetypes" type="array">
+Each entry has `id`, `label`, `bpmRange`, `keywords`, `description` and `drumCell`.
+</ResponseField>

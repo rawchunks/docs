@@ -1,0 +1,27 @@
+---
+title: "Read synth recipes"
+description: "Read oscillators, modifiers and sound recipes for a part."
+api: "GET https://api.rawchunks.space/api/strudel/synths"
+playground: "simple"
+---
+
+Read oscillators, modifiers and sound recipes for a part.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Query
+
+<ParamField query="role" type="string">
+`bass`, `chords`, `arp`, `transform` or `full` (default).
+</ParamField>
+
+
+## Response
+
+<ResponseField name="synths" type="object">
+`oscillators`, `methods`, `unsupportedMethods` and `mixRecipes`.
+</ResponseField>
+
+<ResponseField name="context" type="string">
+Recipe context for the role.
+</ResponseField>

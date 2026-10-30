@@ -1,0 +1,35 @@
+---
+title: "Read harmony references"
+description: "Get scale notes, bass roots and chord voicings for a key."
+api: "GET https://api.rawchunks.space/api/strudel/harmony"
+playground: "simple"
+---
+
+Get scale notes, bass roots and chord voicings for a key.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Query
+
+<ParamField query="keyScale" type="string">
+Default C minor.
+</ParamField>
+
+<ParamField query="mode" type="string">
+`bass`, `chords`, `arp` or `full` (default).
+</ParamField>
+
+
+## Response
+
+<ResponseField name="harmony" type="object">
+`roots`, `modes`, `generators` and `multiBarRule`.
+</ResponseField>
+
+<ResponseField name="reference" type="object">
+Computed scale, bass roots, chord symbols, voicings and four-bar references.
+</ResponseField>
+
+<ResponseField name="context" type="string">
+Reference for the requested mode.
+</ResponseField>

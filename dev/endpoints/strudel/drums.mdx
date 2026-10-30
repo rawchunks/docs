@@ -1,0 +1,20 @@
+---
+title: "Read the drum library"
+description: "Read the supported drum tokens and rhythm cells."
+api: "GET https://api.rawchunks.space/api/strudel/drums"
+playground: "simple"
+---
+
+Read the supported drum tokens and rhythm cells.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Response
+
+<ResponseField name="drums" type="object">
+`generator`, `categories`, `euclideanCells` and notation `rules`.
+</ResponseField>
+
+<ResponseField name="context" type="string">
+Compact notation reference.
+</ResponseField>
