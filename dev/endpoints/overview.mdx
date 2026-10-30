@@ -1,13 +1,9 @@
 ---
 title: "Endpoint reference"
-description: "Find the music and project REST operations and its exact request contract."
+description: "Music, agents, projects, accounts and payment request contracts."
 ---
 
-The reference documents canonical music and project REST paths under `https://api.rawchunks.space`. Each page defines request fields, response fields and a copyable cURL call. Use [request setup](/dev/guides/connect) for account headers and the [payment guide](/dev/guides/payments) for paid calls.
-
-For complete sequences, use the [Developer guides](/dev/overview). [Onchain calls](/dev/guides/publish/contract-reference) are separate from REST.
-
-Use your own account, session token and returned resource IDs in the examples.
+Call the canonical paths under `https://api.rawchunks.space`. Use [request setup](/dev/guides/connect) for account headers and [payments](/dev/guides/payments) for funding. The [Developer guides](/dev/overview) connect these calls into workflows.
 
 ## System
 
@@ -33,7 +29,7 @@ Use your own account, session token and returned resource IDs in the examples.
 | Method | Path | Reference |
 | --- | --- | --- |
 | `POST` | `/api/editing/source` | [Upload source audio](/dev/endpoints/editing/source) |
-| `POST` | `/api/editing/extract` | [Extract a section](/dev/endpoints/editing/extract) |
+| `POST` | `/api/editing/extract` | [Extract an instrument](/dev/endpoints/editing/extract) |
 | `POST` | `/api/editing/repaint` | [Rework a section](/dev/endpoints/editing/repaint) |
 | `POST` | `/api/editing/layer` | [Layer an instrument](/dev/endpoints/editing/layer) |
 | `POST` | `/api/editing/extend` | [Extend music](/dev/endpoints/editing/extend) |
@@ -46,6 +42,16 @@ Use your own account, session token and returned resource IDs in the examples.
 | `PATCH` | `/api/editing/mixer/{stemId}` | [Update a stem mixer](/dev/endpoints/editing/mixer) |
 | `GET` | `/api/editing/history/{songId}` | [Read editor history](/dev/endpoints/editing/history) |
 | `POST` | `/api/editing/commits` | [Save a timeline snapshot](/dev/endpoints/editing/commits) |
+| `POST` | `/api/editing/slice` | [Slice a section](/dev/endpoints/editing/slice) |
+| `GET` | `/api/editing/events/{taskId}` | [Follow edit events](/dev/endpoints/editing/events) |
+| `GET` | `/api/editing/wip/{songId}` | [Read unfinished edits](/dev/endpoints/editing/wip-get) |
+| `PUT` | `/api/editing/wip/{songId}` | [Save unfinished edits](/dev/endpoints/editing/wip-put) |
+| `DELETE` | `/api/editing/wip/{songId}` | [Clear unfinished edits](/dev/endpoints/editing/wip-delete) |
+| `GET` | `/api/editing/peaks` | [Read waveform peaks](/dev/endpoints/editing/peaks) |
+| `POST` | `/api/editing/reset/{songId}` | [Reset editor history](/dev/endpoints/editing/reset) |
+| `GET` | `/api/editing/lyrics/{songId}` | [Read lyric alignment](/dev/endpoints/editing/lyrics-get) |
+| `POST` | `/api/editing/lyrics/{songId}` | [Extract or align lyrics](/dev/endpoints/editing/lyrics) |
+| `POST` | `/api/editing/strudel` | [Compose through the editing route](/dev/endpoints/editing/strudel) |
 
 ## Voices
 
@@ -71,6 +77,8 @@ Use your own account, session token and returned resource IDs in the examples.
 | `DELETE` | `/api/songs/{id}` | [Delete a library song](/dev/endpoints/library/delete) |
 | `DELETE` | `/api/songs/{id}/takes/{takeId}` | [Delete a song take](/dev/endpoints/library/delete-song-take) |
 | `DELETE` | `/api/takes/{id}` | [Delete a take by ID](/dev/endpoints/library/delete-take) |
+| `GET` | `/api/songs/{id}/stream` | [Open paid playback](/dev/endpoints/library/stream) |
+| `POST` | `/api/songs/{id}/stream/checkpoint` | [Settle a listening checkpoint](/dev/endpoints/library/checkpoint) |
 
 ## Albums
 
@@ -84,18 +92,67 @@ Use your own account, session token and returned resource IDs in the examples.
 | `POST` | `/api/albums/{id}/songs` | [Add a song to an album](/dev/endpoints/albums/add-song) |
 | `DELETE` | `/api/albums/{id}/songs/{songId}` | [Remove a song from its album](/dev/endpoints/albums/remove-song) |
 
-## Aliases
+## Songwriter
 
-Use the canonical routes above in new integrations. The API also registers these equivalent shortcuts:
+| Method | Path | Reference |
+| --- | --- | --- |
+| `POST` | `/api/vibe/` | [Prepare a song from a vibe](/dev/endpoints/vibe/run) |
+| `POST` | `/api/vibe/audio` | [Analyze a Vibe recording](/dev/endpoints/vibe/audio) |
+| `POST` | `/api/vibe/vision` | [Interpret an image brief](/dev/endpoints/vibe/vision) |
+| `GET` | `/api/vibe/lyrics` | [Read Lyrics Canvas tags](/dev/endpoints/vibe/lyrics-library) |
+| `POST` | `/api/vibe/lyrics` | [Write tagged lyrics](/dev/endpoints/vibe/lyrics) |
+| `GET` | `/api/vibe/styles` | [Read style tags](/dev/endpoints/vibe/styles-library) |
+| `POST` | `/api/vibe/styles` | [Normalize style tags](/dev/endpoints/vibe/styles) |
+| `GET` | `/api/vibe/parameters` | [Read Songwriter controls](/dev/endpoints/vibe/parameters-library) |
+| `POST` | `/api/vibe/parameters` | [Normalize musical controls](/dev/endpoints/vibe/parameters) |
+| `POST` | `/api/vibe/details` | [Normalize draft details](/dev/endpoints/vibe/details) |
+| `POST` | `/api/vibe/cover` | [Create Vibe cover artwork](/dev/endpoints/vibe/cover) |
 
-| Alias | Canonical route |
-| --- | --- |
-| `/generate`, `/status/{taskId}`, `/sample`, `/format` | Corresponding `/api/generation/*` route |
-| `/repaint`, `/layer`, `/extend`, `/remix`, `/isolate` | Corresponding `/api/editing/*` route |
-| `/songs` | `GET /api/songs` |
-| `/voices` and its subpaths | `/api/voices` and matching subpaths |
-| `POST /voice` | `POST /api/voices` |
-| `POST /api/editing/commit` | `POST /api/editing/commits` |
-| `POST /api/editing/takes/activate` | `POST /api/editing/activate` |
+## Algorithmic Composer
 
-The API's `/docs` route serves Swagger UI. The namespaced endpoints above are the integration reference. There are no public cancellation, manual-training, webhook registration or server DAW-control routes.
+| Method | Path | Reference |
+| --- | --- | --- |
+| `POST` | `/api/strudel/` | [Compose a Code pattern](/dev/endpoints/strudel/compose) |
+| `POST` | `/api/strudel/graph` | [Resolve a Composer graph](/dev/endpoints/strudel/graph) |
+| `GET` | `/api/strudel/drums` | [Read the drum library](/dev/endpoints/strudel/drums) |
+| `GET` | `/api/strudel/harmony` | [Read harmony references](/dev/endpoints/strudel/harmony) |
+| `GET` | `/api/strudel/synths` | [Read synth recipes](/dev/endpoints/strudel/synths) |
+| `GET` | `/api/strudel/archetypes` | [Read genre archetypes](/dev/endpoints/strudel/archetypes) |
+| `POST` | `/api/strudel/validate` | [Validate a Code pattern](/dev/endpoints/strudel/validate) |
+
+## Accounts
+
+| Method | Path | Reference |
+| --- | --- | --- |
+| `PUT` | `/api/user` | [Register wallet addresses](/dev/endpoints/accounts/pair) |
+| `GET` | `/api/user/{address}` | [Read an account](/dev/endpoints/accounts/get) |
+| `GET` | `/api/users` | [Look up accounts](/dev/endpoints/accounts/list) |
+| `PATCH` | `/api/user/profile` | [Update a profile](/dev/endpoints/accounts/profile) |
+| `GET` | `/api/user/consent/{address}` | [Read signed consent](/dev/endpoints/accounts/consent-get) |
+| `POST` | `/api/user/consent` | [Save signed consent](/dev/endpoints/accounts/consent) |
+| `GET` | `/api/user/guides/{address}` | [Read completed guides](/dev/endpoints/accounts/guides-get) |
+| `POST` | `/api/user/guides` | [Save completed guides](/dev/endpoints/accounts/guides) |
+
+## Credits and checkout
+
+| Method | Path | Reference |
+| --- | --- | --- |
+| `GET` | `/api/credits/promo` | [Read Credits offers](/dev/endpoints/credits/promo) |
+| `GET` | `/api/credits/balance` | [Read a Credits balance](/dev/endpoints/credits/balance) |
+| `POST` | `/api/credits/promo/claim` | [Claim campaign Credits](/dev/endpoints/credits/claim) |
+| `POST` | `/api/credits/paypal/create-order` | [Create a Credits order](/dev/endpoints/credits/create-order) |
+| `POST` | `/api/credits/paypal/capture-order` | [Capture a Credits order](/dev/endpoints/credits/capture-order) |
+| `POST` | `/api/credits/license/create-order` | [Create a license checkout](/dev/endpoints/credits/license-create) |
+| `POST` | `/api/credits/license/capture-order` | [Capture a license checkout](/dev/endpoints/credits/license-capture) |
+| `GET` | `/api/credits/operations/{id}` | [Read a payment operation](/dev/endpoints/credits/operation) |
+| `POST` | `/api/credits/paypal/webhook` | [Receive PayPal events](/dev/endpoints/credits/webhook) |
+
+## Route aliases
+
+`/vibe/*`, `/strudel/*` and `/voices/*` expose the same service contracts as their `/api` forms. Profile updates also accept `PUT` and `POST`; consent and guide writes also accept `PUT`.
+
+Editing supports `/api/editing/commit` for commits, `/api/editing/takes/activate` for activation, and `/api/editing/reset` with a body `songId`. Listening supports `/api/stream/{id}` and `/api/stream/{id}/checkpoint`. PayPal notifications also use `/api/payments/paypal/webhook`.
+
+The top-level `/generate`, `/status/{taskId}`, `/songs`, `/songs/{id}`, `/songs/{id}/stream`, `/stream/{id}`, `/sample`, `/format`, `/repaint`, `/layer`, `/extend`, `/remix`, `/isolate`, `/reset`, `/voice` and account paths forward to the corresponding service contracts.
+
+[Onchain calls](/dev/guides/publish/contract-reference) use wallet contracts and programs separately from REST.
