@@ -1,0 +1,33 @@
+---
+title: "Normalize musical controls"
+description: "Normalize tempo, key, duration and vocal language."
+api: "POST https://api.rawchunks.space/api/vibe/parameters"
+playground: "simple"
+---
+
+Normalize tempo, key, duration and vocal language.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+<ParamField body="bpm" type="number">
+Round and clamp to 40 to 220.
+</ParamField>
+
+<ParamField body="keyScale" type="string">
+Root and scale; flat roots normalize to sharp equivalents.
+</ParamField>
+
+<ParamField body="audioDuration" type="number">
+Round to five-second steps and clamp to 15 to 300.
+</ParamField>
+
+<ParamField body="vocalLanguage" type="string">
+Supported two-letter language code; defaults to en.
+</ParamField>
+
+
+## Response
+
+Returns normalized `bpm`, `keyScale`, `audioDuration` and `vocalLanguage`. Unusable tempo, key or duration values can be omitted. An unsupported scale becomes minor; an unsupported language becomes en.

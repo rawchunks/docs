@@ -1,0 +1,33 @@
+---
+title: "Normalize draft details"
+description: "Trim title and prompt and normalize vocal choices."
+api: "POST https://api.rawchunks.space/api/vibe/details"
+playground: "simple"
+---
+
+Trim title and prompt and normalize vocal choices.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+<ParamField body="title" type="string">
+Song title.
+</ParamField>
+
+<ParamField body="prompt" type="string">
+Production brief.
+</ParamField>
+
+<ParamField body="instrumental" type="boolean">
+Instrumental choice.
+</ParamField>
+
+<ParamField body="vocalLanguage" type="string">
+Vocal language code.
+</ParamField>
+
+
+## Response
+
+Returns `title`, `prompt`, `instrumental`, `vocalLanguage`. Empty title and prompt become empty strings; language defaults to en.

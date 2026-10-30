@@ -1,0 +1,37 @@
+---
+title: "Write tagged lyrics"
+description: "Write vocal lyrics from a brief, with optional streaming."
+api: "POST https://api.rawchunks.space/api/vibe/lyrics"
+playground: "simple"
+---
+
+Write vocal lyrics from a brief, with optional streaming.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+<ParamField body="prompt" type="string" required>
+Nonempty brief.
+</ParamField>
+
+<ParamField body="title" type="string">
+Song title.
+</ParamField>
+
+<ParamField body="style" type="string">
+Production style.
+</ParamField>
+
+<ParamField body="vocalLanguage" type="string">
+Vocal language code.
+</ParamField>
+
+<ParamField body="stream" type="boolean">
+Defaults to streaming. Send `false` for JSON.
+</ParamField>
+
+
+## Response
+
+JSON returns `{ lyrics }`. NDJSON emits `lyrics_delta` with `delta`, then `done`. A failed stream emits `error` with `message`.

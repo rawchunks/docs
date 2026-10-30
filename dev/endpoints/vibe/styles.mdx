@@ -1,0 +1,23 @@
+---
+title: "Normalize style tags"
+description: "Normalize a selected set of style tags."
+api: "POST https://api.rawchunks.space/api/vibe/styles"
+playground: "simple"
+---
+
+Normalize a selected set of style tags.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## JSON body
+
+<ParamField body="tags" type="string[]">
+Selected tags; defaults to an empty array.
+</ParamField>
+
+
+## Response
+
+<ResponseField name="tags" type="string[]">
+Normalized, supported tags.
+</ResponseField>
