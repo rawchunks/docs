@@ -1,0 +1,20 @@
+---
+title: "Read Lyrics Canvas tags"
+description: "Read the supported lyric tags and lyric-writing reference."
+api: "GET https://api.rawchunks.space/api/vibe/lyrics"
+playground: "simple"
+---
+
+Read the supported lyric tags and lyric-writing reference.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Response
+
+<ResponseField name="tags" type="object">
+Arrays grouped by `structure`, `intensity`, `solo`, `vocal`. Each tag has `token`, `category`, `description`.
+</ResponseField>
+
+<ResponseField name="systemPrompt" type="string">
+Lyric-writing reference.
+</ResponseField>

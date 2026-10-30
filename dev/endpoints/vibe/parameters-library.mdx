@@ -1,0 +1,21 @@
+---
+title: "Read Songwriter controls"
+description: "Read the musical controls used by Songwriter."
+api: "GET https://api.rawchunks.space/api/vibe/parameters"
+playground: "simple"
+---
+
+Read the musical controls used by Songwriter.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Response
+
+<ResponseField name="parameters" type="object">
+BPM, key and scale, duration presets, vocal languages and instrumental choice.
+</ResponseField>
+
+
+## Ranges
+
+The library describes BPM 40 to 220 and duration presets from 30 to 300 seconds. [Normalization](/dev/endpoints/vibe/parameters) also accepts intermediate durations down to 15 seconds.

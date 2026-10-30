@@ -1,0 +1,16 @@
+---
+title: "Read style tags"
+description: "Read the style tags used by Songwriter."
+api: "GET https://api.rawchunks.space/api/vibe/styles"
+playground: "simple"
+---
+
+Read the style tags used by Songwriter.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Response
+
+<ResponseField name="styles" type="array">
+Each entry has an uppercase `id` and a display `label`.
+</ResponseField>
