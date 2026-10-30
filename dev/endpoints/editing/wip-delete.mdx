@@ -1,0 +1,27 @@
+---
+title: "Clear unfinished edits"
+description: "Clear the saved work-in-progress state."
+api: "DELETE https://api.rawchunks.space/api/editing/wip/{songId}"
+playground: "simple"
+---
+
+Clear the saved work-in-progress state.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Path
+
+<ParamField path="songId" type="string" required>
+Song ID.
+</ParamField>
+
+
+## Response
+
+<ResponseField name="success" type="boolean">
+Operation result.
+</ResponseField>
+
+<ResponseField name="cleared" type="boolean">
+Whether state was removed.
+</ResponseField>

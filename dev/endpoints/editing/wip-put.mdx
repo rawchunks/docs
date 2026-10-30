@@ -1,0 +1,64 @@
+---
+title: "Save unfinished edits"
+description: "Save unfinished lanes, track edits and section controls."
+api: "PUT https://api.rawchunks.space/api/editing/wip/{songId}"
+playground: "simple"
+---
+
+Save unfinished lanes, track edits and section controls.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Path
+
+<ParamField path="songId" type="string" required>
+Song ID.
+</ParamField>
+
+
+## JSON body
+
+<ParamField body="synthLanes" type="array">
+Instrument and Code lane state.
+</ParamField>
+
+<ParamField body="synthTracks" type="array">
+Instrument and Code lane state.
+</ParamField>
+
+<ParamField body="trackEdits" type="object">
+Edits keyed by track.
+</ParamField>
+
+<ParamField body="dirtyFlags" type="object">
+Optional boolean `lanes`, `mixer`, `fx`, `sculpt`.
+</ParamField>
+
+<ParamField body="originals" type="object[]">
+Each entry has finite numeric `start` and `end`.
+</ParamField>
+
+<ParamField body="bpm" type="number">
+30 to 300.
+</ParamField>
+
+<ParamField body="sectionGain" type="number">
+Finite section controls.
+</ParamField>
+
+<ParamField body="sectionLow" type="number">
+Finite section controls.
+</ParamField>
+
+<ParamField body="sectionMid" type="number">
+Finite section controls.
+</ParamField>
+
+<ParamField body="sectionHigh" type="number">
+Finite section controls.
+</ParamField>
+
+
+## Response
+
+Send the state directly or inside `{ wip: ... }`. Returns `{ success, wip, ttlSeconds }`. The saved state expires after seven days without a refresh. A commit or reset clears it.

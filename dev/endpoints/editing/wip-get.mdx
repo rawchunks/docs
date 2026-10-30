@@ -1,0 +1,27 @@
+---
+title: "Read unfinished edits"
+description: "Load saved work in progress for a song."
+api: "GET https://api.rawchunks.space/api/editing/wip/{songId}"
+playground: "simple"
+---
+
+Load saved work in progress for a song.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Path
+
+<ParamField path="songId" type="string" required>
+Song ID.
+</ParamField>
+
+
+## Response
+
+<ResponseField name="wip" type="object or null">
+Saved unfinished state.
+</ResponseField>
+
+<ResponseField name="ttlSeconds" type="integer">
+604800 seconds. Reads refresh the expiry.
+</ResponseField>

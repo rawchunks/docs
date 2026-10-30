@@ -1,0 +1,53 @@
+---
+title: "Follow edit events"
+description: "Follow edit progress and the saved result through NDJSON."
+api: "GET https://api.rawchunks.space/api/editing/events/{taskId}"
+playground: "simple"
+---
+
+Follow edit progress and the saved result through NDJSON.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Path and query
+
+<ParamField path="taskId" type="string" required>
+Returned task ID, at most 256 characters.
+</ParamField>
+
+<ParamField query="songId" type="string" required>
+Bound song ID.
+</ParamField>
+
+<ParamField query="userAddress" type="string" required>
+Selected account, at least ten characters.
+</ParamField>
+
+<ParamField query="task" type="string" required>
+`repaint`, `lego`, `complete`, `extend`, `cover`, `extract`.
+</ParamField>
+
+<ParamField query="stemId" type="string">
+Bound stem when present.
+</ParamField>
+
+<ParamField query="prompt" type="string">
+Original edit prompt.
+</ParamField>
+
+<ParamField query="repaintingStart" type="number">
+Nonnegative seconds. End must exceed start when both are supplied.
+</ParamField>
+
+<ParamField query="repaintingEnd" type="number">
+Nonnegative seconds. End must exceed start when both are supplied.
+</ParamField>
+
+
+## Response
+
+Each line uses the [edit status response](/dev/endpoints/editing/status). Ignore empty heartbeat objects. Stop on `status: "ready"` or `"error"`. Reconnect with the same job binding.
+
+## Client
+
+Reuse the [NDJSON reader](/dev/guides/jobs#generation-edit-and-voice-streams).
