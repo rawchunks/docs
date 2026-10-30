@@ -1,0 +1,6 @@
+| Field | Type | Use |
+| --- | --- | --- |
+| `source` | string | `scribe_v2` or `forced_alignment`. |
+| `updatedAt` | string | Alignment update timestamp. |
+| `words` | object[] | Each word has `text`, numeric `start`, `end` in seconds, optional `loss`. |
+| `lines` | object[] | Each line has `index`, `text`, optional `isTag`, nullable `start`, `end` and its `words` array. |

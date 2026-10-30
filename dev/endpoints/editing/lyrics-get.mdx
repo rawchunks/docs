@@ -1,0 +1,27 @@
+---
+title: "Read lyric alignment"
+description: "Read lyric state and start missing transcription or alignment for the song."
+api: "GET https://api.rawchunks.space/api/editing/lyrics/{songId}"
+playground: "simple"
+---
+
+Read lyric state and start missing transcription or alignment for the song.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Path and query
+
+<ParamField path="songId" type="string" required>
+Owned song ID.
+</ParamField>
+
+<ParamField query="language" type="string">
+Requested vocal language.
+</ParamField>
+
+
+## Response
+
+Returns the cached lyric state: `lyrics`, `vocalLanguage`, `alignment` and `status` (`cached`, `transcribing`, `aligning`, `none`). [Process lyrics](/dev/endpoints/editing/lyrics) to extract or align them.
+
+The [alignment structure](/dev/endpoints/editing/lyrics#alignment-structure) supplies word and line timing in seconds. A read can start missing transcription or alignment in the background; follow `status` until cached.

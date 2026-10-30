@@ -1,0 +1,61 @@
+---
+title: "Extract or align lyrics"
+description: "Recover words from audio or align supplied lyrics to it."
+api: "POST https://api.rawchunks.space/api/editing/lyrics/{songId}"
+playground: "simple"
+---
+
+Recover words from audio or align supplied lyrics to it.
+
+Use [request setup](/dev/guides/connect) for account headers.
+
+## Path
+
+<ParamField path="songId" type="string" required>
+Owned, editable song with audio.
+</ParamField>
+
+
+## JSON body
+
+<ParamField body="vocalLanguage" type="string">
+Vocal language code.
+</ParamField>
+
+<ParamField body="lyrics" type="string">
+Words to align.
+</ParamField>
+
+<ParamField body="mode" type="string">
+`extract` or `align`. Defaults to align when lyrics are supplied, otherwise extract.
+</ParamField>
+
+
+## Response
+
+<ResponseField name="lyrics" type="string">
+Recovered or supplied words.
+</ResponseField>
+
+<ResponseField name="vocalLanguage" type="string">
+Resolved language.
+</ResponseField>
+
+<ResponseField name="alignment" type="object or null">
+Timed lyric alignment.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+`cached` or `none`.
+</ResponseField>
+
+
+## Source
+
+Uses the vocal stem when available, then the master or song audio.
+
+## Alignment structure
+
+import Alignment from '/snippets/dev/models/alignment.mdx';
+
+<Alignment />
