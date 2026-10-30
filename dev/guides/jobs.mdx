@@ -51,9 +51,9 @@ const result = await pollJob(() => api.get(editPath));
 
 The returned task kind matters: Separate uses `extract`, Layer uses `lego`, and Restyle uses `cover`. Candidate edits return `take` and `audioUrl`. Separation returns `stems`.
 
-## Generation and voice streams
+## Generation, edit and voice streams
 
-These two streams use newline-delimited JSON, not SSE. Native `EventSource` cannot parse them or attach the needed account headers.
+Generation, edit and voice streams use newline-delimited JSON. Use `fetch` with the account headers. Ignore empty `{}` heartbeat objects.
 
 ```javascript
 async function* readNDJSON(response) {
@@ -70,7 +70,7 @@ async function* readNDJSON(response) {
       while ((newline = buffer.indexOf('\n')) >= 0) {
         const line = buffer.slice(0, newline).trim();
         buffer = buffer.slice(newline + 1);
-        if (line) yield JSON.parse(line);
+        if (line) { const event = JSON.parse(line); if (Object.keys(event).length) yield event; }
       }
       if (done) {
         if (buffer.trim()) yield JSON.parse(buffer);
@@ -99,6 +99,8 @@ for await (const state of readNDJSON(response)) {
 
 Reconnect a dropped read stream with the same IDs, or resume status polling. There are no public job cancellation or webhook registration routes. Aborting a fetch stops your client from waiting.
 
+Edit events use `/api/editing/events/{taskId}` with the same query as edit polling. Agent streams use a `type` discriminator; see [Songwriter](/dev/guides/generate/vibe) and [Composer](/dev/guides/edit/strudel).
+
 ## Error handling
 
 | Status | Your next step |
@@ -109,9 +111,9 @@ Reconnect a dropped read stream with the same IDs, or resume status polling. The
 | `403` | Check the selected account and resource owner. |
 | `404` | Check the returned resource IDs. |
 | `409` | Reload project state, use the correct job binding, or open an editable version. |
-| `413` | Reduce the upload below 50 MiB. |
+| `413` | Reduce the upload below 250 MiB. |
 | `502`, `503`, `504` | Show the failure and preserve any returned job identity. Back off on read retries. |
 
 A job can also report `status: "error"` inside a successful HTTP response. Handle both HTTP errors and job errors.
 
-The public submission routes do not expose an idempotency-key contract. Do not automatically resubmit after a timeout: you may create another charged job. Disable duplicate submit buttons, keep local operation state, and reconcile any known job IDs first. A failed generation admission can leave a song draft without audio; the owner can review or delete it through the library.
+Credits-funded services accept a stable `x-idempotency-key` of at most 80 characters. USDC submissions use their session contract. Recover known job IDs before resubmitting after a timeout. Disable duplicate submit buttons, keep local operation state, and reconcile any known job IDs first. A failed generation admission can leave a song draft without audio; the owner can review or delete it through the library.
